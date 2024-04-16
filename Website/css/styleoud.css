@@ -1,0 +1,53 @@
+#welcomeImages
+{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+
+html
+{
+    grid-template-areas:
+    
+        "header",
+        "body",
+        "footer";
+
+    background-image: url(../assets/backgroundMap.webp);
+    background-size:contain;
+    
+    
+    
+}
+
+header
+{
+    grid-area: "header";
+    width: 100%;
+}
+
+body
+{
+    grid-area: "body";
+    
+}
+footer
+{
+    grid-area: "footer";
+}
+.quote
+{
+    width: 500px;
+    height:400px;
+    background-image: url(../assets/backgroundquote.webp);
+    background-size:cover;
+    align-content: center;
+}
+
+.quote a
+{
+    color: antiquewhite;
+    z-index: 150px;
+    margin-top: 200px;
+    font-size: 200%;
+}

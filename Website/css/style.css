@@ -1,0 +1,70 @@
+@font-face {
+    font-family: "LOTRfont1";
+    src: url(../assets/fontlotr.ttf);
+}
+
+@font-face {
+    font-family: "LOTRfont2";
+    src: url(../assets/MorrisRoman-Black.ttf);
+}
+@font-face {
+    font-family: "readingText";
+    src: url(../assets/PlayfairDisplayMedium-9YKZK.ttf);
+}
+
+html {
+    background-image: url(../assets/backgroundMap.webp);
+    background-size: 100vw 100vh;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% 100%;
+    margin-top: 30px;
+    
+
+
+
+}
+.img-thumbnail{padding:.25rem;background-color:var(--bs-body-bg);border:var(--bs-border-width) solid var(--bs-border-color);border-radius:var(--bs-border-radius);max-width:100%;height:auto}
+
+.img-thumbnail {
+    padding: $thumbnail-padding;
+    background-color: 	rgb(139,69,19);
+    border: none;
+    @include border-radius($thumbnail-border-radius);
+    @include box-shadow($thumbnail-box-shadow);
+    @include img-fluid();
+  }
+
+body {
+
+    font-family: "LOTRfont1", "LOTRfont2", "Arial";
+
+    width: 100%;
+
+
+}
+.reading
+{   
+    font-family: "readingText";
+}
+.brown
+{
+    color: 	rgb(139,69,19)
+
+}
+main
+{
+    background-image: url(../assets/lotrbackground.webp);
+}
+
+.img-max {
+    max-width: 350px;
+}
+.accountPhoto
+{
+    max-width: 250px;
+}
+.background
+{
+    background-color: rgb(241,178,11,0.7);
+}
