@@ -2,7 +2,7 @@ import express from "express";
 import ejs from "ejs";
 import { isQuestionOrExclamationToken } from "typescript";
 import {Quote} from "./types";
-import {quote,characters,movies,difficulty} from "./database"
+import {quote,characters,movies,difficulty,quotebl,quotefav,} from "./database"
 
 
 const app = express();
@@ -47,42 +47,42 @@ app.post("quizPage",(req,res)=>
 
 app.get("/quizTenRounds",(req,res)=>
 {
-    let correct:Quote = quote;
-    let i:number=1;
-    let chars:string[]=[];
-    let movies:string[]=[];
-    let sameChar:boolean=true;
-    let index:number=0;
-    for(let i=0;i<2;i++)
-    {
-        while(sameChar)
-            {
-                index= Math.floor(Math.random()*difficulty[i]*10);
-                if (correct.character!=characters[index])
-                {
-                    sameChar=false;
-                }
-        
-            }
-            chars.push(characters[index])
-            let sameMovie:boolean=true;
-            while(sameMovie)
-            {
-                index = Math.floor(Math.random()*difficulty[i]*10);
-                if(correct.movie!=movies[index])
-                    {
-                        sameMovie=false;
-                    }
-            }
-            movies.push(movies[index])
-    }  
-
+    
     res.render("quizTenRounds",
     {
         quote:quote,
         movies:movies,
-        chars:chars
+        chars:characters
 
     })
 })
+
+app.get("/quizSuddenDeath",(req,res)=>
+{
+    res.render("quizSuddenDeath",
+    {
+        quote:quote,
+        movies:movies,
+        chars:characters
+    })
+})
+
+app.get("/blacklist",(req,res)=>
+{
+    res.render("blacklist",
+    {
+        quoteBL:quotebl
+    })
+    
+})
+
+app.get("/favourites",(req,res)=>
+    {
+        res.render("favourites",
+        {
+            quoteBL:quotefav
+        })
+        
+    })
+
 

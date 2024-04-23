@@ -8,12 +8,24 @@ export interface Quote
  export interface Movie
  {
    name:string,
-   id:string
+   _id?:string
  }
 
  export interface Character
  {
    name:string,
-   id:string
+   _id?:string
  }
 
+ export interface User
+ {
+    name:string,
+    id:string,
+    score:Score
+ }
+
+ export interface Score
+ {
+    sd:number,
+    tr:number
+ }
