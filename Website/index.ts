@@ -1,6 +1,8 @@
 import express from "express";
 import ejs from "ejs";
 import { isQuestionOrExclamationToken } from "typescript";
+import {Quote} from "./types";
+import {quote,characters,movies,difficulty} from "./database"
 
 
 const app = express();
@@ -13,10 +15,11 @@ app.use(express.urlencoded({extended : false}));
 app.use(express.json());
 
 
+
 // const user =   hier wordt de user gedeclareerd op loging pagina ingeladen 
 
-let characters:string[] = ["Gandalf","Frodo","Bilbo","Smaug"];
-let movies:string[] = ["LOTR - The fellowship of the Ring","LOTR - The Towers","LOTR - The return of the King","The Hobbit - an unexpected Journey","The Hobbit - The desolation of Smaug","The Hobbit - The battle of the five Armies"];
+
+
 
 app.get("/",(req,res)=>
 {
@@ -44,13 +47,42 @@ app.post("quizPage",(req,res)=>
 
 app.get("/quizTenRounds",(req,res)=>
 {
-    /* de quote ophalen
+    let correct:Quote = quote;
+    let i:number=1;
+    let chars:string[]=[];
+    let movies:string[]=[];
+    let sameChar:boolean=true;
+    let index:number=0;
+    for(let i=0;i<2;i++)
+    {
+        while(sameChar)
+            {
+                index= Math.floor(Math.random()*difficulty[i]*10);
+                if (correct.character!=characters[index])
+                {
+                    sameChar=false;
+                }
+        
+            }
+            chars.push(characters[index])
+            let sameMovie:boolean=true;
+            while(sameMovie)
+            {
+                index = Math.floor(Math.random()*difficulty[i]*10);
+                if(correct.movie!=movies[index])
+                    {
+                        sameMovie=false;
+                    }
+            }
+            movies.push(movies[index])
+    }  
 
-    let correct:Quote = fetchedQuote;
-       
+    res.render("quizTenRounds",
+    {
+        quote:quote,
+        movies:movies,
+        chars:chars
 
-    */
-
-    
-     
+    })
 })
+
