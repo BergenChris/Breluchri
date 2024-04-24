@@ -1,3 +1,7 @@
+// geef de naam in de url mee bv. http://localhost:3000/character-dialogs/Gandalf
+// probeer een andere naam http://localhost:3000/character-dialogs/Frodo Baggins
+
+
 import express, { Request, Response } from 'express';
 
 const app = express();
