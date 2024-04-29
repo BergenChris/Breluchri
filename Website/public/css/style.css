@@ -235,4 +235,10 @@ main
         opacity: 1; /* Eindig met volledige zichtbaarheid */
     }
 }
-/*
+
+
+
+.correct
+{
+    background-color: green;
+}

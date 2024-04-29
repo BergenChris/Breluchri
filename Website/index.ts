@@ -1,22 +1,56 @@
-import express from "express";
+import express  from "express";
 import ejs from "ejs";
-import { isQuestionOrExclamationToken } from "typescript";
-import {Quote} from "./types";
-import {quote,characters,movies,difficulty,quotebl,quotefav,} from "./database"
+import {makeLists,connect} from "./database";
 
 
 const app = express();
 
-app.set("view engine","ejs");
-app.set("port",3000);
+app.set("view engine", "ejs");
+app.set("port", 3000);
 
 app.use(express.static("public"));
-app.use(express.urlencoded({extended : false}));
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+app.get("/",async (req,res)=>
+    {
+        let listQuiz= await makeLists();
+      
+        
+        res.render("index",
+        {
+            listQuiz:listQuiz[1],
+            listShuffled:listQuiz[0]
+        })     
+            
+        
+    })
+
+app.listen(app.get("port"), async () => {
+    await connect();
+    console.log( "[server] http://localhost:" + app.get("port"));
+});
+
+export{};
 
 
 // const user =   hier wordt de user gedeclareerd op loging pagina ingeladen 
+
+
+/*
+
+app.get("/",async (req,res)=>
+{
+   
+    res.render("test",
+    {
+        correct:correct,
+        moviesQuiz:moviesQuiz,
+        charsQuiz:charsQuiz
+
+    })
+})
+
 
 
 
@@ -85,4 +119,13 @@ app.get("/favourites",(req,res)=>
         
     })
 
+app.get("/test",(req,res)=>
+{
+    res.render("test",
+        {
+            
+        }
+    )
+})
 
+*/

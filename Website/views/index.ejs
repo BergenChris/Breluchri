@@ -1,0 +1,31 @@
+<%-include ("partials/header")%>
+<%-include ("partials/aside")%>
+<main class="col-12 col-md-9 bg-opacity-25 mx-2">
+    <!-- Aangepast button (Toon)-->
+    <section class="quote">
+        <section class="row">
+            <h1>Ready for battle! - Sudden death</h1>
+            <h2 class="col-12">Quote 1 : <%=listQuiz[0][3]%></h2>
+            <form class="row col-12 col-sm-8 justify-content-around" action="#">
+                
+            </form>
+        </section>
+        <p class="resetfont fs-3">WAAR </p>
+    </section>
+    <!-- Einde aangepaste button (Toon)-->
+    <section class="container gy-5 row">    
+    
+        <% for(let i=0;i<2;i++) { 
+            for(let j=0;j<3;j++) {%>
+        <button class="row  bg-succes <% if(listShuffled[i][j]==listQuiz[i][2]) {%> correct <%}%> <% if(i==0) {%> char <%}%> <% if(i==1) {%> movie <%}%> col-md-4">
+            <p><%=listShuffled[i][j]%></p>
+        </button>
+        <%}}%>
+
+        <form action="#"><a href="scoresuddendeath.html"><button class="btn btn-warning mb-3 resetfont" type="button">Volgende</button></a></form>
+        </section>
+    </section>
+
+    
+</main>
+<%-include ("partials/footer")%>
