@@ -13,8 +13,8 @@
     <section class="container gy-5 row col-md-6">    
         <% for(let i=0;i<2;i++) { 
             for(let j=0;j<3;j++) {%>
-        <button class="row  bg-succes <% if(j==2) {%> correct <%}%> <% if(i==0) {%> col-md-4 <%}%> <% if(i==1) {%> col-md-6 <%}%>">
-            <p><%=listQuiz[i][j]%></p>
+        <button  type="button" class="btn <% if(listShuffled[i][j]==listQuiz[i][2]) {%> correct btn-outline-succes <%}%> <% if(i==0) {%> col-md-4 <%}%> <% if(i==1) {%> col-md-6 <%}%>">
+            <%=listShuffled[i][j]%>
         </button>
         <%}}%>
     </section>

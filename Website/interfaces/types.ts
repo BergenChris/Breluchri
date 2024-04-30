@@ -27,12 +27,14 @@ export interface Quote
  {
    name:string,
    _id?:string
+   
  }
 
  export interface Character
  {
    name:string,
    _id?:string
+   
  }
 
  export interface User

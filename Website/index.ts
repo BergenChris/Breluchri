@@ -17,7 +17,7 @@ app.get("/",async (req,res)=>
         let listQuiz= await makeLists();
       
         
-        res.render("index",
+        res.render("test",
         {
             listQuiz:listQuiz[1],
             listShuffled:listQuiz[0]
