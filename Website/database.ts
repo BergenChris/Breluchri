@@ -1,6 +1,7 @@
 import {Collection, MongoClient} from "mongodb";
 import {Quote,Movie,Character} from "./interfaces/types";
 import dotenv from "dotenv";
+dotenv.config();
 
 
 //dummy data
@@ -74,7 +75,7 @@ let moviesAll:Movie[] =
 
 // hier de correcte manier om de Quote[] op te vullen via database.
 
-export const client = new MongoClient("mongodb+srv://s004935:APHS2023@webo1.sjzote7.mongodb.net/");
+export const client = new MongoClient(process.env.MONGO_URI ?? "localhost://27017");
 export const collectionQuotes:Collection<Quote> = client.db("LOTR").collection("quotes");
 export const collectionFiltQuotes:Collection<Quote> = client.db("LOTR").collection("quotesFiltered");
 export const collectionMovies:Collection<Movie> = client.db("LOTR").collection("movies");
