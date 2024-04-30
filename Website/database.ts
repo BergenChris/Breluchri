@@ -90,11 +90,16 @@ async function deleteDBCollQuotes()
 }
 
 //hier checken we of er al iets in de database zit, zoniet vullen we deze op
+const apiKey = '2bV52o3FGbuxH6876ax5';
 async function loadQuotesFromApi() {
     const quotes:Quote[] = await collectionQuotes.find({}).toArray();
     if (quotes.length == 0) {
         console.log("DB leeg. DB vullen via API")
-        // const responseQuotes = await fetch("https://jsonplaceholder.typicode.com/users");  aanpassen
+        const response = await fetch("https://the-one-api.dev/v2/character", {
+            headers: {
+                'Authorization': `Bearer ${apiKey}`
+            }
+        });
         const quotes:Quote[] = quotesAll; // hier ook aanpassen als api werkt
         await collectionQuotes.insertMany(quotes);
         // const responseMovies = await fetch("https://jsonplaceholder.typicode.com/users");
