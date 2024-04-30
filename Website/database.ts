@@ -33,16 +33,22 @@ async function loadQuotesFromApi() {
     if (quotes.length == 0) 
     {
         console.log("DB leeg. DB vullen via API")
+        // fetch API --> geef docs met daarin array van Quotes
         const responseQuotes = await fetch("https://the-one-api.dev/v2/quote", {
             headers: {
                 'Authorization': `Bearer ${apiKey}`
             }
         });
         const dataQuotes:RootObjectQuote = await responseQuotes.json();
+
+        // leeghalen vooraleer te vullen. maar we vullen deze met array van Quotes dus moeten over de docs loopen en deze pushen in een array en dan erna deze in DB laden.
         await collectionQuotes.deleteMany();
         let quotes:Quote[]=[];
         await dataQuotes.docs.forEach(e=>quotes.push(e));
         await collectionQuotes.insertMany(quotes);
+
+
+        // zelfde principe movies
         const responseMovies = await fetch("https://the-one-api.dev/v2/movie", {
             headers: {
                 'Authorization': `Bearer ${apiKey}`
@@ -53,6 +59,8 @@ async function loadQuotesFromApi() {
         let movies:Movie[]=[];
         await dataMovies.docs.forEach(e=>movies.push(e));
         await collectionMovies.insertMany(movies);
+
+        //zelfde principe karakters
         const responseChars = await fetch("https://the-one-api.dev/v2/character", {
             headers: {
                 'Authorization': `Bearer ${apiKey}`
@@ -97,7 +105,7 @@ async function filterQuotes()
 }
 
 
-export async function getQuote()
+async function getQuote()
 {
     await filterQuotes();
     let quotes:Quote[] = await collectionFiltQuotes.find().toArray();
@@ -105,7 +113,7 @@ export async function getQuote()
     return correct;
 }
 
-
+// enkel deze export want hierin is de chain loadQuotesFromApi()-->filterQuotes()-->getQuote()-->makeLists().    deze functie roept dus steeds zijn voorliggende functie op. daarom de return bij elk.
 export async function makeLists()
 {
     let correctQuote:Quote = await getQuote();
@@ -122,6 +130,7 @@ export async function makeLists()
         
     ]}).toArray();
     console.log(moviesAll);
+    // maakt array aan van karakters die we kiezen. kunnen we hier uitbreiden
     charactersAll = await collectionCharacters.find({$or:
     [
         {_id:"5cd99d4bde30eff6ebccfc15"},
