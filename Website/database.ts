@@ -1,29 +1,31 @@
-import {MongoClient} from "mongodb";
-import {Quote,Movie,Character,User,Score} from "./types"
+import {Collection, MongoClient} from "mongodb";
+import {Quote,Movie,Character} from "./interfaces/types";
+import dotenv from "dotenv";
+
 
 //dummy data
 
-export let quote:Quote[]= 
+let quotesAll:Quote[]= 
 [
     {
         character:"2",
         movie:"6",
-        dialog:"TestFrodoHobbitBattle"
+        dialog:"Frodo H Battle"
     },
     {
         character:"1",
         movie:"3",
-        dialog:"TestGandalfReturn"
+        dialog:"Gandalf LOTR Returns"
     },
     {
         character:"3",
         movie:"1",
-        dialog:"TestSmaugFellow"
+        dialog:"Smaug LOTR Fellow"
     }
 ]
 
 
-export let characters:Character[] = 
+let charactersAll:Character[] = 
 [
     {
         name:"Gandalf",
@@ -36,11 +38,12 @@ export let characters:Character[] =
     {
         name:"Smaug",
         _id:"3"
-    }];
+    }
+];
 
 
 
-export let movies:Movie[] = 
+let moviesAll:Movie[] = 
 [
     {
         name: "LOTR - The fellowship of the Ring",
@@ -69,88 +72,161 @@ export let movies:Movie[] =
 ];
 
 
-export let difficulty:number[]=[1,2,3];
+// hier de correcte manier om de Quote[] op te vullen via database.
 
-//quote.dialog = quote string
-//quote.character = id string char
-//quote.movie = id string movie
+export const client = new MongoClient("mongodb+srv://s004935:APHS2023@webo1.sjzote7.mongodb.net/");
+export const collectionQuotes:Collection<Quote> = client.db("LOTR").collection("quotes");
+export const collectionFiltQuotes:Collection<Quote> = client.db("LOTR").collection("quotesFiltered");
+export const collectionMovies:Collection<Movie> = client.db("LOTR").collection("movies");
+export const collectionCharacters:Collection<Character> = client.db("LOTR").collection("characters");
 
-//movie.name = title string
-//movie._id = id quote.movie
+// hier maken we verbinding met de DB
 
-//character._id = id string char
-//character.name = string character
+async function deleteDBCollQuotes()
+{
+    await collectionQuotes.deleteMany();
 
-// hier de correcte manier om de Quote[] op te vullen via database en filtering.
+}
 
-const uri = ""; // Fill in your MongoDB connection string here
-const client = new MongoClient(uri);
-const collection = client.db("").collection("");
+//hier checken we of er al iets in de database zit, zoniet vullen we deze op
+async function loadQuotesFromApi() {
+    const quotes:Quote[] = await collectionQuotes.find({}).toArray();
+    if (quotes.length == 0) {
+        console.log("DB leeg. DB vullen via API")
+        // const responseQuotes = await fetch("https://jsonplaceholder.typicode.com/users");  aanpassen
+        const quotes:Quote[] = quotesAll; // hier ook aanpassen als api werkt
+        await collectionQuotes.insertMany(quotes);
+        // const responseMovies = await fetch("https://jsonplaceholder.typicode.com/users");
+        const movies:Movie[] = moviesAll;
+        await collectionMovies.deleteMany();
+        await collectionMovies.insertMany(movies);
+        // const responseChars = await fetch("https://jsonplaceholder.typicode.com/users");
+        const characters:Character[] = charactersAll;
+        await collectionCharacters.deleteMany();
+        await collectionCharacters.insertMany(characters);
 
-//aanmaak arrays voor opgeslagen quotes
-export let quotebl:Quote[]=[];
-export let quotefav:Quote[]=[];
+    }
+    return quotes
+}
 
-//aanmaak user[]
-let users:User[]=[]
+async function filterQuotes()
+{
+    await loadQuotesFromApi();
+    let filteredQuotes:Quote[]= await collectionQuotes.find<Quote>({ $or: [{character:"1"},{character:"2"},{character:"3"}]}).toArray();
+    await collectionFiltQuotes.deleteMany();
+    await collectionFiltQuotes.insertMany(filteredQuotes);
+    return filteredQuotes;
+
+}
 
 
-async function main() 
+export async function getQuote()
+{
+    await filterQuotes();
+    let quotes:Quote[] = await collectionFiltQuotes.find().toArray();
+    let correct:Quote= quotes[Math.ceil(Math.random()*quotes.length)-1];  
+    return correct;
+}
+
+
+export async function makeLists()
+{
+    let correctQuote:Quote = await getQuote();
+    console.log(correctQuote.dialog);
+    let quizList:string[][]=[["","","",""],["","",""]];       
+    for(let i=0;i<2;i++)
+    {
+        for(let j=0;j<2;j++)
+        {
+            let same:boolean=true;
+            while(same)
+            {
+                let index:number= Math.ceil(Math.random()*3)-1;
+                if (i==0)
+                {
+                    if (correctQuote.character!=charactersAll[index]._id && quizList[i][0]!=charactersAll[index].name)
+                        {
+                            same=false;
+                            quizList[i][j]=charactersAll[index].name;
+                        }
+                }
+                else 
+                {
+                    if(correctQuote.movie!=moviesAll[index]._id && moviesAll[index].name!=quizList[j][0])
+                        {
+                            same=false;
+                            quizList[i][j]=moviesAll[index].name;
+                        }
+                }
+            }
+            
+
+        }     
+    }
+    for(let movie of moviesAll)
+    {
+        if (movie._id == correctQuote.movie)
+        {
+            quizList[1][2]=(movie.name);
+        }
+    }
+    for(let char of charactersAll)
+    {
+        if (char._id == correctQuote.character)
+        {
+            quizList[0][2]=(char.name);
+        }
+    }
+    let list:string[][]=[["","",""],["","",""]];
+    
+    for(let i=0;i<2;i++)
+    {
+        let index:number= Math.ceil(Math.random()*3)-1;
+        for(let j=0;j<3;j++)
+        {
+            list[i][j]=quizList[i][(j+index)%3];
+        }
+    }
+    quizList[0][3]=correctQuote.dialog;
+    
+    return [list,quizList];
+    
+}
+
+
+
+
+
+export async function LoadNewQuestion() 
+{
+
+
+}
+
+async function exit() {
+    try {
+        await client.close();
+        console.log("Verbinding met DB verbroken");
+    } catch (e) {
+        console.error(e);
+    }
+    process.exit(0);
+}
+
+export async function connect() 
 {
     try
     {
         await client.connect();
-        await collection.deleteMany();
-        let quotesdif1:Quote[] = await collection.find<Quote>({ $or: [{character:"1"},{character:"2"},{character:"3"}]}).toArray();
-        /*
-        hier maken we de array van quotes eventueel groter
-        */
-        let quotesdif2:Quote[] = [] 
-        /*await client.db("").collection("character").find<Quote>({ &or character:"1", character:"2"},{character:"3"}/).toArray();*/
-        let quotesdif3:Quote[] = []
-        /*await client.db("").collection("character").find<Quote>({character:"id char"}).toArray();
-        */
-        let quotes:Quote[]=quotesdif1.concat(quotesdif2).concat(quotesdif3);
-        let correct:Quote = quotes[Math.floor(Math.random()*quotes.length)];
-        let i:number=1;
-        let chars:string[]=[];
-        let movies:string[]=[];
-        let sameChar:boolean=true;
-        let index:number=0;
-        for(let i=0;i<2;i++)
-        {
-            while(sameChar)
-            {
-                index= Math.floor(Math.random()*difficulty[i]*10);
-                if (correct.character!=characters[index])
-                {
-                    sameChar=false;
-                }
-        
-            }
-            chars.push(characters[index])
-            let sameMovie:boolean=true;
-            while(sameMovie)
-            {
-                index = Math.floor(Math.random()*difficulty[i]*10);
-                if(correct.movie!=movies[index])
-                    {
-                        sameMovie=false;
-                    }
-            }
-            movies.push(movies[index])
-        }  
-
+        console.log("Verbonden met DB");
+        await deleteDBCollQuotes();
+        await makeLists();
+        process.on("SIGINT", exit);
     }
     catch (e)
     {
         console.log(e);
     }   
-    finally
-    {
-        await client.close();
-    } 
 }
-main();
 
-
+connect();
