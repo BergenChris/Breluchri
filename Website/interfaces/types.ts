@@ -1,3 +1,21 @@
+
+
+export interface RootObjectCharacter
+{
+   docs: Character[]
+}
+export interface RootObjectMovie
+{
+   docs: Movie[]
+}
+
+export interface RootObjectQuote
+{
+   docs: Quote[]
+}
+
+
+
 export interface Quote
  {
     dialog:string,

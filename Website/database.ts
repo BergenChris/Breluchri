@@ -1,5 +1,5 @@
 import {Collection, MongoClient} from "mongodb";
-import {Quote,Movie,Character} from "./interfaces/types";
+import {Quote,Movie,Character,RootObjectCharacter,RootObjectMovie,RootObjectQuote} from "./interfaces/types";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -76,10 +76,10 @@ let moviesAll:Movie[] =
 // hier de correcte manier om de Quote[] op te vullen via database.
 
 export const client = new MongoClient(process.env.MONGO_URI ?? "localhost://27017");
-export const collectionQuotes:Collection<Quote> = client.db("LOTR").collection("quotes");
+export const collectionQuotes:Collection<RootObjectQuote[]> = client.db("LOTR").collection("quotes");
 export const collectionFiltQuotes:Collection<Quote> = client.db("LOTR").collection("quotesFiltered");
-export const collectionMovies:Collection<Movie> = client.db("LOTR").collection("movies");
-export const collectionCharacters:Collection<Character> = client.db("LOTR").collection("characters");
+export const collectionMovies:Collection<RootObjectMovie[]> = client.db("LOTR").collection("movies");
+export const collectionCharacters:Collection<RootObjectCharacter[]> = client.db("LOTR").collection("characters");
 
 // hier maken we verbinding met de DB
 
@@ -92,24 +92,39 @@ async function deleteDBCollQuotes()
 //hier checken we of er al iets in de database zit, zoniet vullen we deze op
 const apiKey = '2bV52o3FGbuxH6876ax5';
 async function loadQuotesFromApi() {
-    const quotes:Quote[] = await collectionQuotes.find({}).toArray();
-    if (quotes.length == 0) {
+    const quotes = await collectionQuotes.find({}).toArray();
+    if (quotes.length == 0) 
+    {
         console.log("DB leeg. DB vullen via API")
-        const response = await fetch("https://the-one-api.dev/v2/character", {
+        const responseQuotes = await fetch("https://the-one-api.dev/v2/quote", {
             headers: {
                 'Authorization': `Bearer ${apiKey}`
             }
         });
-        const quotes:Quote[] = quotesAll; // hier ook aanpassen als api werkt
-        await collectionQuotes.insertMany(quotes);
-        // const responseMovies = await fetch("https://jsonplaceholder.typicode.com/users");
-        const movies:Movie[] = moviesAll;
+        const dataQuotes:RootObjectQuote[] = await responseQuotes.json();
+        //const dataMovies:Quote[] = moviesAll; // hier ook aanpassen als api werkt
+
+        await collectionQuotes.deleteMany();
+        await collectionQuotes.insertOne(dataQuotes);
+        const responseMovies = await fetch("https://the-one-api.dev/v2/movie", {
+            headers: {
+                'Authorization': `Bearer ${apiKey}`
+            }
+        });
+        const dataMovies:RootObjectMovie[] = await responseMovies.json();
+        //const dataMovies:Quote[] = moviesAll; // hier ook aanpassen als api werkt
+
         await collectionMovies.deleteMany();
-        await collectionMovies.insertMany(movies);
-        // const responseChars = await fetch("https://jsonplaceholder.typicode.com/users");
-        const characters:Character[] = charactersAll;
+        await collectionMovies.insertOne(dataMovies);
+        const responseChars = await fetch("https://the-one-api.dev/v2/character", {
+            headers: {
+                'Authorization': `Bearer ${apiKey}`
+            }
+        });
+        const dataChars:RootObjectCharacter[]=await responseChars.json();
+        //const characters:Character[] = charactersAll;
         await collectionCharacters.deleteMany();
-        await collectionCharacters.insertMany(characters);
+        await collectionCharacters.insertOne(dataChars);
 
     }
     return quotes

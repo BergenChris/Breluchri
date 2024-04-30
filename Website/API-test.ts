@@ -21,6 +21,11 @@ const fetchData = async (url: string) => {
     }
 };
 
+app.get("/",(req,res)=>
+{
+    res.redirect("/character");
+})
+
 // Endpoint to get character data
 app.get('/character', async (req: Request, res: Response) => {
     try {
