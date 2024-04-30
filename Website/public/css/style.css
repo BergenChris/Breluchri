@@ -13,7 +13,7 @@
 }
 
 html {
-    background-image: url(../Website/public/assets/images/background.webp);
+    background-image: url(./../assets/images/background.webp);
     background-size: 100vw 100vh;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -21,7 +21,7 @@ html {
     margin-top: 10px;
 }
 #main-SD {
-    background-image: url(../Website/public/assets/images/Button-img-SuddenDeath.jpg);
+    background-image: url(./../assets/images/Button-img-SuddenDeath.jpg);
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
@@ -29,7 +29,7 @@ html {
     margin-top: 30px;
 }
 #main-TR {
-    background-image: url(../Website/public/assets/images/Button-img-10R.jpg);
+    background-image: url(./../assets/images/Button-img-10R.jpg);
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
@@ -37,7 +37,7 @@ html {
     margin-top: 30px;
 }
 #intro {
-    background-image: url(../Website/public/assets/images/intro-img.jpg);
+    background-image: url(./../assets/images/intro-img.jpg);
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
@@ -105,7 +105,7 @@ body {
 }
 main
 {
-    background-image: url(../publi./Website/public/assets/images/images/lotrbackground.webp);
+    background-image: url(./../assets/images/lotrbackground.webp);
 }
 #intro-main{
     background: rgba(249, 248, 248, 0.0);

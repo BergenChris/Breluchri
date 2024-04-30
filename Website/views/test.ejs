@@ -1,28 +1,38 @@
-<% include("partials/header")%>
-<% include("partials/aside")%>
-
-<main class="col-12 col-md-9 bg-opacity-25 mx-2">
+<%- include("partials/header")%>
+<%- include("partials/aside")%>
+<main class="col-12 col-md-9 bg-opacity-25 mx-2 bg-transparent">
     <section class="quote">
         <section class="row">
             <h1>Ready for battle! - 10 rounds</h1>
-            <h2 class="col-4"> Quote : <%=listQuiz[0][3]%> </h2>
-            
+            <h2 class="col-4">Quote 1 :  </h2>
+            <form class="row col-12 col-sm-8 justify-content-around" action="#">
+                <button class="col-8 col-sm-3 btn background mb-3 resetfont" id="favorietBtn">
+                    <img src="./../assets/images/fire-icon.png" alt="Favoriet" class="button-image">
+                    <span class="button-text">Favoriet</span>
+                </button>
+                <button class="col-8 col-sm-3 btn background mb-3 resetfont" id="favorietBtn">
+                    <img src="./../assets/images/skull-icon.png" alt="Favoriet" class="button-image">
+                    <span class="button-text">Blacklist</span>
+                </button>
+            </form>
         </section>
-        <p class="resetfont fs-3"></p>
+        <p class="resetfont fs-3">"<%=listQuiz[0][3]%>"</p>
     </section>
-    <section class="container gy-5 row col-md-6">    
+    <section class="container gy-5 row">    
         <% for(let i=0;i<2;i++) { 
             for(let j=0;j<3;j++) {%>
-        <button  type="button" class="btn <% if(listShuffled[i][j]==listQuiz[i][2]) {%> correct btn-outline-succes <%}%> <% if(i==0) {%> col-md-4 <%}%> <% if(i==1) {%> col-md-6 <%}%>">
+        <button  type="button" class=" col-6 col-md-4 bg-transparent border-0btn <% if(listShuffled[i][j]==listQuiz[i][2]) {%> correct btn-outline-succes <%}%> col-md-4 ">
             <%=listShuffled[i][j]%>
         </button>
         <%}}%>
-    </section>
-    
+        <button class="col-6 col-md-4 bg-transparent border-0">
+            
+        </button>
+        
     <form action="#"><a href="scoresuddendeath.html"><button class="btn btn-warning mb-3 resetfont" type="button">Volgende</button></a></form>
-   
+    </section>
 </section>
 
 </main>
 
-<% include("partials/footer")%>
+<%- include("partials/footer")%>
