@@ -298,8 +298,8 @@ export async function dataForQuizQuestion()
         }
     
         // hier geven we dus alles mee wat nodig is per ronde, voor zowel 10 rounds als SD
-        console.log("quote: "+correctQuote.dialog,"\nfilms: juist= "+movieList,"\nfilmsMixed: "+movieListMixed,"\nkarakters: juist= "+characterList,"\nkaraktersMixed: "+characterListMixed)
-        return [correctQuote.dialog,movieList,movieListMixed,characterList,characterListMixed];
+        console.log("quote: "+correctQuote.dialog,"\njuiste film: "+correctMovie.name,"\njuist karakter: "+correctCharacter.name);
+        return [correctQuote,correctMovie,correctCharacter,movieListMixed,characterListMixed];
     }
     else
     {

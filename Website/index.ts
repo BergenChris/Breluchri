@@ -15,14 +15,18 @@ app.use(express.json());
 app.get("/",async (req,res)=>
     {
         let data:any = await dataForQuizQuestion();
-        // [correctQuote.dialog,movieList,movieListMixed,characterList,characterListMixed] 
+        //[0] correctQuote
+        //[1] correctMovie
+        //[2] correctCharacter
+        //[3] movieListMixed
+        //[4] characterListMixed]
         
         res.render("test",
         {
             quote:data[0],
-            movieList:data[1],
-            movieListMixed:data[2],
-            characterList:data[3],
+            movie:data[1],
+            character:data[2],
+            movieListMixed:data[3],
             characterListMixed:data[4]
         })     
             
