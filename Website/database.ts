@@ -31,59 +31,94 @@ async function deleteDBCollections()
 }
 
 //we gaan 20 karakters nemen uit de LOTR reeks, we halen dus eerst de json van character binnen en ook ineens de Movies
-async function loadCharactersAndMovies()
+async function loadCharacters()
 {
-    // karakters
-    const responseChars = await fetch("https://the-one-api.dev/v2/character", 
+    let data=await collectionCharacters.find().toArray();
+    if (data.length ==0)
     {
-        headers: 
+        // karakters
+        const responseChars = await fetch("https://the-one-api.dev/v2/character", 
         {
-            'Authorization': `Bearer ${apiKey}`
-        }
-    });
-    //deze komt in een rootobject binnen genaamd docs. we gaan hier dus een foreach loop doen om ze dan in een eigen array te krijgen en deze toe te voegen aan de DB
-    const dataChars:RootObjectCharacter=await responseChars.json();
-    let chars:Character[]=[];
-    await dataChars.docs.forEach(e => {chars.push(e)});
-    await collectionCharacters.insertMany(chars);
-    // films
-    const responseMovies = await fetch("https://the-one-api.dev/v2/movie", 
-    {
-        headers: 
+            headers: 
             {
                 'Authorization': `Bearer ${apiKey}`
             }
-    });
-    const dataMovies:RootObjectMovie = await responseMovies.json();
-    let movies:Movie[]=[];
-    await dataMovies.docs.forEach(e=>movies.push(e));
-    await collectionMovies.insertMany(movies);
-    // we retourneren chars omdat de filtering hier mee gebeurd
-    return chars;
+        });
+        //deze komt in een rootobject binnen genaamd docs. we gaan hier dus een foreach loop doen om ze dan in een eigen array te krijgen en deze toe te voegen aan de DB
+        const dataChars:RootObjectCharacter=await responseChars.json();
+        let chars:Character[]=[];
+        await dataChars.docs.forEach(e => {chars.push(e)});
+        await collectionCharacters.insertMany(chars);
+        return chars;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+async function loadMovies() 
+{
+    let data=await collectionMovies.find().toArray();
+    if (data.length ==0)
+    {
+        // films
+        const responseMovies = await fetch("https://the-one-api.dev/v2/movie", 
+        {
+            headers: 
+                {
+                    'Authorization': `Bearer ${apiKey}`
+                }
+        });
+        const dataMovies:RootObjectMovie = await responseMovies.json();
+        let movies:Movie[]=[];
+        await dataMovies.docs.forEach(e=>movies.push(e));
+        await collectionMovies.insertMany(movies);
+        return movies;
+    }
+    else
+    {
+        return true;
+    }
 }
 
 
 
-
-async function filteredVersionOfCharacterAndMovies()
+async function updateMovies()
 {
-    //we loaden eerste beide om dan te filteren
-
-
-    //hier filteren we enkel de films eruit
-    const moviesFiltered:Movie[]|null = await collectionMovies.find<Movie>
-    ({$nor:
-        [    
-            {name : "The Lord of the Rings Series"},
-            {name : "The Hobbit Series"},
-        ]}).toArray();
-    await collectionMovies.deleteMany()
-    await collectionMovies.insertMany(moviesFiltered);
+    await loadMovies();
+    let data=await collectionMovies.find().toArray();
+    if (data.length >6)
+    {
+        //hier filteren we enkel de films eruit
+        const moviesFiltered:Movie[]|null = await collectionMovies.find<Movie>
+        ({$nor:
+            [    
+                {name : "The Lord of the Rings Series"},
+                {name : "The Hobbit Series"},
+            ]}).toArray();
+        await collectionMovies.deleteMany()
+        await collectionMovies.insertMany(moviesFiltered);
+        console.log("Films ontbraken")
+        return moviesFiltered;
+    }
+    else 
+    {
+        console.log("Films reeds ingeladen")
+        return true;
+    }
     
+}
 
-    // hier kiezen we onze 20 karakters
-    const charactersFiltered:Character[]|null = await collectionCharacters.find<Character>
-    ({$or:
+async function updateCharacter()
+{
+    await loadCharacters();
+    let data=await collectionCharacters.find().toArray();
+    if (data.length >20)
+    {
+        // hier kiezen we onze 20 karakters
+        const charactersFiltered:Character[]|null = await collectionCharacters.find<Character>
+        ({$or:
         [
             {name : "Gandalf" },
             {name : "Frodo Baggins"},
@@ -106,32 +141,32 @@ async function filteredVersionOfCharacterAndMovies()
             {name : "Éowyn"},
             {name : "Faramir"}
         ]}).toArray();  
-    await collectionCharacters.deleteMany();
-    await collectionCharacters.insertMany(charactersFiltered);
-    
-    return charactersFiltered;
+        await collectionCharacters.deleteMany();
+        await collectionCharacters.insertMany(charactersFiltered);
+        console.log("Karakters ontbraken");
+        return charactersFiltered;
+    }
+    else 
+    {
+        console.log("Karakters reeds ingeladen");
+        return true;
+    }
 }
 
-
-
-
-
-//hier schrijven we de functie die checkt of er al iets in de database zit, zoniet vullen we deze op met een array van objecten die erin horen, we roepen deze later op
-async function quotesToDB() {
-
-
-    // hier gaan we dan adh filtering karakters ook al die zijn quotes opldaden in array
-    const quotes = await collectionQuotes.find({}).toArray();
-    if (quotes.length == 0) 
+async function uploadQuotes()
+{
+    let data=await collectionQuotes.find().toArray();
+    if (data.length < 2032)
     {
-        console.log("DB leeg. DB vullen via API")
-        // we gaan fetchen via de id van karakters.. deze halen we op uit de gefilterde versie en we zetten deze in een array van id(string) door ze te pushen bij een lege array
+        console.log("Quotes ontbraken/onvolledig");
+        // alles uit de collection halen om erna te vullen
+        await collectionQuotes.deleteMany();
 
-        let idCharacters:Character[]=await filteredVersionOfCharacterAndMovies();
+        // we gaan fetchen via de id van karakters.. deze halen we op uit de gefilterde versie en we zetten deze in een array van id(string) door ze te pushen bij een lege array
+        let idCharacters:Character[]=await collectionCharacters.find().toArray();
         console.log(idCharacters.length);
-        
+
         // deze array gaan we dan gebruiken om alle fetches te doen met de juiste id, dus moesten we id's toevoegen in de filteringswijze dan komen deze automatisch hierbij.
-     
         // alle quotes van bepaald karakter binnenhalen en deze plakken we allemaal aan elkaar (idKarakters=allId[0])
         for (let id of idCharacters)
         {           
@@ -144,16 +179,47 @@ async function quotesToDB() {
                 }
             });
             const dataQuotes:RootObjectQuote = await responseQuotes.json();
-            
+        
             // we vullen de collectie met alle quotes die in de docs zitten door er een foreach lus over te runnen
             let quotesList:Quote[]=[];
             dataQuotes.docs.forEach(e=>quotesList.push(e))
             await collectionQuotes.insertMany(quotesList);
-        }
-
+            
+        }         
     }
-    return [quotes]
+    return data;
 }
+
+
+
+
+
+
+
+//hier schrijven we de functie die checkt of er al iets in de database zit, zoniet vullen we deze op met een array van objecten die erin horen, we roepen deze later op
+async function loadToDB() 
+{
+
+
+    // hier gaan we dan adh filtering karakters ook al die zijn quotes opldaden in array
+    let quotes = await collectionQuotes.find().toArray();
+    let movies=await collectionMovies.find().toArray();
+    let characters = await collectionCharacters.find().toArray();
+    if (quotes.length == 0 || movies.length ==0 || characters.length < 2032) 
+    {
+        console.log("Er ontbreekt data in de Databank, even nakijken")
+        //we roepen beide uitgeschreven updatefuncties aan
+        await updateMovies();
+        await updateCharacter();
+        await uploadQuotes();  
+    }
+    else 
+    {
+        console.log("Databank is volledig")
+    }
+    return quotes;
+}
+
 
 
 
@@ -258,9 +324,10 @@ export async function connect()
     {
         await client.connect();
         console.log("Verbonden met DB");
-        await deleteDBCollections();  // kan later weggelaten worden
-        await loadCharactersAndMovies();
-        await quotesToDB();
+        // await deleteDBCollections();  // kan later weggelaten worden
+    
+        
+        await loadToDB();
   
     
 
