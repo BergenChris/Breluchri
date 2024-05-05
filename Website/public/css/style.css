@@ -137,6 +137,11 @@ main
     color: #000;
 }
 
+.correct
+{
+    color: green;
+}
+
 .btn-quizPage {
     position: relative;
     overflow: hidden;
