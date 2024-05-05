@@ -1,6 +1,6 @@
 import express  from "express";
 import ejs from "ejs";
-import {makeLists,connect} from "./database";
+import {connect,dataForQuizQuestion} from "./database";
 
 
 const app = express();
@@ -14,13 +14,16 @@ app.use(express.json());
 
 app.get("/",async (req,res)=>
     {
-        let listQuiz= await makeLists();
-      
+        let data:any = await dataForQuizQuestion();
+        // [correctQuote.dialog,movieList,movieListMixed,characterList,characterListMixed] 
         
         res.render("test",
         {
-            listQuiz:listQuiz[1],
-            listShuffled:listQuiz[0]
+            quote:data[0],
+            movieList:data[1],
+            movieListMixed:data[2],
+            characterList:data[3],
+            characterListMixed:data[4]
         })     
             
         

@@ -1,17 +1,16 @@
-
-
-export interface RootObjectCharacter
-{
-   docs: Character[]
-}
-export interface RootObjectMovie
-{
-   docs: Movie[]
-}
+import { ObjectId } from "mongodb"
 
 export interface RootObjectQuote
 {
-   docs: Quote[]
+   docs:Quote[]
+}
+export interface RootObjectMovie
+{
+   docs:Movie[]
+}
+export interface RootObjectCharacter
+{
+   docs:Character[]
 }
 
 
@@ -26,26 +25,33 @@ export interface Quote
  export interface Movie
  {
    name:string,
-   _id?:string
+   _id:string
    
  }
 
  export interface Character
  {
+   
    name:string,
-   _id?:string
+   _id:string,
+   wikiUrl:string
+
    
  }
 
  export interface User
  {
     name:string,
-    id:string,
-    score:Score
+    password:string,
+    _id:ObjectId,
+    score:Score,
+    favourite:Quote[],
+    blacklist:Quote[],
  }
 
  export interface Score
  {
-    sd:number,
-    tr:number
+   _id:ObjectId, 
+   sd:number,
+   tr:number,
  }

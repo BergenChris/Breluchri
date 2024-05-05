@@ -16,18 +16,28 @@
                 </button>
             </form>
         </section>
-        <p class="resetfont fs-3">"<%=listQuiz[0][3]%>"</p>
+        <p class="resetfont fs-3">"<%=quote%>"</p>
     </section>
-    <section class="container gy-5 row">    
-        <% for(let i=0;i<2;i++) { 
-            for(let j=0;j<3;j++) {%>
-        <button  type="button" class=" col-6 col-md-4 bg-transparent border-0btn <% if(listShuffled[i][j]==listQuiz[i][2]) {%> correct btn-outline-succes <%}%> col-md-4 ">
-            <%=listShuffled[i][j]%>
-        </button>
-        <%}}%>
-        <button class="col-6 col-md-4 bg-transparent border-0">
+    <section class="container gy-5 row">  
+        <section >
+        <% for(let i=0;i<2;i++) { %>
             
+        <button  type="button" class=" character col-6 col-md-4 bg-transparent border-0btn <% if(characterListMixed[i]==characterList[2]) {%> correct btn-outline-succes <%}%> col-md-4 ">
+            <%=characterListMixed[i]%>
         </button>
+        <%}%>
+        </section>  
+        <section >
+            <% for(let i=0;i<2;i++) { %>
+                
+            <button  type="button" class=" movie col-6 col-md-4 bg-transparent border-0btn <% if(movieListMixed[i]==movieList[2]) {%> correct btn-outline-succes <%}%> col-md-4 ">
+                <%=movieListMixed[i]%>
+            </button>
+            <%}%>
+            </section> 
+
+
+
         
     <form action="#"><a href="scoresuddendeath.html"><button class="btn btn-warning mb-3 resetfont" type="button">Volgende</button></a></form>
     </section>
