@@ -1,14 +1,16 @@
 <%- include("partials/header")%>
 <%- include("partials/aside")%>
-<main class="col-12 col-md-9 bg-opacity-25 mx-2 bg-transparent">
-    <section class="quote row text-center">
+<main class="col-12 col-lg-9 mx-auto bg-opacity-25  bg-transparent row">
+    <section class=" row text-center">
         <section class="row">
             <h1>Ready for battle! - 10 rounds</h1>
             <h2>Ronde 1</h2>
         </section>
+    </section>
+    <section >
         <section class="row p-5 align-items-center">
             <section class="col-9 text-center p-3">
-                <p class="resetfont fs-3 col-10 mx-auto text-center p-3 bg-danger">"<%=quote%>"</p>
+                <p class="resetfont fs-3 col-10 mx-auto text-center p-3 bg-transparent  ">"<%=quote%>"</p>
             </section>
             <section class="col-3 text-center row justify-content-around">
                 <button class="col-10 mx-auto btn background mb-3 resetfont" id="favorietBtn">
@@ -21,30 +23,31 @@
                 </button>
             </section>    
         </section>
-    </section>
-    <section class="row gy-5 row">  
-        <section class="col-6">
-            <h2 class=" lotrfont">PERSONAGE</h2>
-        <% for(let i=0;i<3;i++) { %>
+        <section class="row gy-5 row">  
+            <section class="col-5 mx-auto ">
+                <h2 class=" lotrfont ">PERSONAGE</h2>
+                <% for(let i=0;i<3;i++) { %>
             
-        <button  class=" col-10 mx-auto btn justify-content-around btn-outline-warning <% if(characterListMixed[i]==characterList[0]) {%> correct btn-outline-succes <%}%> col-12 ">
-            <%=characterListMixed[i]%>
-        </button>
-        <%}%>
-        </section>  
-        <section  class="col-6">
-            <h2 class="lotrfont">FILM</h2>
-            <% for(let i=0;i<3;i++) { %>
+                <button  class=" col-10 mx-auto btn justify-content-around  <% if(characterListMixed[i]==characterList[0]) {%> correct  <%}%> col-12 ">
+                    <%=characterListMixed[i]%>
+                </button>
+                <%}%>
+            </section>  
+            <section  class="col-5 mx-auto ">
+                <h2 class="lotrfont ">FILM</h2>
+                <% for(let i=0;i<3;i++) { %>
                 
-            <button class=" col-10 mx-auto btn movie btn-outline-warning <% if(movieListMixed[i]==movieList[0]) {%> correct btn-outline-succes <%}%> col-12 ">
+                <button class=" col-10 mx-auto btn movie  <% if(movieListMixed[i]==movieList[0]) {%> correct  <%}%> col-12 ">
                 <%=movieListMixed[i]%>
-            </button>
-            <%}%>
-        </section> 
+                </button>
+                <%}%>
+            </section>
+         
 
         <form action="/" method="POST">
             <input type="submit" value="Volgende">
         </form>
+
     </section>
 </section>
 
