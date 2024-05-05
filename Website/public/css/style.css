@@ -98,6 +98,10 @@ body {
 {   
     font-family: "readingText";
 }
+.lotrfont
+{
+    font-family:  "LOTRfont2";
+}
 .brown
 {
     color: 	rgb(139,69,19)
@@ -127,6 +131,11 @@ main
 }
 
 /* Invoer nieuwe button quizPage (Toon) */
+.btn
+{
+    border:none;
+    color: #000;
+}
 
 .btn-quizPage {
     position: relative;

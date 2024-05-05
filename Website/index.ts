@@ -29,6 +29,13 @@ app.get("/",async (req,res)=>
         
     })
 
+app.post("/",async (req,res)=>
+{
+            
+        res.redirect("/")
+            
+})
+
 app.listen(app.get("port"), async () => {
     await connect();
     console.log( "[server] http://localhost:" + app.get("port"));

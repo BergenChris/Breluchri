@@ -164,7 +164,6 @@ async function uploadQuotes()
 
         // we gaan fetchen via de id van karakters.. deze halen we op uit de gefilterde versie en we zetten deze in een array van id(string) door ze te pushen bij een lege array
         let idCharacters:Character[]=await collectionCharacters.find().toArray();
-        console.log(idCharacters.length);
 
         // deze array gaan we dan gebruiken om alle fetches te doen met de juiste id, dus moesten we id's toevoegen in de filteringswijze dan komen deze automatisch hierbij.
         // alle quotes van bepaald karakter binnenhalen en deze plakken we allemaal aan elkaar (idKarakters=allId[0])
@@ -203,9 +202,9 @@ async function loadToDB()
 
     // hier gaan we dan adh filtering karakters ook al die zijn quotes opldaden in array
     let quotes = await collectionQuotes.find().toArray();
-    let movies=await collectionMovies.find().toArray();
+    let movies= await collectionMovies.find().toArray();
     let characters = await collectionCharacters.find().toArray();
-    if (quotes.length == 0 || movies.length ==0 || characters.length < 2032) 
+    if (quotes.length <2032  || movies.length == 0 || characters.length == 0) 
     {
         console.log("Er ontbreekt data in de Databank, even nakijken")
         //we roepen beide uitgeschreven updatefuncties aan
@@ -243,14 +242,15 @@ export async function dataForQuizQuestion()
     let correctCharacter:Character|null = await collectionCharacters.findOne({_id:correctQuote.character}) 
     let charactersAll:Character[] = await collectionCharacters.find().toArray();
     let moviesAll:Movie[] = await collectionMovies.find().toArray();
+
     
     
     // checken of de fund niet 0 is 
     if (correctCharacter != null && correctMovie != null)
     {
         //na checken kunnen we lijsten aanmaken waar reeds op laats 3 het correcte is
-        let movieList:string[]=["","",correctMovie.name];
-        let characterList:string[]=["","",correctCharacter.name];
+        let movieList:string[]=[correctMovie.name,"",""];
+        let characterList:string[]=[correctCharacter.name,"",""];
         //lus om karakters te vullen
         for(let i=0;i<2;i++)
         {
@@ -258,38 +258,38 @@ export async function dataForQuizQuestion()
             while(same)
             {
                 let index:number= Math.ceil(Math.random()*charactersAll.length)-1;
-                if (correctCharacter._id!=charactersAll[index]._id && characterList[i]!=charactersAll[index].name)
+                if (charactersAll[index]._id!=correctCharacter._id && charactersAll[index].name !=characterList[i])
                 {
                     same=false;
-                    characterList[i]=charactersAll[index].name;
+                    characterList[i+1]=charactersAll[index].name;
                 }
             }
                     
         }  
+
         //lus om films te vullen
         for(let i=0;i<2;i++)
+        {
+            let same:boolean=true;
+            while(same)
             {
-                let same:boolean=true;
-                while(same)
+                let index:number= Math.ceil(Math.random()*moviesAll.length)-1;
+                if (moviesAll[index]._id!=correctMovie._id && moviesAll[index].name !=movieList[i])
                 {
-                    let index:number= Math.ceil(Math.random()*moviesAll.length)-1;
-                    if (correctMovie._id!=moviesAll[index]._id && movieList[i]!=moviesAll[index].name)
-                    {
-                        same=false;
-                        movieList[i]=moviesAll[index].name;
-                    }
+                    same=false;
+                    movieList[i+1]=moviesAll[index].name;
                 }
-                        
-            }  
+            }                
+        }  
     
         //aanmaak 2 nieuwe lijsten waar de volgorde random is
         let movieListMixed:string[]=["","",""];
         let indexMovie:number= Math.ceil(Math.random()*3)-1;
         for(let j=0;j<3;j++)
         {
-            movieListMixed[j]=characterList[(j+indexMovie)%3];
+            movieListMixed[j]=movieList[(j+indexMovie)%3];
         }
-    
+       
         let characterListMixed:string[]=["","",""];
         let indexchar:number= Math.ceil(Math.random()*3)-1;
         for(let j=0;j<3;j++)
@@ -297,8 +297,14 @@ export async function dataForQuizQuestion()
             characterListMixed[j]=characterList[(j+indexchar)%3];
         }
     
-    // hier geven we dus alles mee wat nodig is per ronde, voor zowel 10 rounds als SD
-    return [correctQuote.dialog,movieList,movieListMixed,characterList,characterListMixed];
+        // hier geven we dus alles mee wat nodig is per ronde, voor zowel 10 rounds als SD
+        console.log("quote: "+correctQuote.dialog,"\nfilms: juist= "+movieList,"\nfilmsMixed: "+movieListMixed,"\nkarakters: juist= "+characterList,"\nkaraktersMixed: "+characterListMixed)
+        return [correctQuote.dialog,movieList,movieListMixed,characterList,characterListMixed];
+    }
+    else
+    {
+        console.log("Fout bij vinden karakter/film")
+
     }
     
 }
@@ -328,7 +334,7 @@ export async function connect()
     
         
         await loadToDB();
-  
+        console.log("quiz");
     
 
         process.on("SIGINT", exit);
@@ -339,4 +345,3 @@ export async function connect()
     }   
 }
 
-connect();
