@@ -10,9 +10,7 @@ export const client = new MongoClient(process.env.MONGO_URI ?? "localhost://2701
 export const collectionQuotes:Collection<Quote> = client.db("LOTR").collection("quotes");
 export const collectionMovies:Collection<Movie> = client.db("LOTR").collection("movies");
 export const collectionCharacters:Collection<Character> = client.db("LOTR").collection("characters");
-export const collectionQuotesFiltered:Collection<Quote> = client.db("LOTR").collection("quotesFiltered");
-export const collectionMoviesFiltered:Collection<Movie> = client.db("LOTR").collection("moviesFiltered");
-export const collectionCharactersFiltered:Collection<Character> = client.db("LOTR").collection("charactersFiltered");
+
 
 
 
@@ -27,9 +25,7 @@ async function deleteDBCollections()
     await collectionQuotes.deleteMany();
     await collectionCharacters.deleteMany();
     await collectionMovies.deleteMany();
-    await collectionCharactersFiltered.deleteMany();
-    await collectionQuotesFiltered.deleteMany();
-    await collectionMoviesFiltered.deleteMany();
+
 
 
 }
@@ -81,7 +77,8 @@ async function filteredVersionOfCharacterAndMovies()
             {name : "The Lord of the Rings Series"},
             {name : "The Hobbit Series"},
         ]}).toArray();
-    await collectionMoviesFiltered.insertMany(moviesFiltered);
+    await collectionMovies.deleteMany()
+    await collectionMovies.insertMany(moviesFiltered);
     
 
     // hier kiezen we onze 20 karakters
@@ -109,7 +106,8 @@ async function filteredVersionOfCharacterAndMovies()
             {name : "Éowyn"},
             {name : "Faramir"}
         ]}).toArray();  
-    await collectionCharactersFiltered.insertMany(charactersFiltered);
+    await collectionCharacters.deleteMany();
+    await collectionCharacters.insertMany(charactersFiltered);
     
     return charactersFiltered;
 }
@@ -175,10 +173,10 @@ export async function dataForQuizQuestion()
 {
     let quoteList:Quote[] = await collectionQuotes.find().toArray();
     let correctQuote:Quote= quoteList[Math.ceil(Math.random()*quoteList.length)-1]; 
-    let correctMovie:Movie|null = await collectionMoviesFiltered.findOne({_id:correctQuote.movie});
+    let correctMovie:Movie|null = await collectionMovies.findOne({_id:correctQuote.movie});
     let correctCharacter:Character|null = await collectionCharacters.findOne({_id:correctQuote.character}) 
-    let charactersAll:Character[] = await collectionCharactersFiltered.find().toArray();
-    let moviesAll:Movie[] = await collectionMoviesFiltered.find().toArray();
+    let charactersAll:Character[] = await collectionCharacters.find().toArray();
+    let moviesAll:Movie[] = await collectionMovies.find().toArray();
     
     
     // checken of de fund niet 0 is 
