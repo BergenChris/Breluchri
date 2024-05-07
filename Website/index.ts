@@ -1,7 +1,7 @@
 import express  from "express";
 import ejs from "ejs";
-import {connect,dataForQuizQuestion} from "./database";
-
+import {connect} from "./database";
+const { dataForQuizQuestion } = require("./database");
 
 const app = express();
 
@@ -40,11 +40,33 @@ app.post("/",async (req,res)=>
             
 })
 
+// Endpoint om een vraag op te halen
+app.get("/quiz/question", async (req, res) => {
+    try {
+        const quizData = await dataForQuizQuestion();
+        res.json({
+            question: quizData[0].dialog, // Bijvoorbeeld, haal de dialoog van het personage op als vraag
+            options: quizData.slice(1, 4).map((item: any) => item.name) // Bijvoorbeeld, gebruik personagenamen als opties
+        });
+    } catch (error) {
+        console.error("Error fetching question data:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+
+// Endpoint om een antwoord te verwerken
+app.post("/quiz/answer", (req, res) => {
+    const { answer } = req.body;
+    // Voer de logica uit om het antwoord te controleren (bijvoorbeeld, vergelijk het met het correcte antwoord)
+    const correct = true; // Vervang dit met je echte logica om het antwoord te controleren
+    res.json({ correct });
+});
+
 app.listen(app.get("port"), async () => {
     await connect();
     console.log( "[server] http://localhost:" + app.get("port"));
 });
-
 export{};
 
 
