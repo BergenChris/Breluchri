@@ -1,6 +1,6 @@
 import express  from "express";
 import ejs from "ejs";
-import {makeLists,connect} from "./database";
+import {connect,dataForQuizQuestion} from "./database";
 
 
 const app = express();
@@ -14,17 +14,31 @@ app.use(express.json());
 
 app.get("/",async (req,res)=>
     {
-        let listQuiz= await makeLists();
-      
+        let data:any = await dataForQuizQuestion();
+        //[0] correctQuote
+        //[1] correctMovie
+        //[2] correctCharacter
+        //[3] movieListMixed
+        //[4] characterListMixed]
         
-        res.render("index",
+        res.render("test",
         {
-            listQuiz:listQuiz[1],
-            listShuffled:listQuiz[0]
+            quote:data[0],
+            movie:data[1],
+            character:data[2],
+            movieListMixed:data[3],
+            characterListMixed:data[4]
         })     
             
         
     })
+
+app.post("/",async (req,res)=>
+{
+            
+        res.redirect("/")
+            
+})
 
 app.listen(app.get("port"), async () => {
     await connect();
