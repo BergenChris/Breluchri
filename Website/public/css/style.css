@@ -1,19 +1,19 @@
 @font-face {
     font-family: "LOTRfont1";
-    src: url(../Website/public/assets/fonts/fontlotr.ttf);
+    src: url(./../../assets/fonts/fontlotr.ttf);
 }
 
 @font-face {
     font-family: "LOTRfont2";
-    src: url(../Website/public/assets/fonts/MorrisRoman-Black.ttf);
+    src: url(./../../assets/fonts/MorrisRoman-Black.ttf);
 }
 @font-face {
     font-family: "readingText";
-    src: url(../Website/public/assets/fonts/PlayfairDisplayMedium-9YKZK.ttf);
+    src: url(./../../assets/fonts/PlayfairDisplayMedium-9YKZK.ttf);
 }
 
 html {
-    background-image: url(./../assets/images/background.webp);
+    background-image: url(./../../assets/images/background.webp);
     background-size: 100vw 100vh;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -22,7 +22,7 @@ html {
     height: 100vh;
 }
 #main-SD {
-    background-image: url(./../assets/images/Button-img-SuddenDeath.jpg);
+    background-image: url(./../../assets/images/Button-img-SuddenDeath.jpg);
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
@@ -30,7 +30,7 @@ html {
     margin-top: 30px;
 }
 #main-TR {
-    background-image: url(./../assets/images/Button-img-10R.jpg);
+    background-image: url(./../../assets/images/Button-img-10R.jpg);
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
@@ -38,7 +38,7 @@ html {
     margin-top: 30px;
 }
 #intro {
-    background-image: url(./../assets/images/intro-img.jpg);
+    background-image: url(./../../assets/images/intro-img.jpg);
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
@@ -110,7 +110,7 @@ body {
 }
 main
 {
-    background-image: url(./../assets/images/lotrbackground.webp); 
+    background-image: url(./../../assets/images/lotrbackground.webp); 
     
 
 }
@@ -135,7 +135,7 @@ main
 }
 .background
 {
-    background-color: rgb(241,178,11,0.7);
+    background-color: rgb(241,178,11);
 }
 .quote
 
@@ -258,7 +258,7 @@ main
 }
 
 footer {
-    position: fixed;
+    position:relative;
     bottom: 0;
     width: 100%;
     text-align: center;

@@ -1,5 +1,5 @@
 import {Collection, MongoClient,ObjectId} from "mongodb";
-import {Quote,Movie,Character,RootObjectQuote,RootObjectCharacter,RootObjectMovie} from "./interfaces/types";
+import {Quote,Movie,Character,RootObjectQuote,RootObjectCharacter,RootObjectMovie} from "./public/interfaces/types";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -135,7 +135,7 @@ async function updateCharacter()
             {name : "Bilbo Baggins"}, 
             {name : "Boromir"}, 
             {name : "Arwen"},
-            {name : "Elrond"}, //16
+            {name : "Elrond"},
             {name : "Théoden"},
             {name : "Treebeard"},
             {name : "Éowyn"},
@@ -237,12 +237,15 @@ async function loadToDB()
 export async function dataForQuizQuestion()
 {
     let quoteList:Quote[] = await collectionQuotes.find().toArray();
-    let correctQuote:Quote= quoteList[Math.ceil(Math.random()*quoteList.length)-1]; 
-    let correctMovie:Movie|null = await collectionMovies.findOne({_id:correctQuote.movie});
-    let correctCharacter:Character|null = await collectionCharacters.findOne({_id:correctQuote.character}) 
     let charactersAll:Character[] = await collectionCharacters.find().toArray();
     let moviesAll:Movie[] = await collectionMovies.find().toArray();
 
+
+
+    let correctQuote:Quote= quoteList[Math.ceil(Math.random()*quoteList.length)-1]; 
+    let correctMovie:Movie|null = await collectionMovies.findOne({_id:correctQuote.movie});
+    let correctCharacter:Character|null = await collectionCharacters.findOne({_id:correctQuote.character}) 
+    
     
     
     // checken of de fund niet 0 is 

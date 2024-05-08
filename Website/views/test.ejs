@@ -1,7 +1,6 @@
 <%- include("partials/header")%>
-<%- include("partials/aside")%>
 <main class="col-12 col-lg-9 mx-auto bg-opacity-25  bg-transparent row">
-    <section class=" row text-center">
+    <section class=" row text-center align-items-center">
         <section class="row">
             <h1>Ready for battle! - 10 rounds</h1>
             <h2>Ronde 1</h2>
@@ -14,11 +13,11 @@
             </section>
             <section class="col-3 text-center row justify-content-around">
                 <button class="col-10 mx-auto btn background mb-3 resetfont" id="favorietBtn">
-                    <img src="./../assets/images/fire-icon.png" alt="Favoriet" class="button-image">
+                    <img src="./../../assets/images/fire-icon.png" alt="Favoriet" class="button-image">
                     <span class="button-text">Favoriet</span>
                 </button>
                 <button class="col-10 mx-auto btn background mb-3 resetfont" id="favorietBtn">
-                    <img src="./../assets/images/skull-icon.png" alt="Favoriet" class="button-image">
+                    <img src="./../../assets/images/skull-icon.png" alt="Favoriet" class="button-image">
                     <span class="button-text">Blacklist</span>
                 </button>
             </section>    
@@ -28,7 +27,7 @@
                 <h2 class=" lotrfont ">PERSONAGE</h2>
                 <% for(let i=0;i<3;i++) { %>
             
-                <button  class=" col-10 mx-auto btn justify-content-around  <% if(characterListMixed[i]==character.name) {%> correct  <%}%> col-12 ">
+                <button  class=" col-10 mx-auto btn justify-content-around  <% if(characterListMixed[i]==character.name) {%> correct  <%}zz%> col-12 ">
                     <%=characterListMixed[i]%>
                 </button>
                 <%}%>
