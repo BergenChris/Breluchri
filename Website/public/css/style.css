@@ -108,11 +108,14 @@ body {
     color: 	rgb(139,69,19)
 
 }
-main
+main,aside
 {
     background-image: url(./../assets/images/lotrbackground.webp); 
     
-
+}
+header nav
+{
+    background-image: url(./../assets/images/lotrbackground.webp); 
 }
 .quizspace
 {
@@ -324,3 +327,49 @@ footer {
 .popup button:hover {
     background-color: #0056b3;
 }
+
+.correctAnswer {
+    
+    color: #000; /* Witte tekstkleur */
+    border: 2px solid #218838; /* Donkerder groene rand */
+    border-radius: 10px; /* Afgeronde hoeken */
+    padding: 12px 24px; /* Ruimte binnenin de knop */
+    font-size: 14px; /* Tekstgrootte */
+    font-weight: bold; /* Vetgedrukte tekst */
+    text-transform: uppercase; /* Hoofdlettergebruik */
+    cursor: pointer; /* Aanwijzer wanneer er overheen wordt bewogen */
+    transition: all 0.3s ease; /* Vloeiende overgangseffecten */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Zachte schaduw */
+}
+
+.selected-icon-char {
+    width: 20px; /* Pas de breedte van het icoon aan indien nodig */
+    height: 20px; /* Pas de hoogte van het icoon aan indien nodig */
+    display: none;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.selected-icon-mov {
+    width: 20px; /* Pas de breedte van het icoon aan indien nodig */
+    height: 20px; /* Pas de hoogte van het icoon aan indien nodig */
+    display: none;
+    margin-left: 10px;
+    margin-right: 10px;
+    /* Voeg hier andere stijlregels toe voor het geselecteerde icoon */
+}
+
+.selected-char.btn:hover{
+    border: 2px solid rgb(241,178,11,0.7); /* Donkerder groene rand */
+    font-size: 14px; /* Tekstgrootte */
+    font-weight: bold; /* Vetgedrukte tekst */
+    text-transform: uppercase; /* Hoofdlettergebruik */
+}
+
+.selected-mov.btn:hover{
+    border: 2px solid rgb(241,178,11,0.7); /* Donkerder groene rand */
+    font-size: 14px; /* Tekstgrootte */
+    font-weight: bold; /* Vetgedrukte tekst */
+    text-transform: uppercase; /* Hoofdlettergebruik */
+}
+

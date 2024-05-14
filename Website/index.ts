@@ -87,7 +87,7 @@ app.get("/",async (req,res)=>
     })
 })
 
-
+*/
 
 
 
@@ -120,9 +120,11 @@ app.get("/quizTenRounds",(req,res)=>
     
     res.render("quizTenRounds",
     {
+        /*
         quote:quote,
         movies:movies,
         chars:characters
+        */
 
     })
 })
@@ -131,9 +133,11 @@ app.get("/quizSuddenDeath",(req,res)=>
 {
     res.render("quizSuddenDeath",
     {
+        /*
         quote:quote,
         movies:movies,
         chars:characters
+        */
     })
 })
 
@@ -141,7 +145,7 @@ app.get("/blacklist",(req,res)=>
 {
     res.render("blacklist",
     {
-        quoteBL:quotebl
+        //quoteBL:quotebl
     })
     
 })
@@ -150,7 +154,7 @@ app.get("/favourites",(req,res)=>
     {
         res.render("favourites",
         {
-            quoteBL:quotefav
+            //quoteBL:quotefav
         })
         
     })
@@ -164,4 +168,10 @@ app.get("/test",(req,res)=>
     )
 })
 
-*/
+// Verwerk het POST-verzoek van het formulier
+app.post('/process-form', (req, res) => {
+    // Ontvang de gegevens van het formulier uit het verzoek
+    const { correctScore, characterScore, movieScore, chosenCharacter, chosenMovie, correctCharSelected, correctMovSelected } = req.body;
+    // Render de 'score.ejs' pagina met de ontvangen gegevens
+    res.render('score', { correctScore, characterScore, movieScore, chosenCharacter, chosenMovie, correctCharSelected, correctMovSelected });
+});
