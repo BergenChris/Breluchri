@@ -8,23 +8,30 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous" defer></script>
     <link rel="stylesheet" href="./../../css/style.css">
     <script src="./../../javascript/quiz.js" defer></script>
+    <script src="./../../javascript/menu.js" defer></script>
     <title><%=titlePage%></title>
 </head>
 <body class="container row  text-center bg-transparent mx-auto">
     
 
-    <header class=" col-12 align-items-center row">
-        <section class="col-2 ">
-            <img src="./../../assets/images/ring212.png" alt="logo, lord of the quotes"  class="img-fluid " >
+    <header class="col-10 col-lg-12 align-items-center row">
+        <section class="col-2">
+            <img src="./../../assets/images/ring212.png" alt="logo, lord of the quotes" class="img-fluid ring" onclick="toggleMenu()">
         </section>
-        <section class="col-8 mx-auto ">
-            <nav > 
-                <ul class="text-center row   list-unstyled >
-                    <li class="col-6  col-lg-3 list-group-flush fs-3 p-2 rounded  "><a href="index.html" class=" brown fw-bold fs-3 p-3 rounder  col">Home</a></li>
-                    <li class=" col-6  col-lg-3 list-group-flush fs-3 p-2 rounded  "><a href="quizPage.html" class="  brown fw-bold p-3 rounded ">Quiz</a></li>
-                    <li class="col-6  col-lg-3 list-group-flush fs-3 p-2 rounded  "><a href="favourites.html" class="  brown fw-bold p-3 rounded ">Quotes</a></li>
-                    <li class="col-6 col-lg-3 list-group-flush fs-3 p-2 rounded  "><a href="blacklist.html" class="  brown fw-bold p-3 rounded ">Blacklist</a></li>
+        <section class="col-8 mx-auto">
+            <nav class="menu">
+                <ul class="text-center row list-unstyled">
+                    <li class="col-6 col-lg-3 list-group-flush fs-3 p-2 rounded"><a href="index.html" class="brown fw-bold fs-3 p-3 rounder col">Home</a></li>
+                    <li class="col-6 col-lg-3 list-group-flush fs-3 p-2 rounded"><a href="quizPage.html" class="brown fw-bold p-3 rounded">Quiz</a></li>
+                    <li class="col-6 col-lg-3 list-group-flush fs-3 p-2 rounded"><a href="favourites.html" class="brown fw-bold p-3 rounded">Quotes</a></li>
+                    <li class="col-6 col-lg-3 list-group-flush fs-3 p-2 rounded"><a href="blacklist.html" class="brown fw-bold p-3 rounded">Blacklist</a></li>
                 </ul>
             </nav>
         </section>
-    </header>  
+        <section class=" col-12 col-lg-12  text-center mx-auto " >
+            <a href="./accountPage" class="">
+                <img src="./../../assets/images/user.jpg" alt="profiel foto" class="img-fluid img-thumbnail rounded " width="150px" >
+            </a>
+       </section>
+    </header>
+    

@@ -373,3 +373,6 @@ footer {
     text-transform: uppercase; /* Hoofdlettergebruik */
 }
 
+.menu {
+    display: none;
+}
