@@ -108,15 +108,12 @@ body {
     color: 	rgb(139,69,19)
 
 }
-main,aside
+main , nav
 {
     background-image: url(./../assets/images/lotrbackground.webp); 
     
 }
-header nav
-{
-    background-image: url(./../assets/images/lotrbackground.webp); 
-}
+
 .quizspace
 {
     height:fit-content;

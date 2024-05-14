@@ -19,7 +19,8 @@ export interface Quote
  {
     dialog:string,
     character:string,
-    movie:string
+    movie:string,
+    reasonBL?:string
  }
 
  export interface Movie
@@ -41,17 +42,17 @@ export interface Quote
 
  export interface User
  {
-    name:string,
-    password:string,
-    _id:ObjectId,
-    score:Score,
-    favourite:Quote[],
-    blacklist:Quote[],
+   name:string,
+   password:string,
+   email:string,
+   score10Rounds:number[],
+   scoreSD:number[],
+   favourite:Quote[],
+   blacklist:BlacklistQuote[]
+    
  }
-
- export interface Score
+ export interface BlacklistQuote
  {
-   _id:ObjectId, 
-   sd:number,
-   tr:number,
+   quote:Quote,
+   reason:string
  }

@@ -1,20 +1,14 @@
 import {Collection, MongoClient,ObjectId} from "mongodb";
-import {Quote,Movie,Character,RootObjectQuote,RootObjectCharacter,RootObjectMovie} from "./interfaces/types";
+import {Quote,Movie,Character,RootObjectQuote,RootObjectCharacter,RootObjectMovie,User} from "./interfaces/types";
 import dotenv from "dotenv";
 dotenv.config();
-
-
 
 // hier zijn de const om verbinding te maken met met de DB
 export const client = new MongoClient(process.env.MONGO_URI ?? "localhost://27017");
 export const collectionQuotes:Collection<Quote> = client.db("LOTR").collection("quotes");
 export const collectionMovies:Collection<Movie> = client.db("LOTR").collection("movies");
 export const collectionCharacters:Collection<Character> = client.db("LOTR").collection("characters");
-
-
-
-
-
+export const collectionUsers:Collection<User> = client.db("LOTR").collection("users");
 
 //de key om de api op te roepen
 const apiKey = '2bV52o3FGbuxH6876ax5';
@@ -56,7 +50,6 @@ async function loadCharacters()
         return true;
     }
 }
-
 async function loadMovies() 
 {
     let data=await collectionMovies.find().toArray();
@@ -81,9 +74,6 @@ async function loadMovies()
         return true;
     }
 }
-
-
-
 async function updateMovies()
 {
     await loadMovies();
@@ -109,7 +99,6 @@ async function updateMovies()
     }
     
 }
-
 async function updateCharacter()
 {
     await loadCharacters();
@@ -152,7 +141,6 @@ async function updateCharacter()
         return true;
     }
 }
-
 async function uploadQuotes()
 {
     let data=await collectionQuotes.find().toArray();
@@ -189,12 +177,6 @@ async function uploadQuotes()
     return data;
 }
 
-
-
-
-
-
-
 //hier schrijven we de functie die checkt of er al iets in de database zit, zoniet vullen we deze op met een array van objecten die erin horen, we roepen deze later op
 async function loadToDB() 
 {
@@ -219,22 +201,12 @@ async function loadToDB()
     return quotes;
 }
 
-
-
-
-
-        
-
                         //pagina specifiek
-
-
-
-
 
 
 // deze maakt lijsten op door een quote te zoeken. dan in movie en karakter collection te zoeken naar de namen via de id
     // [correctQuote.dialog,movieList,movieListMixed,characterList,characterListMixed]
-    export async function dataForQuizQuestion() {
+export async function dataForQuizQuestion() {
         let quoteList: Quote[] = await collectionQuotes.find().toArray();
     
         // Controleer of de quoteList niet leeg is
@@ -300,7 +272,25 @@ async function loadToDB()
             console.log("Geen quotes gevonden in de database. Vul de database met quotes voordat je de quiz start.");
             // Eventueel extra stappen om de database te vullen met quotes...
         }
+}
+
+
+//     User aanmaken
+
+export async function CreateDummieUser()
+{
+    let dummie:User=
+    {
+        name: "dummie" ,
+        password: "password",
+        email: "dummie|ap.be",
+        score10Rounds:[1,4,10],
+        scoreSD:[2,5,9],
+        favourite:[],
+        blacklist:[]
     }
+}
+
 
 
 async function exit() {
