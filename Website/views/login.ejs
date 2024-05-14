@@ -1,8 +1,7 @@
-<%- include("partials/header")%>
-<%- include("partials/aside")%>
-<main class="row text-center justify-content-center">
-    <form class="col-6 col-sm-4 backgroundbrown rounded g-4" action="#" method="POST">
-    <h2 class="text-center text-warning">Login</h2>
+<%- include("partials/headerLogin")%>
+
+<main class=" col-12  col-lg-6  align-items-center mx-auto" >
+    <form class=" backgroundbrown rounded g-4" action="#" method="POST"  >
     <div>
         <label class="form-label" for="username">Gebruikersnaam:</label>
         <input class="form-control mb-3" type="text" placeholder="Gebruikersnaam" name="username" required>
@@ -12,9 +11,8 @@
         <input class="form-control mb-3" type="password" placeholder="Wachtwoord" name="password" required>
     </div>
     <div>
-        <a href="quiz.html"><button class="btn btn-warning mb-3 resetfont" type="button" href="quiz.html">Login</button></a>
+        <a href="/introPage"><button class="btn btn-warning mb-3 resetfont" type="button" href="quiz.html">Login</button></a>
     </div>
     </form>
 </main>
-
-<%-("partials/footer")%>
+<%- include("partials/footer")%>

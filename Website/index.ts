@@ -1,6 +1,7 @@
 import express  from "express";
 import ejs from "ejs";
 import {connect} from "./database";
+import { resolveTypeReferenceDirective } from "typescript";
 const { dataForQuizQuestion } = require("./database");
 
 const app = express();
@@ -12,8 +13,47 @@ app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-app.get("/",async (req,res)=>
+app.get("/",(req,res)=>
+{
+
+    res.render("index");
+})
+
+app.get("/login",(req,res)=>
+{
+    res.render("login",
     {
+        titlePage:"Login"
+    });
+})
+
+app.post("/login",(req,res)=>
+{
+    // checken of je ingelogd bent
+    res.redirect("quizPage");
+})
+
+app.get("/introPage",(req,res)=>
+{
+    res.render("introPage",
+    {
+        titlePage:"intro"
+    });
+})
+
+app.get("/quizPage",(req,res)=>
+    {
+        res.render("quizPage",
+            {
+                titlePage:"Kies de Quiz",
+            }
+        )
+    })
+
+
+app.get("/tenRounds",async (req,res)=>
+    {
+        
         let data:any = await dataForQuizQuestion();
         //[0] correctQuote
         //[1] correctMovie
@@ -21,8 +61,9 @@ app.get("/",async (req,res)=>
         //[3] movieListMixed
         //[4] characterListMixed]
         
-        res.render("test",
+        res.render("tenRounds",
         {
+            titlePage:"10 Rondes",
             quote:data[0],
             movie:data[1],
             character:data[2],
@@ -33,35 +74,7 @@ app.get("/",async (req,res)=>
         
     })
 
-app.post("/",async (req,res)=>
-{
-            
-        res.redirect("/")
-            
-})
 
-// Endpoint om een vraag op te halen
-app.get("/quiz/question", async (req, res) => {
-    try {
-        const quizData = await dataForQuizQuestion();
-        res.json({
-            question: quizData[0].dialog, // Bijvoorbeeld, haal de dialoog van het personage op als vraag
-            options: quizData.slice(1, 4).map((item: any) => item.name) // Bijvoorbeeld, gebruik personagenamen als opties
-        });
-    } catch (error) {
-        console.error("Error fetching question data:", error);
-        res.status(500).json({ error: "Internal server error" });
-    }
-});
-
-
-// Endpoint om een antwoord te verwerken
-app.post("/quiz/answer", (req, res) => {
-    const { answer } = req.body;
-    // Voer de logica uit om het antwoord te controleren (bijvoorbeeld, vergelijk het met het correcte antwoord)
-    const correct = true; // Vervang dit met je echte logica om het antwoord te controleren
-    res.json({ correct });
-});
 
 app.listen(app.get("port"), async () => {
     await connect();
@@ -70,49 +83,21 @@ app.listen(app.get("port"), async () => {
 export{};
 
 
-// const user =   hier wordt de user gedeclareerd op loging pagina ingeladen 
-
-
-/*
-
-app.get("/",async (req,res)=>
-{
-   
-    res.render("test",
-    {
-        correct:correct,
-        moviesQuiz:moviesQuiz,
-        charsQuiz:charsQuiz
-
-    })
-})
-
-*/
 
 
 
-app.get("/",(req,res)=>
-{
-    res.render("index")
-})
+
 
 app.get("/quizPage",(req,res)=>
 {
     res.render("quizPage")
 })
 
-app.post("quizPage",(req,res)=>
-{
-    let choice:string = req.body.q;
-    if ( choice = "10round")
-    {
-        res.redirect("quizTenRounds")
-    }
-    if (choice = "suddendeath")
-    {
-        res.redirect("quizSuddenDeath")
-    }
-    
+
+
+app.get("/tenRounds",(req,res)=>{
+
+    res.render("tenRounds")
 })
 
 app.get("/quizTenRounds",(req,res)=>
