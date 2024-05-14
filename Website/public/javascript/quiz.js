@@ -1,3 +1,5 @@
+
+
 document.addEventListener('DOMContentLoaded', function() {
     // Variabelen voor scores van correct, character en movie
     let correctScore = 0;
@@ -9,6 +11,40 @@ document.addEventListener('DOMContentLoaded', function() {
     let movieSelected = false;
     let correctCharSelected = false;
     let correctMovSelected = false;
+
+    const charButtons = document.querySelectorAll('.selected-char');
+    charButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            // Verberg eerst alle afbeeldingen van de knoppen
+            const charIcons = document.querySelectorAll('.selected-icon-char');
+            charIcons.forEach(function(icon) {
+                icon.style.display = 'none';
+            });
+    
+            // Zoek de geselecteerde knop en toon de bijbehorende afbeeldingen
+            const selectedIcons = button.querySelectorAll('.selected-icon-char');
+            selectedIcons.forEach(function(selectedIcon) {
+                selectedIcon.style.display = 'inline-block';
+            });
+        });
+    });
+
+    const movButtons = document.querySelectorAll('.selected-mov');
+    movButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            // Verberg eerst alle afbeeldingen van de knoppen
+            const movIcons = document.querySelectorAll('.selected-icon-mov');
+            movIcons.forEach(function(icon) {
+                icon.style.display = 'none';
+            });
+    
+            // Zoek de geselecteerde knop en toon de bijbehorende afbeeldingen
+            const selectedIcons = button.querySelectorAll('.selected-icon-mov');
+            selectedIcons.forEach(function(selectedIcon) {
+                selectedIcon.style.display = 'inline-block';
+            });
+        });
+    });
     
 
     // Event listener voor knoppen met de klasse 'correctCharacter'
@@ -17,11 +53,12 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('click', function() {
             // Update de correctScore wanneer er op een correct karakterknop wordt geklikt
             if (!correctCharSelected) {
-                // Update de characterScore wanneer er op een karakterknop wordt geklikt
                 correctScore += 0.5;
                 console.log("Correct Score: " + correctScore);
                 correctCharSelected = true; // Markeer dat de gebruiker een character heeft geselecteerd
             }
+
+            
         });
     });
 
@@ -31,7 +68,6 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('click', function() {
             // Update de correctScore wanneer er op een correct filmknop wordt geklikt
             if (!correctMovSelected) {
-                // Update de characterScore wanneer er op een karakterknop wordt geklikt
                 correctScore += 0.5;
                 console.log("Correct Score: " + correctScore);
                 correctMovSelected = true; // Markeer dat de gebruiker een character heeft geselecteerd
@@ -39,48 +75,37 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Event listener voor knoppen met de klasse 'character'
-    const characterButtons = document.querySelectorAll('.character');
-    characterButtons.forEach(function(button) {
-        button.addEventListener('click', function() {
-            // Controleer of de gebruiker al een character heeft geselecteerd
-            if (!characterSelected) {
-                // Update de characterScore wanneer er op een karakterknop wordt geklikt
-                characterScore += 0;
-                console.log("Character Score: " + characterScore);
-                characterSelected = true; // Markeer dat de gebruiker een character heeft geselecteerd
-            }
-        });
-    });
-
-    // Event listener voor knoppen met de klasse 'movie'
-    const movieButtons = document.querySelectorAll('.movie');
-    movieButtons.forEach(function(button) {
-        button.addEventListener('click', function() {
-            // Controleer of de gebruiker al een movie heeft geselecteerd
-            if (!movieSelected) {
-                // Update de movieScore wanneer er op een filmknop wordt geklikt
-                movieScore += 0;
-                console.log("Movie Score: " + movieScore);
-                movieSelected = true; // Markeer dat de gebruiker een movie heeft geselecteerd
-            }
-        });
-    });
-
     // Event listener voor knoppen met de klasse 'volgende'
-    const nextButtons = document.querySelectorAll('.volgende');
-    nextButtons.forEach(function(button) {
-        button.addEventListener('click', function() {
+   // Event listener voor knoppen met de klasse 'volgende'
+const nextButtons = document.querySelectorAll('.volgende');
+nextButtons.forEach(function(button) {
+    button.addEventListener('click', function(event) {
+        // Voorkom dat de standaardgedraging van de 'Volgende' knop plaatsvindt
+        event.preventDefault();
+
+        
+
+        // Voeg de klasse 'correctAnswer' toe aan de geselecteerde knoppen van de juiste antwoorden
+        const correctCharButton = document.querySelector('.correctCharacter');
+        const correctMovButton = document.querySelector('.correctMovie');
+        correctCharButton.classList.add('correctAnswer');
+        correctMovButton.classList.add('correctAnswer');
+
+       
+
+        // Wacht 5 seconden voordat de pop-up wordt weergegeven
+        setTimeout(function() {
             // Toon de totale score nadat de gebruiker op 'Volgende' heeft geklikt
             const totalScore = correctScore + characterScore + movieScore;
             console.log("Total Score: " + totalScore);
-            // pop-up
-            const chosenCharacter = document.querySelector('.correctCharacter').textContent;
-            const chosenMovie = document.querySelector('.correctMovie').textContent;
 
             // Toon een pop-up bericht met de gemaakte keuzes en of het antwoord correct was
+            const chosenCharacter = correctCharButton.textContent;
+            const chosenMovie = correctMovButton.textContent;
             const message = `Gekozen karakter: ${chosenCharacter}\nKarakter is ${correctCharSelected ? "correct" : "incorrect"}\nGekozen film: ${chosenMovie}\nFilm is ${correctMovSelected ? "correct" : "incorrect"}\nScore: ${correctScore}`;
             alert(message);
+
+            
 
             // Reset de selectie nadat op 'Volgende' is geklikt
             characterSelected = false;
@@ -89,8 +114,13 @@ document.addEventListener('DOMContentLoaded', function() {
             // Reset de geselecteerde correcte karakter- en filmknoppen
             correctCharSelected = false;
             correctMovSelected = false;
-        });
+
+            // Laad de volgende pagina
+            window.location.reload();
+            
+        }, 2000); // Vertraging van 5000 milliseconden (5 seconden)
     });
 });
 
-//Als de gebruiker op een karakter- of filmknop klikt en later van gedachten verandert voordat hij op "Volgende" klikt, kan hij op een andere knop klikken om zijn keuze te wijzigen. De code zorgt ervoor dat de laatste gemaakte keuze wordt bijgehouden en dat de gebruiker slechts één keer kan klikken op een karakter- en een filmknop voordat hij op "Volgende" klikt.
+   
+});

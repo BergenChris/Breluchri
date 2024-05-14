@@ -1,3 +1,4 @@
+
 <%- include("partials/header")%>
 <%- include("partials/aside")%>
 <main class="col-12 col-lg-9 mx-auto bg-opacity-25  bg-transparent row">
@@ -24,31 +25,35 @@
             </section>    
         </section>
         <section class="row gy-5 row">  
-            <section class="col-5 mx-auto ">
-                <h2 class=" lotrfont ">PERSONAGE</h2>
-                <% for(let i=0;i<3;i++) { %>
-            
-                <button  class=" col-10 mx-auto btn justify-content-around  <% if(characterListMixed[i]==character.name) {%> correctCharacter  <%}%> col-12 ">
-                    <%=characterListMixed[i]%>
-                </button>
-                <%}%>
+            <section class="col-5 mx-auto">
+                <h2 class="lotrfont">PERSONAGE</h2>
+                <% for(let i=0; i<3; i++) { %>
+                    <button class="col-10 mx-auto btn justify-content-around selected-char <% if(characterListMixed[i]==character.name) { %>correctCharacter<% } %> col-12">
+                        <img src="./../assets/images/logoring.png" alt="Selected-char" class="selected-icon-char">
+                        <%=characterListMixed[i]%>
+                        <img src="./../assets/images/logoring.png" alt="Selected-char" class="selected-icon-char">
+                    </button>
+                <% } %>
             </section>  
-            <section  class="col-5 mx-auto ">
-                <h2 class="lotrfont ">FILM</h2>
-                <% for(let i=0;i<3;i++) { %>
-                
-                <button class=" col-10 mx-auto btn movie  <% if(movieListMixed[i]==movie.name) {%> correctMovie  <%}%> col-12 ">
-                <%=movieListMixed[i]%>
-                </button>
-                <%}%>
+            <section class="col-5 mx-auto">
+                <h2 class="lotrfont">FILM</h2>
+                <% for(let i=0; i<3; i++) { %>
+                    <button class="col-10 mx-auto btn movie  selected-mov <% if(movieListMixed[i]==movie.name) { %>correctMovie<% } %> col-12">
+                        <img src="./../assets/images/logoring.png" alt="Selected-mov" class="selected-icon-mov">
+                        <%=movieListMixed[i]%>
+                        <img src="./../assets/images/logoring.png" alt="Selected-mov" class="selected-icon-mov">
+                    </button>
+                <% } %>
             </section>
-         
-
-        <form action="/" method="POST">
-            <input type="submit" value="Volgende" class="volgende">
-        </form>
+        </section>
         
 
+            <form action="/" method="POST">
+                <input type="submit" value="Volgende" class="volgende">
+            </form>
+            
+         
+            
     </section>
 </section>
 
