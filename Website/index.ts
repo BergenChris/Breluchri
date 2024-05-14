@@ -1,7 +1,8 @@
 import express  from "express";
 import ejs from "ejs";
 import {connect} from "./database";
-import { resolveTypeReferenceDirective } from "typescript";
+import { getSourceMapRange, resolveTypeReferenceDirective } from "typescript";
+import { title } from "process";
 const { dataForQuizQuestion } = require("./database");
 
 const app = express();
@@ -73,8 +74,16 @@ app.get("/tenRounds",async (req,res)=>
             
         
     })
+app.get("/accountPage",async (req,res)=>
+    {
+        // let user:User=await getSourceMapRange();
 
+        res.render("accountPage",
+        {
+            titlePage:"Account"
+        })
 
+    })
 
 app.listen(app.get("port"), async () => {
     await connect();
