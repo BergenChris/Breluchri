@@ -42,12 +42,18 @@ export interface Quote
 
  export interface User
  {
-    name:string,
-    password:string,
-    _id:ObjectId,
-    score10Rounds:number[],
-    scoreSD:number[],
-    favourite:Quote[],
-    blacklist:Quote[]
+   _id:ObjectId, 
+   name:string,
+   password:string,
+   email:string,
+   score10Rounds:number[],
+   scoreSD:number[],
+   favourite:Quote[],
+   blacklist:BlacklistQuote[]
     
+ }
+ export interface BlacklistQuote
+ {
+   quote:Quote,
+   reason:string
  }
