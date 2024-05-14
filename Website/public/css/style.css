@@ -373,3 +373,90 @@ footer {
     text-transform: uppercase; /* Hoofdlettergebruik */
 }
 
+header {
+    background: #4D4DDB;
+    color: white;
+
+    padding: .5rem 0;
+}
+
+.nav-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 90%;
+    margin: 0 auto;
+}
+
+
+.nav-container .logo {
+    font-size: 2rem; 
+    font-weight: bold;  
+}
+
+.nav {
+    display: flex;
+    flex-grow: 1;
+}
+
+.nav--ul__one {
+    margin: 0 auto;
+}
+
+.nav-container, .nav--ul__one,
+.nav--ul__two {
+    display: flex;
+    gap: 1.6rem;
+    font-size: 1.2rem;
+}
+
+.hamburger-menu {
+    display: none; /* Hidden by default for larger screens */
+    cursor: pointer;
+}
+@media (max-width: 700px) {
+    .nav-container .logo {
+        font-size: 1.2rem;
+        z-index: 2;
+    }
+
+    .nav {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .nav--ul__one,
+    .nav--ul__two {
+        flex-direction: column;
+        gap: .6rem;
+    }
+
+    .hamburger-menu {
+        display: block;
+
+        z-index: 2;
+    }
+
+    .nav {
+        position: absolute;
+        top: 0;
+        right: -100%;
+        bottom: 0;
+        width: 100%;
+
+        padding-top: 6rem;
+
+        align-items: center;
+        text-align: center;
+        background-color: #4D4DDB;
+        color: white;
+
+        transition: 0.15s ease-in-out;
+    }
+
+    .nav.active {
+        right: 0;
+    }
+
+}
