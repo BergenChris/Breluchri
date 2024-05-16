@@ -2,9 +2,7 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     // Variabelen voor scores van correct, character en movie
-    let correctScore = 0;
-    let characterScore = 0;
-    let movieScore = 0;
+   
 
     // Houd bij of de gebruiker al een character en movie heeft geselecteerd
     let characterSelected = false;
@@ -47,9 +45,33 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
 
-    
+    // Event listener voor knoppen met de klasse 'correctCharacter'
+    const correctCharButtons = document.querySelectorAll('.correctCharacter');
+    correctCharButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            // Update de correctScore wanneer er op een correct karakterknop wordt geklikt
+            if (!correctCharSelected) {
+                correctScore += 0.5;
+                console.log("Correct Score: " + correctScore);
+                correctCharSelected = true; // Markeer dat de gebruiker een character heeft geselecteerd
+            }
 
-    
+            
+        });
+    });
+
+    // Event listener voor knoppen met de klasse 'correctMovie'
+    const correctMovButtons = document.querySelectorAll('.correctMovie');
+    correctMovButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            // Update de correctScore wanneer er op een correct filmknop wordt geklikt
+            if (!correctMovSelected) {
+                correctScore += 0.5;
+                console.log("Correct Score: " + correctScore);
+                correctMovSelected = true; // Markeer dat de gebruiker een character heeft geselecteerd
+            }
+        });
+    });
 
     // Event listener voor knoppen met de klasse 'volgende'
    // Event listener voor knoppen met de klasse 'volgende'
@@ -69,9 +91,9 @@ nextButtons.forEach(function(button) {
 
        
 
-        
-
-            
+        // Wacht 5 seconden voordat de pop-up wordt weergegeven
+        setTimeout(function() {
+          
 
             // Reset de selectie nadat op 'Volgende' is geklikt
             characterSelected = false;
@@ -82,11 +104,11 @@ nextButtons.forEach(function(button) {
             correctMovSelected = false;
 
             // Laad de volgende pagina
-         
-            
+            window.location.reload();
             
         }, 2000); // Vertraging van 5000 milliseconden (5 seconden)
     });
 });
 
    
+});
