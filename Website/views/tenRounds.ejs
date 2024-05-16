@@ -2,59 +2,59 @@
 <%- include("partials/header")%>
 
 <main class="col-12 col-lg-9 mx-auto bg-opacity-25  bg-transparent row">
-    <section class=" row text-center">
-        <section class="row">
-            <h1>Ready for battle! - 10 rounds</h1>
-            <h2>Ronde 1</h2>
-        </section>
-    </section>
-    <section >
+    <h1 class="row text-center">Raad het karakter en de film van volgende Quote</h1>
+    <h2><%=round%>/10</h2>
+    <form id="quoteForm" action="#" method="post">
         <section class="row p-5 align-items-center">
             <section class="col-9 text-center p-3">
                 <p class="resetfont fs-3 col-10 mx-auto text-center p-3 bg-transparent  ">"<%=quote.dialog%>"</p>
+                <input type="hidden" id="quote" name="quote" value="<%=quote.dialog%>">
             </section>
             <section class="col-3 text-center row justify-content-around">
-                <button class="col-10 mx-auto btn background mb-3 resetfont" id="favorietBtn">
+                <button class="col-10 mx-auto btn background mb-3 resetfont" id="favorietBtn" type="button">
                     <img src="./../assets/images/fire-icon.png" alt="Favoriet" class="button-image">
                     <span class="button-text">Favoriet</span>
                 </button>
-                <button class="col-10 mx-auto btn background mb-3 resetfont" id="favorietBtn">
+                <input type="hidden" id="favorite" name="favorite" value=" false">
+                        
+                <button class="col-10 mx-auto btn background mb-3 resetfont" id="favorietBtn" type="button">
                     <img src="./../assets/images/skull-icon.png" alt="Favoriet" class="button-image">
                     <span class="button-text">Blacklist</span>
                 </button>
+                            // hier javascript op dit pas te laten zien wanneer je op de button blacklist klikt
+                <label id="reasonBlacklist" for="blacklistReason">Reden: </label>       
+                    <input type="text" id="blacklistReason" name="blacklistReason">
+                    <input type="hidden" id="blacklist" name="blacklist" value="false">
             </section>    
         </section>
         <section class="row gy-5 row">  
             <section class="col-5 mx-auto">
-                <h2 class="lotrfont">PERSONAGE</h2>
+                <label class="lotrfont">PERSONAGE</label>
                 <% for(let i=0; i<3; i++) { %>
-                    <button class="col-10 mx-auto btn justify-content-around selected-char <% if(characterListMixed[i]==character.name) { %>correctCharacter<% } %> col-12">
+                    <button class="col-10 mx-auto btn  selected-char <% if(characterListMixed[i]==character.name) { %>correctCharacter<% } %> col-12" type="button" name="character" >
                         <img src="./../assets/images/logoring.png" alt="Selected-char" class="selected-icon-char">
-                        <%=characterListMixed[i]%>
+                            <%=characterListMixed[i]%>
                         <img src="./../assets/images/logoring.png" alt="Selected-char" class="selected-icon-char">
                     </button>
                 <% } %>
+                        // hier javascript dat de aangeklikte keuze als value invult,  value moet true of false zijn dus als class = correct --> true
+                <input type="hidden" id="chosenCharacter" name="chosenCharacter" value="">
             </section>  
             <section class="col-5 mx-auto">
-                <h2 class="lotrfont">FILM</h2>
+                <label class="lotrfont">FILM</label>
                 <% for(let i=0; i<3; i++) { %>
-                    <button class="col-10 mx-auto btn movie  selected-mov <% if(movieListMixed[i]==movie.name) { %>correctMovie<% } %> col-12">
+                    <button class="col-10 mx-auto btn  selected-mov <% if(movieListMixed[i]==movie.name) { %>correctMovie<% } %> col-12" type="button" name="movie">
                         <img src="./../assets/images/logoring.png" alt="Selected-mov" class="selected-icon-mov">
-                        <%=movieListMixed[i]%>
+                            <%=movieListMixed[i]%>
                         <img src="./../assets/images/logoring.png" alt="Selected-mov" class="selected-icon-mov">
                     </button>
                 <% } %>
+                    // hier javascript dat de aangeklikte keuze als value invult,     value moet true of false zijn dus als class = correct --> true
+                <input type="hidden" id="chosenMovie" name="chosenMovie" value="">
             </section>
         </section>
-        
-
-            <form action="/" method="POST">
-                <input type="submit" value="Volgende" class="volgende">
-            </form>
-            
-         
-            
-    </section>
-</section>
-
+        <section class="col-12 p-5">
+            <input class="col-4 mx-auto p3 align-items-center text-center" type="submit" value="volgende ronde" class="volgende">
+        </section>
+    </form>              
 </main>

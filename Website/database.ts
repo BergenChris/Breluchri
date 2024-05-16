@@ -1,5 +1,5 @@
 import {Collection, MongoClient,ObjectId} from "mongodb";
-import {Quote,Movie,Character,RootObjectQuote,RootObjectCharacter,RootObjectMovie,User} from "./interfaces/types";
+import {Quote,Movie,Character,RootObjectQuote,RootObjectCharacter,RootObjectMovie,User, BlacklistQuote} from "./interfaces/types";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -279,6 +279,7 @@ export async function dataForQuizQuestion() {
 
 export async function CreateDummieUser()
 {
+    let allQuotes:Quote[]=await collectionQuotes.find().toArray();
     let dummie:User=
     {
         name: "dummie" ,
@@ -287,9 +288,74 @@ export async function CreateDummieUser()
         score10Rounds:[1,4,10],
         scoreSD:[2,5,9],
         favourite:[],
-        blacklist:[]
+        blacklist:[],
+        quotesPerUser:allQuotes
+    }
+
+}
+
+
+export async function InputFavouriteQuote(quoteF: string, user: string)
+{
+    let quote:Quote|null= await collectionQuotes.findOne({dialog:quoteF});
+    if (quote){
+        let double:User|null = await collectionUsers.findOne({favourite:quote});
+        if (double)
+            {
+                console.log("quote reeds als favoriet opgeslagen")
+            }
+        else
+        {
+            await collectionUsers.findOneAndUpdate({
+                name:user
+            },
+            {
+                $push:{favourite:quote}
+            })
+        }
+        return true;
+    }
+    else {
+        return false;
     }
 }
+
+
+export async function InputBlacklist(quoteBL: string, reasonBL:string, user: string)
+{
+    let quote:Quote|null= await collectionQuotes.findOne({dialog:quoteBL});
+    
+    if (quote){
+        let blacklistQuote:BlacklistQuote={
+            quote:quote,
+            reason:reasonBL
+        }
+        let double:User|null = await collectionUsers.findOne({blacklist:blacklistQuote});
+        if (double)
+            {
+                console.log("fout in de code/logica/mocht niet getoond worden");
+            }
+        else
+        {
+            await collectionUsers.findOneAndUpdate({
+                name:user
+            },
+            {
+                $push:{blacklist:blacklistQuote}
+            })
+            await collectionUsers.deleteOne({
+                name:user,
+                quotesPerUser:quote
+            })
+        }
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+
 
 
 

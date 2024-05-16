@@ -1,8 +1,9 @@
 import express  from "express";
 import ejs from "ejs";
-import {connect} from "./database";
+import {InputFavouriteQuote, connect} from "./database";
 import { getSourceMapRange, resolveTypeReferenceDirective } from "typescript";
 import { title } from "process";
+import { Quote } from "./interfaces/types";
 const { dataForQuizQuestion } = require("./database");
 
 const app = express();
@@ -52,6 +53,9 @@ app.get("/quizPage",(req,res)=>
     })
 
 
+let score:number=0;
+let round:number=0;
+
 app.get("/tenRounds",async (req,res)=>
     {
         
@@ -61,19 +65,53 @@ app.get("/tenRounds",async (req,res)=>
         //[2] correctCharacter
         //[3] movieListMixed
         //[4] characterListMixed]
-        
+        round++;
         res.render("tenRounds",
         {
             titlePage:"10 Rondes",
+            round:round,
             quote:data[0],
             movie:data[1],
             character:data[2],
             movieListMixed:data[3],
             characterListMixed:data[4]
         })     
-            
-        
     })
+
+
+
+
+app.post("/tenRounds",(req,res)=>
+{
+    let data = req.body;
+    console.log(data);
+    if (data.favorite)
+        {
+            InputFavouriteQuote(data.quote,"dummie");
+        }
+    if (data.blacklist)
+        {
+            // addBlacklist(data.quote,data.blacklistReason);
+        }
+    
+    score = score + (data.chosenCharacter === true? 0.5 : 0)+(data.chosenMovie === true? 0.5 : 0);
+    if(round <10)
+        {
+          
+            res.redirect("tenRounds");
+        }
+    else
+    {
+        res.render("result",
+        {
+            score:score
+        });
+    }
+    
+})
+
+
+
 app.get("/accountPage",async (req,res)=>
     {
         // let user:User=await getSourceMapRange();

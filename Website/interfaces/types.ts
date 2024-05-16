@@ -42,13 +42,15 @@ export interface Quote
 
  export interface User
  {
+   
    name:string,
    password:string,
    email:string,
    score10Rounds:number[],
    scoreSD:number[],
    favourite:Quote[],
-   blacklist:BlacklistQuote[]
+   blacklist:BlacklistQuote[],
+   quotesPerUser:Quote[]
     
  }
  export interface BlacklistQuote
