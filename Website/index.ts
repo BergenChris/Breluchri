@@ -79,6 +79,7 @@ app.get("/tenRounds",async (req,res)=>
         round10R++;
         if(round10R<=10){
             res.render("tenRounds",{
+                score:score10R,
                 titlePage:"10 Rondes",
                 round:round10R,
                 quote:data[0],
@@ -95,16 +96,11 @@ app.get("/tenRounds",async (req,res)=>
         
     })
 
-app.post("/tenRounds",async (req,res)=>
+app.post("/tenRounds",  (req,res)=>
 {
     let data = req.body;
-    console.log(data.quote);
-    console.log(data.favorite);
-    console.log(data.blacklistReason);
-    console.log(data.blacklist);
-    console.log(data.chosenCharacter);
-    console.log(data.chosenMovie);
-    if (data.favorite)
+    console.log(data);
+    if (data.favourite)
         {
             InputFavouriteQuote(data.quote,"dummie");
         }
@@ -113,7 +109,7 @@ app.post("/tenRounds",async (req,res)=>
             InputBlacklist(data.quote, data.blacklistReason, "dummie")
         }
     
-    score10R = score10R + (data.chosenCharacter === true? 0.5 : 0)+(data.chosenMovie === true? 0.5 : 0);
+    score10R = score10R + (data.chosenCharacter === "true"? 0.5 : 0)+(data.chosenMovie === "true"? 0.5 : 0);
     if(round10R <10)
         {
             

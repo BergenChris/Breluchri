@@ -299,7 +299,7 @@ export async function InputFavouriteQuote(quoteF: string, user: string)
 {
     let quote:Quote|null= await collectionQuotes.findOne({dialog:quoteF});
     if (quote){
-        let double:User|null = await collectionUsers.findOne({favourite:quote});
+        let double:User|null = await collectionUsers.findOne({name:user,favourite:quote});
         if (double)
             {
                 console.log("quote reeds als favoriet opgeslagen")
@@ -330,7 +330,7 @@ export async function InputBlacklist(quoteBL: string, reasonBL:string, user: str
             quote:quote,
             reason:reasonBL
         }
-        let double:User|null = await collectionUsers.findOne({blacklist:blacklistQuote});
+        let double:User|null = await collectionUsers.findOne({name:user,blacklist:blacklistQuote});
         if (double)
             {
                 console.log("fout in de code/logica/mocht niet getoond worden");

@@ -1,10 +1,9 @@
-<%- include("partials/headerIntro")%>
+<%- include("partials/header")%>
 
 <main class="col-12 col-lg-9 mx-auto bg-opacity-25  bg-transparent row">
     <section class=" row text-center">
         <section class="row">
-            <h1>Ready for battle! - 10 rounds</h1>
-            <h2>Ronde 1</h2>
+            <h1>Ronde <%=round%></h1>
         </section>
     </section>
     <section >
@@ -48,13 +47,20 @@
         
 
             <form action="/" method="POST">
+                // hier moeten alle value ingeladen worden
+
+                quote = quote.dialog 
+                quoteBL/quoteF = true of false wanneer je knopt BL of fav duwt
+                dan komt er een textarea voor reden = reasonBL (hidden zolang niet nogid is)
                 
+        
+
+
+
                 <input type="submit" value="Volgende" class="volgende">
             </form>
             
-            <section class="col-4 mx-auto p3 align-items-center text-center">
-                <a href="/quizPage"><button type="button">STOP</button></a>
-            </section> 
+         
             
     </section>
 </section>
