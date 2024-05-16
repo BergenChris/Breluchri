@@ -111,7 +111,7 @@ app.post("/tenRounds",  (req,res)=>
             InputBlacklist(dataP.quote, dataP.blacklistReason, "dummie")
         }
     
-    score10R = score10R + (dataP.chosenCharacter === "true"? 0.5 : 0)+(dataP.chosenMovie === "true"? 0.5 : 0);
+    score10R = score10R + (dataP.chosenCharacter === "true" && dataP.chosenMovie === "true"? 1 : 0);
     if(round10R < 10)
         {
             
