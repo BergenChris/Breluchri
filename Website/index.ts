@@ -43,8 +43,21 @@ app.get("/introPage",(req,res)=>
     });
 })
 
+// quizgedeelte
+
+export let score10R:number=0;
+export let scoreSD:number=0;
+export let round10R:number=0;
+export let roundSD:number=0;
+
+
 app.get("/quizPage",(req,res)=>
     {
+        
+        scoreSD=0;
+        roundSD=0;
+        score10R=0;
+        round10R=0;
         res.render("quizPage",
             {
                 titlePage:"Kies de Quiz",
@@ -53,8 +66,6 @@ app.get("/quizPage",(req,res)=>
     })
 
 
-let score:number=0;
-let round:number=0;
 
 app.get("/tenRounds",async (req,res)=>
     {
@@ -65,17 +76,23 @@ app.get("/tenRounds",async (req,res)=>
         //[2] correctCharacter
         //[3] movieListMixed
         //[4] characterListMixed]
-        round++;
-        res.render("tenRounds",
-        {
-            titlePage:"10 Rondes",
-            round:round,
-            quote:data[0],
-            movie:data[1],
-            character:data[2],
-            movieListMixed:data[3],
-            characterListMixed:data[4]
-        })     
+        round10R++;
+        if(round10R<=10){
+            res.render("tenRounds",{
+                titlePage:"10 Rondes",
+                round:round10R,
+                quote:data[0],
+                movie:data[1],
+                character:data[2],
+                movieListMixed:data[3],
+                characterListMixed:data[4]
+            })     
+        }
+        else{
+            res.redirect("quizPage");
+        }
+
+        
     })
 
 app.post("/tenRounds",async (req,res)=>
@@ -96,19 +113,18 @@ app.post("/tenRounds",async (req,res)=>
             InputBlacklist(data.quote, data.blacklistReason, "dummie")
         }
     
-    score = score + (data.chosenCharacter === true? 0.5 : 0)+(data.chosenMovie === true? 0.5 : 0);
-    if(round <10)
+    score10R = score10R + (data.chosenCharacter === true? 0.5 : 0)+(data.chosenMovie === true? 0.5 : 0);
+    if(round10R <10)
         {
             
             res.redirect("tenRounds")    
         }
     else
     {
-        score=0;
-        round=1;
+  
         res.render("result10R",
         {
-            score:score
+            score:score10R
         });
     }
     
@@ -124,17 +140,26 @@ app.get("/suddenDeath",async (req,res)=>
         //[2] correctCharacter
         //[3] movieListMixed
         //[4] characterListMixed]
-        round++;
-        res.render("suddenDeath",
-        {
-            titlePage:"Sudden Death",
-            round:round,
-            quote:data[0],
-            movie:data[1],
-            character:data[2],
-            movieListMixed:data[3],
-            characterListMixed:data[4]
-        })     
+        console.log(scoreSD);
+        console.log(roundSD);
+        if (scoreSD === roundSD){
+            roundSD++;
+            res.render("suddenDeath",
+            {
+                titlePage:"Sudden Death",
+                round:roundSD,
+                quote:data[0],
+                movie:data[1],
+                character:data[2],
+                movieListMixed:data[3],
+                characterListMixed:data[4]
+            })               
+        }
+        else{
+
+            res.redirect("quizPage")
+        }
+        
     })
 
 app.post("/suddenDeath",(req,res)=>
@@ -154,19 +179,17 @@ app.post("/suddenDeath",(req,res)=>
         {
             InputBlacklist(data.quote, data.blacklistReason, "dummie")
         }
-    
-    score = score + (data.chosenCharacter === true? 0.5 : 0)+(data.chosenMovie === true? 0.5 : 0);
-    if(round === score)
+
+    scoreSD = scoreSD + (data.chosenCharacter === "true"? 0.5 : 0)+(data.chosenMovie === "true"? 0.5 : 0);
+    if(roundSD === scoreSD)
         {
             res.redirect("suddenDeath");
         }
     else
     {
-        score=0;
-        round=1;
         res.render("resultSD",
         {
-            score:score
+            score:scoreSD
         });
     }
     
