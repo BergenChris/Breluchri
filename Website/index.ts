@@ -1,10 +1,10 @@
 import express  from "express";
 import ejs from "ejs";
-import {InputBlacklist, InputFavouriteQuote, connect} from "./database";
-import { getSourceMapRange, getTsBuildInfoEmitOutputFilePath, resolveTypeReferenceDirective } from "typescript";
-import { title } from "process";
-import { Quote } from "./interfaces/types";
-const { dataForQuizQuestion } = require("./database");
+import {CreateDummieUser, Input10RScore, InputBlacklist, InputFavouriteQuote, InputSDScore, LoadUser, collectionUsers, connect,dataForQuizQuestion} from "./database";
+import { User } from "./interfaces/types";
+
+
+
 
 const app = express();
 
@@ -21,16 +21,23 @@ app.get("/",(req,res)=>
     res.render("index");
 })
 
-app.get("/login",(req,res)=>
+
+
+app.get("/login",async(req,res)=>
 {
+    await CreateDummieUser();
     res.render("login",
     {
         titlePage:"Login"
     });
+    await LoadUser("dummie");
+
 })
 
-app.post("/login",(req,res)=>
+
+app.post("/login",async (req,res)=>
 {
+    await CreateDummieUser();
     // checken of je ingelogd bent
     res.redirect("quizPage");
 })
@@ -51,73 +58,68 @@ export let round10R:number=0;
 export let roundSD:number=0;
 
 
-app.get("/quizPage",(req,res)=>
-    {
+app.get("/quizPage",(req,res)=>{
         
-        scoreSD=0;
-        roundSD=0;
-        score10R=0;
-        round10R=0;
-        res.render("quizPage",
-            {
-                titlePage:"Kies de Quiz",
-            }
-        )
-    })
+                scoreSD=0;
+                roundSD=0;
+                score10R=0;
+                round10R=0;
+                res.render("quizPage",
+                    {
+                        titlePage:"Kies de Quiz",
+                    }
+                )
+            })
 
 
 
-app.get("/tenRounds",async (req,res)=>
-    {
-        
-        let data:any = await dataForQuizQuestion();
-        //[0] correctQuote
-        //[1] correctMovie
-        //[2] correctCharacter
-        //[3] movieListMixed
-        //[4] characterListMixed]
-        round10R++;
-        if(round10R<=10){
-            res.render("tenRounds",{
-                score:score10R,
-                titlePage:"10 Rondes",
-                round:round10R,
-                quote:data[0],
-                movie:data[1],
-                character:data[2],
-                movieListMixed:data[3],
-                characterListMixed:data[4]
-            })     
-        }
-        else{
-            res.redirect("quizPage");
-        }
-
-        
-    })
-
+app.get("/tenRounds", async (req, res) => {
+    
+   
+            let data:any = await dataForQuizQuestion();
+            round10R++;
+            console.log("Round:", round10R);
+            console.log("Score:", score10R);
+    
+ 
+                res.render("tenRounds", {
+                    score: score10R,
+                    titlePage: "10 Rondes",
+                    round: round10R,
+                    quote: data[0],
+                    movie: data[1],
+                    character: data[2],
+                    movieListMixed: data[3],
+                    characterListMixed: data[4]
+                });
+   
+            
+       
+    });
+    
 app.post("/tenRounds",  (req,res)=>
 {
-    let data = req.body;
-    console.log(data);
-    if (data.favourite)
+    let dataP = req.body;
+    console.log("na post");
+    console.log(dataP);
+    if (dataP.favourite)
         {
-            InputFavouriteQuote(data.quote,"dummie");
+            InputFavouriteQuote(dataP.quote,"dummie");
         }
-    if (data.blacklist)
+    if (dataP.blacklist)
         {
-            InputBlacklist(data.quote, data.blacklistReason, "dummie")
+            InputBlacklist(dataP.quote, dataP.blacklistReason, "dummie")
         }
     
-    score10R = score10R + (data.chosenCharacter === "true"? 0.5 : 0)+(data.chosenMovie === "true"? 0.5 : 0);
-    if(round10R <10)
+    score10R = score10R + (dataP.chosenCharacter === "true"? 0.5 : 0)+(dataP.chosenMovie === "true"? 0.5 : 0);
+    if(round10R < 10)
         {
             
             res.redirect("tenRounds")    
         }
     else
     {
-  
+        Input10RScore(score10R,"dummie");
         res.render("result10R",
         {
             score:score10R
@@ -130,15 +132,14 @@ app.post("/tenRounds",  (req,res)=>
 app.get("/suddenDeath",async (req,res)=>
     {
         
+        
         let data:any = await dataForQuizQuestion();
         //[0] correctQuote
         //[1] correctMovie
         //[2] correctCharacter
         //[3] movieListMixed
         //[4] characterListMixed]
-        console.log(scoreSD);
-        console.log(roundSD);
-        if (scoreSD === roundSD){
+
             roundSD++;
             res.render("suddenDeath",
             {
@@ -150,23 +151,16 @@ app.get("/suddenDeath",async (req,res)=>
                 movieListMixed:data[3],
                 characterListMixed:data[4]
             })               
-        }
-        else{
+        })
 
-            res.redirect("quizPage")
-        }
         
-    })
+    
 
 app.post("/suddenDeath",(req,res)=>
 {
     let data = req.body;
-    console.log(data.quote);
-    console.log(data.favorite);
-    console.log(data.blacklistReason);
-    console.log(data.blacklist);
-    console.log(data.chosenCharacter);
-    console.log(data.chosenMovie);
+    console.clear();
+    console.log(data);
     if (data.favorite)
         {
             InputFavouriteQuote(data.quote,"dummie");
@@ -175,14 +169,16 @@ app.post("/suddenDeath",(req,res)=>
         {
             InputBlacklist(data.quote, data.blacklistReason, "dummie")
         }
-
-    scoreSD = scoreSD + (data.chosenCharacter === "true"? 0.5 : 0)+(data.chosenMovie === "true"? 0.5 : 0);
+    console.log(scoreSD);
+    scoreSD = scoreSD + (data.chosenCharacter === "true" && data.chosenMovie === "true"? 1 : 0);
+    console.log(scoreSD);
     if(roundSD === scoreSD)
         {
             res.redirect("suddenDeath");
         }
     else
     {
+        InputSDScore(scoreSD,"dummie");
         res.render("resultSD",
         {
             score:scoreSD

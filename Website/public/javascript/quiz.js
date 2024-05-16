@@ -47,33 +47,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
 
-    // Event listener voor knoppen met de klasse 'correctCharacter'
-    const correctCharButtons = document.querySelectorAll('.correctCharacter');
-    correctCharButtons.forEach(function(button) {
-        button.addEventListener('click', function() {
-            // Update de correctScore wanneer er op een correct karakterknop wordt geklikt
-            if (!correctCharSelected) {
-                correctScore += 0.5;
-                console.log("Correct Score: " + correctScore);
-                correctCharSelected = true; // Markeer dat de gebruiker een character heeft geselecteerd
-            }
+    
 
-            
-        });
-    });
-
-    // Event listener voor knoppen met de klasse 'correctMovie'
-    const correctMovButtons = document.querySelectorAll('.correctMovie');
-    correctMovButtons.forEach(function(button) {
-        button.addEventListener('click', function() {
-            // Update de correctScore wanneer er op een correct filmknop wordt geklikt
-            if (!correctMovSelected) {
-                correctScore += 0.5;
-                console.log("Correct Score: " + correctScore);
-                correctMovSelected = true; // Markeer dat de gebruiker een character heeft geselecteerd
-            }
-        });
-    });
+    
 
     // Event listener voor knoppen met de klasse 'volgende'
    // Event listener voor knoppen met de klasse 'volgende'
@@ -93,17 +69,7 @@ nextButtons.forEach(function(button) {
 
        
 
-        // Wacht 5 seconden voordat de pop-up wordt weergegeven
-        setTimeout(function() {
-            // Toon de totale score nadat de gebruiker op 'Volgende' heeft geklikt
-            const totalScore = correctScore + characterScore + movieScore;
-            console.log("Total Score: " + totalScore);
-
-            // Toon een pop-up bericht met de gemaakte keuzes en of het antwoord correct was
-            const chosenCharacter = correctCharButton.textContent;
-            const chosenMovie = correctMovButton.textContent;
-            const message = `Gekozen karakter: ${chosenCharacter}\nKarakter is ${correctCharSelected ? "correct" : "incorrect"}\nGekozen film: ${chosenMovie}\nFilm is ${correctMovSelected ? "correct" : "incorrect"}\nScore: ${correctScore}`;
-            alert(message);
+        
 
             
 
@@ -116,11 +82,11 @@ nextButtons.forEach(function(button) {
             correctMovSelected = false;
 
             // Laad de volgende pagina
-            window.location.reload();
+         
+            
             
         }, 2000); // Vertraging van 5000 milliseconden (5 seconden)
     });
 });
 
    
-});

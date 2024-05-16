@@ -20,7 +20,6 @@ export interface Quote
     dialog:string,
     character:string,
     movie:string,
-    reasonBL?:string
  }
 
  export interface Movie
