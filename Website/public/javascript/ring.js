@@ -5,7 +5,7 @@ ringImg.addEventListener('click', function() {
 
     ringImg.addEventListener('animationend', function() {
         // Verwijzen naar de volgende pagina
-        window.location.href = 'quizPage.html';
+        window.location.href = '/quizPage';
     });
 
     

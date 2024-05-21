@@ -13,7 +13,7 @@ html
         "body",
         "footer";
 
-    background-image: url(../assets/backgroundMap.webp);
+    background-image: url(./../assets/images/backgroundMap.webp);
     background-size:contain;
     
     
@@ -39,7 +39,7 @@ footer
 {
     width: 500px;
     height:400px;
-    background-image: url(../assets/backgroundquote.webp);
+    background-image: url(./../assets/images//backgroundquote.webp);
     background-size:cover;
     align-content: center;
 }

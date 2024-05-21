@@ -1,228 +1,307 @@
-import {Collection, MongoClient} from "mongodb";
-import {Quote,Movie,Character,RootObjectCharacter,RootObjectMovie,RootObjectQuote} from "./interfaces/types";
+import {Collection, MongoClient,ObjectId} from "mongodb";
+import {Quote,Movie,Character,RootObjectQuote,RootObjectCharacter,RootObjectMovie} from "./interfaces/types";
 import dotenv from "dotenv";
 dotenv.config();
 
 
-//dummy data
 
-let quotesAll:Quote[]= 
-[
-    {
-        character:"2",
-        movie:"6",
-        dialog:"Frodo H Battle"
-    },
-    {
-        character:"1",
-        movie:"3",
-        dialog:"Gandalf LOTR Returns"
-    },
-    {
-        character:"3",
-        movie:"1",
-        dialog:"Smaug LOTR Fellow"
-    }
-]
-
-
-let charactersAll:Character[] = 
-[
-    {
-        name:"Gandalf",
-        _id: "1"
-    },
-    {
-        name:"Frodo",
-        _id:"2"
-    },
-    {
-        name:"Smaug",
-        _id:"3"
-    }
-];
-
-
-
-let moviesAll:Movie[] = 
-[
-    {
-        name: "LOTR - The fellowship of the Ring",
-        _id:"1"
-    },
-    {
-        name: "LOTR - The Towers",
-        _id:"2"
-    },
-    {
-        name: "LOTR - The return of the King",
-        _id:"3"
-    },
-    {
-        name: "The Hobbit - an unexpected Journey",
-        _id:"4"
-    },
-    {
-        name: "The Hobbit - The desolation of Smaug",
-        _id:"5"
-    },
-    {
-        name: "The Hobbit - The battle of the five Armies",
-        _id:"6"
-    }
-];
-
-
-// hier de correcte manier om de Quote[] op te vullen via database.
-
+// hier zijn de const om verbinding te maken met met de DB
 export const client = new MongoClient(process.env.MONGO_URI ?? "localhost://27017");
-export const collectionQuotes:Collection<RootObjectQuote[]> = client.db("LOTR").collection("quotes");
-export const collectionFiltQuotes:Collection<Quote> = client.db("LOTR").collection("quotesFiltered");
-export const collectionMovies:Collection<RootObjectMovie[]> = client.db("LOTR").collection("movies");
-export const collectionCharacters:Collection<RootObjectCharacter[]> = client.db("LOTR").collection("characters");
+export const collectionQuotes:Collection<Quote> = client.db("LOTR").collection("quotes");
+export const collectionMovies:Collection<Movie> = client.db("LOTR").collection("movies");
+export const collectionCharacters:Collection<Character> = client.db("LOTR").collection("characters");
 
-// hier maken we verbinding met de DB
 
-async function deleteDBCollQuotes()
+
+
+
+
+//de key om de api op te roepen
+const apiKey = '2bV52o3FGbuxH6876ax5';
+
+// hier maken we de DataBases leeg, zodat we van O kunnen starten
+async function deleteDBCollections()
 {
     await collectionQuotes.deleteMany();
+    await collectionCharacters.deleteMany();
+    await collectionMovies.deleteMany();
+
+
 
 }
 
-//hier checken we of er al iets in de database zit, zoniet vullen we deze op
-const apiKey = '2bV52o3FGbuxH6876ax5';
-async function loadQuotesFromApi() {
-    const quotes = await collectionQuotes.find({}).toArray();
-    if (quotes.length == 0) 
+//we gaan 20 karakters nemen uit de LOTR reeks, we halen dus eerst de json van character binnen en ook ineens de Movies
+async function loadCharacters()
+{
+    let data=await collectionCharacters.find().toArray();
+    if (data.length ==0)
     {
-        console.log("DB leeg. DB vullen via API")
-        const responseQuotes = await fetch("https://the-one-api.dev/v2/quote", {
-            headers: {
-                'Authorization': `Bearer ${apiKey}`
-            }
-        });
-        const dataQuotes:RootObjectQuote[] = await responseQuotes.json();
-        //const dataMovies:Quote[] = moviesAll; // hier ook aanpassen als api werkt
-
-        await collectionQuotes.deleteMany();
-        await collectionQuotes.insertOne(dataQuotes);
-        const responseMovies = await fetch("https://the-one-api.dev/v2/movie", {
-            headers: {
-                'Authorization': `Bearer ${apiKey}`
-            }
-        });
-        const dataMovies:RootObjectMovie[] = await responseMovies.json();
-        //const dataMovies:Quote[] = moviesAll; // hier ook aanpassen als api werkt
-
-        await collectionMovies.deleteMany();
-        await collectionMovies.insertOne(dataMovies);
-        const responseChars = await fetch("https://the-one-api.dev/v2/character", {
-            headers: {
-                'Authorization': `Bearer ${apiKey}`
-            }
-        });
-        const dataChars:RootObjectCharacter[]=await responseChars.json();
-        //const characters:Character[] = charactersAll;
-        await collectionCharacters.deleteMany();
-        await collectionCharacters.insertOne(dataChars);
-
-    }
-    return quotes
-}
-
-async function filterQuotes()
-{
-    await loadQuotesFromApi();
-    let filteredQuotes:Quote[]= await collectionQuotes.find<Quote>({ $or: [{character:"1"},{character:"2"},{character:"3"}]}).toArray();
-    await collectionFiltQuotes.deleteMany();
-    await collectionFiltQuotes.insertMany(filteredQuotes);
-    return filteredQuotes;
-
-}
-
-
-export async function getQuote()
-{
-    await filterQuotes();
-    let quotes:Quote[] = await collectionFiltQuotes.find().toArray();
-    let correct:Quote= quotes[Math.ceil(Math.random()*quotes.length)-1];  
-    return correct;
-}
-
-
-export async function makeLists()
-{
-    let correctQuote:Quote = await getQuote();
-    console.log(correctQuote.dialog);
-    let quizList:string[][]=[["","","",""],["","",""]];       
-    for(let i=0;i<2;i++)
-    {
-        for(let j=0;j<2;j++)
+        // karakters
+        const responseChars = await fetch("https://the-one-api.dev/v2/character", 
         {
-            let same:boolean=true;
-            while(same)
+            headers: 
             {
-                let index:number= Math.ceil(Math.random()*3)-1;
-                if (i==0)
-                {
-                    if (correctQuote.character!=charactersAll[index]._id && quizList[i][0]!=charactersAll[index].name)
-                        {
-                            same=false;
-                            quizList[i][j]=charactersAll[index].name;
-                        }
-                }
-                else 
-                {
-                    if(correctQuote.movie!=moviesAll[index]._id && moviesAll[index].name!=quizList[j][0])
-                        {
-                            same=false;
-                            quizList[i][j]=moviesAll[index].name;
-                        }
-                }
+                'Authorization': `Bearer ${apiKey}`
             }
-            
+        });
+        //deze komt in een rootobject binnen genaamd docs. we gaan hier dus een foreach loop doen om ze dan in een eigen array te krijgen en deze toe te voegen aan de DB
+        const dataChars:RootObjectCharacter=await responseChars.json();
+        let chars:Character[]=[];
+        await dataChars.docs.forEach(e => {chars.push(e)});
+        await collectionCharacters.insertMany(chars);
+        return chars;
+    }
+    else
+    {
+        return true;
+    }
+}
 
-        }     
-    }
-    for(let movie of moviesAll)
+async function loadMovies() 
+{
+    let data=await collectionMovies.find().toArray();
+    if (data.length ==0)
     {
-        if (movie._id == correctQuote.movie)
+        // films
+        const responseMovies = await fetch("https://the-one-api.dev/v2/movie", 
         {
-            quizList[1][2]=(movie.name);
-        }
+            headers: 
+                {
+                    'Authorization': `Bearer ${apiKey}`
+                }
+        });
+        const dataMovies:RootObjectMovie = await responseMovies.json();
+        let movies:Movie[]=[];
+        await dataMovies.docs.forEach(e=>movies.push(e));
+        await collectionMovies.insertMany(movies);
+        return movies;
     }
-    for(let char of charactersAll)
+    else
     {
-        if (char._id == correctQuote.character)
-        {
-            quizList[0][2]=(char.name);
-        }
+        return true;
     }
-    let list:string[][]=[["","",""],["","",""]];
-    
-    for(let i=0;i<2;i++)
+}
+
+
+
+async function updateMovies()
+{
+    await loadMovies();
+    let data=await collectionMovies.find().toArray();
+    if (data.length >6)
     {
-        let index:number= Math.ceil(Math.random()*3)-1;
-        for(let j=0;j<3;j++)
-        {
-            list[i][j]=quizList[i][(j+index)%3];
-        }
+        //hier filteren we enkel de films eruit
+        const moviesFiltered:Movie[]|null = await collectionMovies.find<Movie>
+        ({$nor:
+            [    
+                {name : "The Lord of the Rings Series"},
+                {name : "The Hobbit Series"},
+            ]}).toArray();
+        await collectionMovies.deleteMany()
+        await collectionMovies.insertMany(moviesFiltered);
+        console.log("Films ontbraken")
+        return moviesFiltered;
     }
-    quizList[0][3]=correctQuote.dialog;
+    else 
+    {
+        console.log("Films reeds ingeladen")
+        return true;
+    }
     
-    return [list,quizList];
-    
+}
+
+async function updateCharacter()
+{
+    await loadCharacters();
+    let characters=await collectionCharacters.find().toArray();
+    if (characters.length > 20) {
+        // hier kiezen we onze 20 karakters
+        const charactersFiltered: Character[] | null = await collectionCharacters.find<Character>({
+            $or: [
+                { name: "Gandalf" },
+                { name: "Frodo Baggins" },
+                { name: "Gollum" },
+                { name: "Aragorn II Elessar" },
+                { name: "Samwise Gamgee" },
+                { name: "Gimli" },
+                { name: "Galadriel" },
+                { name: "Legolas" },
+                { name: "Sauron" },
+                { name: "Saruman" },
+                { name: "Peregrin Took" },
+                { name: "Meriadoc Brandybuck" },
+                { name: "Bilbo Baggins" },
+                { name: "Boromir" },
+                { name: "Arwen" },
+                { name: "Elrond" },
+                { name: "Théoden" },
+                { name: "Treebeard" },
+                { name: "Éowyn" },
+                { name: "Faramir" }
+            ]
+        }).toArray();
+        
+        await collectionCharacters.deleteMany();
+        await collectionCharacters.insertMany(charactersFiltered);
+        console.log("Karakters ontbraken");
+        return charactersFiltered;
+    }
+    else 
+    {
+        console.log("Karakters reeds ingeladen");
+        return true;
+    }
+}
+
+async function uploadQuotes()
+{
+    let data=await collectionQuotes.find().toArray();
+    if (data.length < 2032)
+    {
+        console.log("Quotes ontbraken/onvolledig");
+        // alles uit de collection halen om erna te vullen
+        await collectionQuotes.deleteMany();
+
+        // we gaan fetchen via de id van karakters.. deze halen we op uit de gefilterde versie en we zetten deze in een array van id(string) door ze te pushen bij een lege array
+        let idCharacters:Character[]=await collectionCharacters.find().toArray();
+
+        // deze array gaan we dan gebruiken om alle fetches te doen met de juiste id, dus moesten we id's toevoegen in de filteringswijze dan komen deze automatisch hierbij.
+        // alle quotes van bepaald karakter binnenhalen en deze plakken we allemaal aan elkaar (idKarakters=allId[0])
+        for (let id of idCharacters)
+        {           
+            console.log(id.name);
+            const responseQuotes = await fetch("https://the-one-api.dev/v2/character/"+id._id+"/quote", 
+            {
+                headers: 
+                {
+                    'Authorization': `Bearer ${apiKey}`
+                }
+            });
+            const dataQuotes:RootObjectQuote = await responseQuotes.json();
+        
+            // we vullen de collectie met alle quotes die in de docs zitten door er een foreach lus over te runnen
+            let quotesList:Quote[]=[];
+            dataQuotes.docs.forEach(e=>quotesList.push(e))
+            await collectionQuotes.insertMany(quotesList);
+            
+        }         
+    }
+    return data;
 }
 
 
 
 
 
-export async function LoadNewQuestion() 
+
+
+//hier schrijven we de functie die checkt of er al iets in de database zit, zoniet vullen we deze op met een array van objecten die erin horen, we roepen deze later op
+async function loadToDB() 
 {
 
 
+    // hier gaan we dan adh filtering karakters ook al die zijn quotes opldaden in array
+    let quotes = await collectionQuotes.find().toArray();
+    let movies= await collectionMovies.find().toArray();
+    let characters = await collectionCharacters.find().toArray();
+    if (quotes.length <2032  || movies.length == 0 || characters.length == 0) 
+    {
+        console.log("Er ontbreekt data in de Databank, even nakijken")
+        //we roepen beide uitgeschreven updatefuncties aan
+        await updateMovies();
+        await updateCharacter();
+        await uploadQuotes();  
+    }
+    else 
+    {
+        console.log("Databank is volledig")
+    }
+    return quotes;
 }
+
+
+
+
+
+        
+
+                        //pagina specifiek
+
+
+
+
+
+
+// deze maakt lijsten op door een quote te zoeken. dan in movie en karakter collection te zoeken naar de namen via de id
+    // [correctQuote.dialog,movieList,movieListMixed,characterList,characterListMixed]
+    export async function dataForQuizQuestion() {
+        let quoteList: Quote[] = await collectionQuotes.find().toArray();
+    
+        // Controleer of de quoteList niet leeg is
+        if (quoteList.length > 0) {
+            let correctQuote: Quote = quoteList[Math.ceil(Math.random() * quoteList.length) - 1];
+            let correctMovie: Movie | null = await collectionMovies.findOne({ _id: correctQuote.movie });
+            let correctCharacter: Character | null = await collectionCharacters.findOne({ _id: correctQuote.character });
+            let charactersAll: Character[] = await collectionCharacters.find().toArray();
+            let moviesAll: Movie[] = await collectionMovies.find().toArray();
+    
+            // Controleren of correctMovie en correctCharacter niet null zijn
+            if (correctCharacter != null && correctMovie != null) {
+                // Array's initialiseren voor de namen van films en karakters
+                let movieList: string[] = [correctMovie.name, "", ""];
+                let characterList: string[] = [correctCharacter.name, "", ""];
+    
+                // Lus om karakters te vullen
+                for (let i = 0; i < 2; i++) {
+                    let same: boolean = true;
+                    while (same) {
+                        let index: number = Math.ceil(Math.random() * charactersAll.length) - 1;
+                        if (charactersAll[index]._id != correctCharacter._id && charactersAll[index].name != characterList[i]) {
+                            same = false;
+                            characterList[i + 1] = charactersAll[index].name;
+                        }
+                    }
+                }
+    
+                // Lus om films te vullen
+                for (let i = 0; i < 2; i++) {
+                    let same: boolean = true;
+                    while (same) {
+                        let index: number = Math.ceil(Math.random() * moviesAll.length) - 1;
+                        if (moviesAll[index]._id != correctMovie._id && moviesAll[index].name != movieList[i]) {
+                            same = false;
+                            movieList[i + 1] = moviesAll[index].name;
+                        }
+                    }
+                }
+    
+                // Aanmaak van 2 nieuwe array's waar de volgorde random is
+                let movieListMixed: string[] = ["", "", ""];
+                let indexMovie: number = Math.ceil(Math.random() * 3) - 1;
+                for (let j = 0; j < 3; j++) {
+                    movieListMixed[j] = movieList[(j + indexMovie) % 3];
+                }
+    
+                let characterListMixed: string[] = ["", "", ""];
+                let indexchar: number = Math.ceil(Math.random() * 3) - 1;
+                for (let j = 0; j < 3; j++) {
+                    characterListMixed[j] = characterList[(j + indexchar) % 3];
+                }
+    
+                // Console.log van de juiste quote, film en karakter
+                console.log("quote: " + correctQuote.dialog, "\njuiste film: " + correctMovie.name, "\njuist karakter: " + correctCharacter.name);
+                
+                // Return van alle relevante gegevens voor de quizronde
+                return [correctQuote, correctMovie, correctCharacter, movieListMixed, characterListMixed];
+            } else {
+                console.log("Fout bij vinden karakter/film");
+            }
+        } else {
+            console.log("Geen quotes gevonden in de database. Vul de database met quotes voordat je de quiz start.");
+            // Eventueel extra stappen om de database te vullen met quotes...
+        }
+    }
+
 
 async function exit() {
     try {
@@ -240,8 +319,13 @@ export async function connect()
     {
         await client.connect();
         console.log("Verbonden met DB");
-        await deleteDBCollQuotes();
-        await makeLists();
+        // await deleteDBCollections();  // kan later weggelaten worden
+    
+        
+        await loadToDB();
+        console.log("quiz");
+    
+
         process.on("SIGINT", exit);
     }
     catch (e)
@@ -250,4 +334,3 @@ export async function connect()
     }   
 }
 
-connect();
