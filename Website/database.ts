@@ -1,6 +1,8 @@
 import {Collection, MongoClient,ObjectId} from "mongodb";
-import {Quote,Movie,Character,RootObjectQuote,RootObjectCharacter,RootObjectMovie,User} from "./interfaces/types";
+import {Quote,Movie,Character,RootObjectQuote,RootObjectCharacter,RootObjectMovie,User, BlacklistQuote} from "./interfaces/types";
 import dotenv from "dotenv";
+import { userInfo } from "os";
+import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
 dotenv.config();
 
 // hier zijn de const om verbinding te maken met met de DB
@@ -9,6 +11,7 @@ export const collectionQuotes:Collection<Quote> = client.db("LOTR").collection("
 export const collectionMovies:Collection<Movie> = client.db("LOTR").collection("movies");
 export const collectionCharacters:Collection<Character> = client.db("LOTR").collection("characters");
 export const collectionUsers:Collection<User> = client.db("LOTR").collection("users");
+
 
 //de key om de api op te roepen
 const apiKey = '2bV52o3FGbuxH6876ax5';
@@ -200,18 +203,45 @@ async function loadToDB()
     }
     return quotes;
 }
+                        // user specifiek
 
-                        //pagina specifiek
+
+
+let currentUser:User|null;
+
+export async function LoadUser(user:string){
+    if (!user){
+        currentUser= await collectionUsers.findOne({name:"dummie"})
+    }
+    else{
+        currentUser=await collectionUsers.findOne({name:user})
+    }
+}
+
+
+
+                        //pagina specifiek 
 
 
 // deze maakt lijsten op door een quote te zoeken. dan in movie en karakter collection te zoeken naar de namen via de id
     // [correctQuote.dialog,movieList,movieListMixed,characterList,characterListMixed]
-export async function dataForQuizQuestion() {
-        let quoteList: Quote[] = await collectionQuotes.find().toArray();
+    export async function dataForQuizQuestion() {
+
+       
+        let quoteList:Quote[]=[];
+        if (currentUser){
+            console.log("userQuotes");
+            currentUser.quotesPerUser.forEach(e=>quoteList.push(e));
+        }
+        else
+        {
+           console.log("allQuotes");
+            quoteList = await collectionQuotes.find().toArray();
+        }
     
         // Controleer of de quoteList niet leeg is
         if (quoteList.length > 0) {
-            let correctQuote: Quote = quoteList[Math.ceil(Math.random() * quoteList.length) - 1];
+            let correctQuote: Quote = quoteList[(Math.floor(Math.random() * quoteList.length))] ;
             let correctMovie: Movie | null = await collectionMovies.findOne({ _id: correctQuote.movie });
             let correctCharacter: Character | null = await collectionCharacters.findOne({ _id: correctQuote.character });
             let charactersAll: Character[] = await collectionCharacters.find().toArray();
@@ -275,21 +305,118 @@ export async function dataForQuizQuestion() {
 }
 
 
+
+
+
 //     User aanmaken
 
 export async function CreateDummieUser()
 {
+    let allQuotes:Quote[]=await collectionQuotes.find().toArray();
     let dummie:User=
     {
         name: "dummie" ,
         password: "password",
-        email: "dummie|ap.be",
+        email: "dummie@ap.be",
         score10Rounds:[1,4,10],
         scoreSD:[2,5,9],
         favourite:[],
-        blacklist:[]
+        blacklist:[],
+        quotesPerUser:allQuotes
+    }
+    collectionUsers.deleteMany();
+    await collectionUsers.insertOne(dummie);
+
+
+}
+
+
+export async function InputFavouriteQuote(quoteF: string, user: string)
+{
+    let quote:Quote|null= await collectionQuotes.findOne({dialog:quoteF});
+    if (quote){
+        let double:User|null = await collectionUsers.findOne({name:user,favourite:quote});
+        if (double)
+            {
+                console.log("quote reeds als favoriet opgeslagen")
+            }
+        else
+        {
+            await collectionUsers.findOneAndUpdate({
+                name:user
+            },
+            {
+                $push:{favourite:quote}
+            })
+        }
+        return true;
+    }
+    else {
+        return false;
     }
 }
+
+
+export async function InputBlacklist(quoteBL: string, reasonBL:string, user: string)
+{
+    let quote:Quote|null= await collectionQuotes.findOne({dialog:quoteBL});
+    
+    if (quote){
+        let blacklistQuote:BlacklistQuote={
+            quote:quote,
+            reason:reasonBL
+        }
+        let double:User|null = await collectionUsers.findOne({name:user,blacklist:blacklistQuote});
+        if (double)
+            {
+                console.log("fout in de code/logica/mocht niet getoond worden");
+            }
+        else
+        {
+            await collectionUsers.findOneAndUpdate({
+                name:user
+            },
+            {
+                $push:{blacklist:blacklistQuote}
+            })
+            await collectionUsers.deleteOne({
+                name:user,
+                quotesPerUser:quote
+            })
+        }
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+export async function Input10RScore(score: number, user: string){
+    let userInput:User|null = await collectionUsers.findOne({name:user});
+    if (userInput){
+        await collectionUsers.findOneAndUpdate({
+            name:user
+        },
+        {
+            $push:{score10Rounds:score}
+        })
+    }
+}
+
+export async function InputSDScore(score: number, user: string){
+    let userInput:User|null = await collectionUsers.findOne({name:user});
+    if (userInput){
+        await collectionUsers.findOneAndUpdate({
+            name:user
+        },
+        {
+            $push:{scoreSD:score}
+        })
+    }
+}
+
+
+
 
 
 

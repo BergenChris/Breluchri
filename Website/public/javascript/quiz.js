@@ -2,9 +2,7 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     // Variabelen voor scores van correct, character en movie
-    let correctScore = 0;
-    let characterScore = 0;
-    let movieScore = 0;
+   
 
     // Houd bij of de gebruiker al een character en movie heeft geselecteerd
     let characterSelected = false;
@@ -95,17 +93,7 @@ nextButtons.forEach(function(button) {
 
         // Wacht 5 seconden voordat de pop-up wordt weergegeven
         setTimeout(function() {
-            // Toon de totale score nadat de gebruiker op 'Volgende' heeft geklikt
-            const totalScore = correctScore + characterScore + movieScore;
-            console.log("Total Score: " + totalScore);
-
-            // Toon een pop-up bericht met de gemaakte keuzes en of het antwoord correct was
-            const chosenCharacter = correctCharButton.textContent;
-            const chosenMovie = correctMovButton.textContent;
-            const message = `Gekozen karakter: ${chosenCharacter}\nKarakter is ${correctCharSelected ? "correct" : "incorrect"}\nGekozen film: ${chosenMovie}\nFilm is ${correctMovSelected ? "correct" : "incorrect"}\nScore: ${correctScore}`;
-            alert(message);
-
-            
+          
 
             // Reset de selectie nadat op 'Volgende' is geklikt
             characterSelected = false;

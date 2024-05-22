@@ -3,9 +3,7 @@
 <main class="col-12 col-lg-9 mx-auto bg-opacity-25  bg-transparent row">
     <section class=" row text-center">
         <section class="row">
-            <h1><%=round%>/10</h1>
-            <h2>Score: <%=score%></h2>
-           
+            <h1>Ronde <%=round%></h1>
         </section>
     </section>
     <section >
@@ -45,10 +43,10 @@
                     </button>
                 <% } %>
             </section>
-        </section >
+        </section>
         
 
-            <form  action="/tenRounds" method="POST">
+        <form  action="/suddenDeath" method="POST">
                 
             <section  style="display:none">
                 // hier moeten alle value ingeladen worden
@@ -70,6 +68,7 @@
                 
             </form>
             <a href="/quizPage"><button type="button">STOP</button></a>
+            
             
          
             

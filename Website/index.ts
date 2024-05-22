@@ -1,9 +1,10 @@
 import express  from "express";
 import ejs from "ejs";
-import {connect} from "./database";
-import { getSourceMapRange, resolveTypeReferenceDirective } from "typescript";
-import { title } from "process";
-const { dataForQuizQuestion } = require("./database");
+import {CreateDummieUser, Input10RScore, InputBlacklist, InputFavouriteQuote, InputSDScore, LoadUser, collectionUsers, connect,dataForQuizQuestion} from "./database";
+import { User } from "./interfaces/types";
+
+
+
 
 const app = express();
 
@@ -20,16 +21,23 @@ app.get("/",(req,res)=>
     res.render("index");
 })
 
-app.get("/login",(req,res)=>
+
+
+app.get("/login",async(req,res)=>
 {
+    await CreateDummieUser();
     res.render("login",
     {
         titlePage:"Login"
     });
+    await LoadUser("dummie");
+
 })
 
-app.post("/login",(req,res)=>
+
+app.post("/login",async (req,res)=>
 {
+    await CreateDummieUser();
     // checken of je ingelogd bent
     res.redirect("quizPage");
 })
@@ -42,18 +50,88 @@ app.get("/introPage",(req,res)=>
     });
 })
 
-app.get("/quizPage",(req,res)=>
-    {
-        res.render("quizPage",
-            {
-                titlePage:"Kies de Quiz",
-            }
-        )
-    })
+// quizgedeelte
+
+export let score10R:number=0;
+export let scoreSD:number=0;
+export let round10R:number=0;
+export let roundSD:number=0;
 
 
-app.get("/tenRounds",async (req,res)=>
+app.get("/quizPage",(req,res)=>{
+        
+                scoreSD=0;
+                roundSD=0;
+                score10R=0;
+                round10R=0;
+                res.render("quizPage",
+                    {
+                        titlePage:"Kies de Quiz",
+                    }
+                )
+            })
+
+
+
+app.get("/tenRounds", async (req, res) => {
+    
+   
+            let data:any = await dataForQuizQuestion();
+            round10R++;
+            console.log("Round:", round10R);
+            console.log("Score:", score10R);
+    
+ 
+                res.render("tenRounds", {
+                    score: score10R,
+                    titlePage: "10 Rondes",
+                    round: round10R,
+                    quote: data[0],
+                    movie: data[1],
+                    character: data[2],
+                    movieListMixed: data[3],
+                    characterListMixed: data[4]
+                });
+   
+            
+       
+    });
+    
+app.post("/tenRounds",  (req,res)=>
+{
+    let dataP = req.body;
+    console.log("na post");
+    console.log(dataP);
+    if (dataP.favourite)
+        {
+            InputFavouriteQuote(dataP.quote,"dummie");
+        }
+    if (dataP.blacklist)
+        {
+            InputBlacklist(dataP.quote, dataP.blacklistReason, "dummie")
+        }
+    
+    score10R = score10R + (dataP.chosenCharacter === "true" && dataP.chosenMovie === "true"? 1 : 0);
+    if(round10R < 10)
+        {
+            
+            res.redirect("tenRounds")    
+        }
+    else
     {
+        Input10RScore(score10R,"dummie");
+        res.render("result10R",
+        {
+            score:score10R
+        });
+    }
+    
+})
+
+
+app.get("/suddenDeath",async (req,res)=>
+    {
+        
         
         let data:any = await dataForQuizQuestion();
         //[0] correctQuote
@@ -61,19 +139,55 @@ app.get("/tenRounds",async (req,res)=>
         //[2] correctCharacter
         //[3] movieListMixed
         //[4] characterListMixed]
+
+            roundSD++;
+            res.render("suddenDeath",
+            {
+                titlePage:"Sudden Death",
+                round:roundSD,
+                quote:data[0],
+                movie:data[1],
+                character:data[2],
+                movieListMixed:data[3],
+                characterListMixed:data[4]
+            })               
+        })
+
         
-        res.render("tenRounds",
+    
+
+app.post("/suddenDeath",(req,res)=>
+{
+    let data = req.body;
+    console.clear();
+    console.log(data);
+    if (data.favorite)
         {
-            titlePage:"10 Rondes",
-            quote:data[0],
-            movie:data[1],
-            character:data[2],
-            movieListMixed:data[3],
-            characterListMixed:data[4]
-        })     
-            
-        
-    })
+            InputFavouriteQuote(data.quote,"dummie");
+        }
+    if (data.blacklist)
+        {
+            InputBlacklist(data.quote, data.blacklistReason, "dummie")
+        }
+    console.log(scoreSD);
+    scoreSD = scoreSD + (data.chosenCharacter === "true" && data.chosenMovie === "true"? 1 : 0);
+    console.log(scoreSD);
+    if(roundSD === scoreSD)
+        {
+            res.redirect("suddenDeath");
+        }
+    else
+    {
+        InputSDScore(scoreSD,"dummie");
+        res.render("resultSD",
+        {
+            score:scoreSD
+        });
+    }
+    
+})
+
+
 app.get("/accountPage",async (req,res)=>
     {
         // let user:User=await getSourceMapRange();
@@ -85,53 +199,15 @@ app.get("/accountPage",async (req,res)=>
 
     })
 
-app.listen(app.get("port"), async () => {
-    await connect();
-    console.log( "[server] http://localhost:" + app.get("port"));
-});
-export{};
 
 
 
-
-
-
-
-app.get("/quizPage",(req,res)=>
-{
-    res.render("quizPage")
-})
-
-
-
-app.get("/tenRounds",(req,res)=>{
-
-    res.render("tenRounds")
-})
-
-app.get("/quizTenRounds",(req,res)=>
-{
-    
-    res.render("quizTenRounds",
-    {
-        /*
-        quote:quote,
-        movies:movies,
-        chars:characters
-        */
-
-    })
-})
 
 app.get("/quizSuddenDeath",(req,res)=>
 {
     res.render("quizSuddenDeath",
     {
-        /*
-        quote:quote,
-        movies:movies,
-        chars:characters
-        */
+        titlePage:"Sudden Death"
     })
 })
 
@@ -139,7 +215,7 @@ app.get("/blacklist",(req,res)=>
 {
     res.render("blacklist",
     {
-        //quoteBL:quotebl
+        titlePage:"Blacklisy"
     })
     
 })
@@ -148,24 +224,17 @@ app.get("/favourites",(req,res)=>
     {
         res.render("favourites",
         {
-            //quoteBL:quotefav
+            titlePage:"Favoriete Quotes"
         })
         
     })
 
-app.get("/test",(req,res)=>
-{
-    res.render("test",
-        {
-            
-        }
-    )
-})
 
-// Verwerk het POST-verzoek van het formulier
-app.post('/process-form', (req, res) => {
-    // Ontvang de gegevens van het formulier uit het verzoek
-    const { correctScore, characterScore, movieScore, chosenCharacter, chosenMovie, correctCharSelected, correctMovSelected } = req.body;
-    // Render de 'score.ejs' pagina met de ontvangen gegevens
-    res.render('score', { correctScore, characterScore, movieScore, chosenCharacter, chosenMovie, correctCharSelected, correctMovSelected });
+
+
+
+app.listen(app.get("port"), async () => {
+    await connect();
+    console.log( "[server] http://localhost:" + app.get("port"));
 });
+export{};
