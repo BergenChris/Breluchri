@@ -1,7 +1,9 @@
 import express  from "express";
 import ejs from "ejs";
-import {CreateDummieUser, Input10RScore, InputBlacklist, InputFavouriteQuote, InputSDScore, LoadUser, collectionUsers, connect,dataForQuizQuestion} from "./database";
+import { createUser, login, CreateDummieUser, Input10RScore, InputBlacklist, InputFavouriteQuote, InputSDScore, LoadUser, collectionUsers, connect,dataForQuizQuestion} from "./database";
 import { User } from "./interfaces/types";
+import { secureMiddleware } from "./middleware/secureMiddleware";
+import session from "./session";
 
 
 
@@ -10,6 +12,7 @@ const app = express();
 
 app.set("view engine", "ejs");
 app.set("port", 3000);
+app.use(session);
 
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
@@ -23,26 +26,71 @@ app.get("/",(req,res)=>
 
 
 
-app.get("/login",async(req,res)=>
-{
-    await CreateDummieUser();
-    res.render("login",
+//
+
+app.get("/login",(req,res)=>
     {
-        titlePage:"Login"
+        res.render("login",
+        {
+            titlePage:"Login"
+        });
+    })
+
+
+app.post("/login", async(req, res) => {
+    const email : string = req.body.email;
+    const password : string = req.body.password;
+    try {
+        let user : User = await login(email, password);
+        delete user.password; 
+        req.session.user = user;
+        res.redirect("/introPage")
+    } catch (e : any) {
+        res.redirect("/login");
+    }
+});
+
+app.get("/register", (req, res) => {
+    res.render("register",
+        {
+        titlePage:"registreren"
+        }
+    );
+});
+
+app.post("/register", async(req, res) => {
+    const {email} = req.body;
+    const {name} = req.body;
+    const {password} = req.body;
+    console.log(email, name, password);
+    await createUser(email, name, password);
+    res.redirect("/login")  
+
+});
+
+app.get("/recover", (req, res) => {
+    res.render("recover",
+        {
+        titlePage:"wachtwoord vergeten"
+        }
+    );
+});
+
+app.post('/recover', (req, res) => {
+    const { email } = req.body;
+
+    
+    console.log(`Mail verzonden naar ${email}`);
+    res.status(200).send("Gelukt");
+});
+
+app.get("/logout", async(req, res) => {
+    req.session.destroy(() => {
+        res.redirect("/login");
     });
-    await LoadUser("dummie");
+});
 
-})
-
-
-app.post("/login",async (req,res)=>
-{
-    await CreateDummieUser();
-    // checken of je ingelogd bent
-    res.redirect("quizPage");
-})
-
-app.get("/introPage",(req,res)=>
+app.get("/introPage", secureMiddleware,(req,res)=>
 {
     res.render("introPage",
     {
@@ -215,7 +263,7 @@ app.get("/blacklist",(req,res)=>
 {
     res.render("blacklist",
     {
-        titlePage:"Blacklisy"
+        titlePage:"Blacklist"
     })
     
 })

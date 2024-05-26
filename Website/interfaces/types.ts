@@ -43,13 +43,13 @@ export interface Quote
  {
    
    name:string,
-   password:string,
+   password?:string,
    email:string,
-   score10Rounds:number[],
-   scoreSD:number[],
-   favourite:Quote[],
-   blacklist:BlacklistQuote[],
-   quotesPerUser:Quote[]
+   score10Rounds?:number[],
+   scoreSD?:number[],
+   favourite?:Quote[],
+   blacklist?:BlacklistQuote[],
+   quotesPerUser?:Quote[]
     
  }
  export interface BlacklistQuote

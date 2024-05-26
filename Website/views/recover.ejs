@@ -1,0 +1,11 @@
+<%- include("partials/headerLogin")%>
+    <div>
+        <h2>wachtwoord vergeten</h2>
+        <form id="forgot-password-form" action="/recover" method="POST">
+            <div>
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <button type="submit">verzenden</button>
+        </form>
+    </div>

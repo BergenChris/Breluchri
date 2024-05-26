@@ -1,17 +1,23 @@
 <%- include("partials/headerLogin")%>
 
 <main class=" col-12  col-lg-6  align-items-center mx-auto" >
-    <form class=" backgroundbrown rounded g-4" action="#" method="POST"  >
+    <form class=" backgroundbrown rounded g-4" action="/login" method="POST"  >
     <div>
-        <label class="form-label" for="username">Gebruikersnaam:</label>
-        <input class="form-control mb-3" type="text" placeholder="Gebruikersnaam" name="username" required>
+        <label class="form-label" for="email">E-mail</label>
+        <input class="form-control mb-3" type="email" id="email" placeholder="e-mail" name="email" required>
     </div>
     <div>
-        <label class="form-label" for="password">Wachtwoord:</label>
+        <label class="form-label" for="password">Wachtwoord</label>
         <input class="form-control mb-3" type="password" placeholder="Wachtwoord" name="password" required>
     </div>
     <div>
-        <a href="/introPage"><button class="btn btn-warning mb-3 resetfont" type="button" href="quiz.html">Login</button></a>
+        <button class="btn btn-warning mb-3 resetfont" type="submit">Login</button>
+    </div>
+    <div>
+        <a href="/register"><button class="btn btn-warning mb-3 resetfont" type="button" href="/register">account aanmaken</button></a>
+    </div>
+    <div>
+        <a href="/recover"><button class="btn btn-warning mb-3 resetfont" type="button" href="/recover">wachtwoord vergeten?</button></a>
     </div>
     </form>
 </main>

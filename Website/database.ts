@@ -3,6 +3,8 @@ import {Quote,Movie,Character,RootObjectQuote,RootObjectCharacter,RootObjectMovi
 import dotenv from "dotenv";
 import { userInfo } from "os";
 import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
+import bcrypt from "bcrypt";
+import { name } from "ejs";
 dotenv.config();
 
 // hier zijn de const om verbinding te maken met met de DB
@@ -11,6 +13,54 @@ export const collectionQuotes:Collection<Quote> = client.db("LOTR").collection("
 export const collectionMovies:Collection<Movie> = client.db("LOTR").collection("movies");
 export const collectionCharacters:Collection<Character> = client.db("LOTR").collection("characters");
 export const collectionUsers:Collection<User> = client.db("LOTR").collection("users");
+export const MONGO_URI = process.env.MONGO_URI ?? "mongodb://localhost:27017";
+
+const saltRounds : number = 10;
+
+async function createInitialUser() {
+    if (await collectionUsers.countDocuments() > 0) {
+        return;
+    }
+    let email : string | undefined = process.env.ADMIN_EMAIL;
+    let password : string | undefined = process.env.ADMIN_PASSWORD;
+    let name : string | undefined = process.env.ADMIN_NAME;
+    if (email === undefined || password === undefined ||name === undefined) {
+        throw new Error("Gegevens niet volledig");
+    }
+    await collectionUsers.insertOne({
+        name: name,
+        email: email,
+        password: await bcrypt.hash(password, saltRounds)
+    });
+}
+
+export async function createUser(email: string, password: string, name: string){
+    if (email === undefined || password === undefined || name === undefined) {
+        throw new Error("Gegevens niet volledig");
+    }
+    await collectionUsers.insertOne({
+        name: name,
+        email: email,
+        password: await bcrypt.hash(password, saltRounds)
+    });
+}
+
+export async function login(email: string, password: string) {
+    if (email === "" || password === "") {
+        throw new Error("E-mail en password verplicht");
+    }
+    let user : User | null = await collectionUsers.findOne<User>({email: email});
+    if (user) {
+        if (await bcrypt.compare(password, user.password!)) {
+            return user;
+        } else {
+            throw new Error("Wachtwoord niet correct");
+        }
+    } else {
+        throw new Error("Gebruiker niet gevonden");
+    }
+}
+
 
 
 //de key om de api op te roepen
@@ -231,7 +281,7 @@ export async function LoadUser(user:string){
         let quoteList:Quote[]=[];
         if (currentUser){
             console.log("userQuotes");
-            currentUser.quotesPerUser.forEach(e=>quoteList.push(e));
+            //currentUser.quotesPerUser.forEach(e=>quoteList.push(e));
         }
         else
         {
@@ -318,8 +368,8 @@ export async function CreateDummieUser()
         name: "dummie" ,
         password: "password",
         email: "dummie@ap.be",
-        score10Rounds:[1,4,10],
-        scoreSD:[2,5,9],
+        score10Rounds:[],
+        scoreSD:[],
         favourite:[],
         blacklist:[],
         quotesPerUser:allQuotes
@@ -436,6 +486,7 @@ export async function connect()
     {
         await client.connect();
         console.log("Verbonden met DB");
+        await createInitialUser();
         // await deleteDBCollections();  // kan later weggelaten worden
     
         
