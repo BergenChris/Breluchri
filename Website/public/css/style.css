@@ -1,15 +1,15 @@
 @font-face {
     font-family: "LOTRfont1";
-    src: url(../Website/public/assets/fonts/fontlotr.ttf);
+    src: url(./../assets/fonts/fontlotr.ttf);
 }
 
 @font-face {
     font-family: "LOTRfont2";
-    src: url(../Website/public/assets/fonts/MorrisRoman-Black.ttf);
+    src: url(./../assets/fonts/MorrisRoman-Black.ttf);
 }
 @font-face {
     font-family: "readingText";
-    src: url(../Website/public/assets/fonts/PlayfairDisplayMedium-9YKZK.ttf);
+    src: url(./../assets/fonts/PlayfairDisplayMedium-9YKZK.ttf);
 }
 
 html {

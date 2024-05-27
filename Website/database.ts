@@ -342,11 +342,11 @@ export async function CreateDummieUser()
 }
 
 
-export async function InputFavouriteQuote(quoteF: string, user: string)
+export async function InputFavouriteQuote(quote: Quote, user: string)
 {
-    let quote:Quote|null= await collectionQuotes.findOne({dialog:quoteF});
-    if (quote){
-        let double:User|null = await collectionUsers.findOne({name:user,favourite:quote});
+    let quoteResponce:Quote|null= await collectionQuotes.findOne(quote);
+    if (quoteResponce){
+        let double:User|null = await collectionUsers.findOne(quoteResponce);
         if (double)
             {
                 console.log("quote reeds als favoriet opgeslagen")
@@ -357,7 +357,7 @@ export async function InputFavouriteQuote(quoteF: string, user: string)
                 name:user
             },
             {
-                $push:{favourite:quote}
+                $push:{favourite:quoteResponce}
             })
         }
         return true;
@@ -368,13 +368,13 @@ export async function InputFavouriteQuote(quoteF: string, user: string)
 }
 
 
-export async function InputBlacklist(quoteBL: string, reasonBL:string, user: string)
+export async function InputBlacklist(quote:Quote, reasonBL:string, user: string)
 {
-    let quote:Quote|null= await collectionQuotes.findOne({dialog:quoteBL});
+    let quoteResponce:Quote|null= await collectionQuotes.findOne(quote);
     
-    if (quote){
+    if (quoteResponce){
         let blacklistQuote:BlacklistQuote={
-            quote:quote,
+            quote:quoteResponce,
             reason:reasonBL
         }
         let double:User|null = await collectionUsers.findOne({name:user,blacklist:blacklistQuote});
@@ -392,7 +392,7 @@ export async function InputBlacklist(quoteBL: string, reasonBL:string, user: str
             })
             await collectionUsers.deleteOne({
                 name:user,
-                quotesPerUser:quote
+                quotesPerUser:quoteResponce
             })
         }
         return true;

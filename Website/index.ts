@@ -153,7 +153,6 @@ app.get("/suddenDeath",async (req,res)=>
 app.post("/suddenDeath",(req,res)=>
 {
     let data = req.body;
-    console.clear();
     console.log(data);
     if (data.favorite)
         {
@@ -165,7 +164,7 @@ app.post("/suddenDeath",(req,res)=>
         }
     console.log(scoreSD);
     scoreSD = scoreSD + (data.chosenCharacter === "true" && data.chosenMovie === "true"? 1 : 0);
-    console.log(scoreSD);
+    console.log(scoreSD ===roundSD);
     if(roundSD === scoreSD)
         {
             res.redirect("suddenDeath");

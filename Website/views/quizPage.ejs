@@ -1,65 +1,55 @@
 <%- include("partials/header")%>
 
 
-<main class="col-12 col-md-9 mt-0">
-    <h1 class="col-12 fs-1 fw-bolder text-center brown">Kies je battle! </h1>
+<main class="col-10 col-md-9 mt-0 mx-auto">
+    <h1 class="col-12 fs-1 fw-bolder text-center brown">kies je battle! </h1>
     <p class="reading">Link de quote van de film aan het juiste karakter. </p>
-    <section class="col-4  ms-5 float-start   bg-opacity-50 rounded   " >
-        <h2 class="col-12 fs-1 fw-bolder text-center brown">Sudden death</h2>
-        <h2 class="fs-1 text-center  list-group reading">spelregels:</h2>
-            <ul class="reading list-unstyled">
-                <li class="fw-bold fs-5   text-center p-2">Speel tot je een fout antwoord ingeeft</li>
-                <br>
-                
-            </ul>
-            <h2 class="fs-1 text-center  list-group reading">Score:</h2>
-            <ul class="reading list-unstyled">
+    <section class="row ">
+        <h2 class="col-7 fs-1 fw-bolder text-center reading mx-auto">spelregels:</h2>
+    </section>
+    <section class="row mx-auto">
+        <h2 class="col-6 fs-1 fw-bolder text-center brown mx-auto">Sudden death</h2>
+        <h2 class="col-6 fs-1 fw-bolder text-center brown mx-auto">10 Rounds</h2>
+    </section>
+    <section class="row ">
+        <p class=" col-4 fw-bold fs-5 reading mx-auto text-center p-2">speel tot je een fout antwoord ingeeft</p>
+        <p class=" col-4 fw-bold fs-5 reading mx-auto text-center p-2">speel 10 rondes</p>
+    </section>
+    <section class="row">
+        <h2 class="col-7 fs-1 fw-bolder text-center reading mx-auto">score:</h2>
+    </section>
+    <section class="row">
+      
+            <ul class="col-6 reading list-unstyled">
                 <li class="fw-bold fs-5   text-center p-2">2/2: +1p</li>
                 <li class="fw-bold fs-5   text-center p-2">1/2: Game Over</li>
                 <li class="fw-bold fs-5   text-center p-2">0/2: Game Over</li>
 
             </ul>
-            <!-- Invoer nieuwe button (Toon)-->
-            
-            <div class="btn-quizPage">
-                
-                <a href="/suddenDeath" class="text-reset text-decoration-none">
-
-                    <img src="./../assets/images/Button-img-SuddenDeath.jpg" alt="original_image">
-                    <div class="overlay">Battle!</div>
-                </a>
-            </div>
-            
-            <!-- Invoer einde (Toon)-->
-    </section> 
-    <section class=" col-4 me-5 float-end bg-opacity-50 rounded  - ">
-        <h2 class="col-12 fs-1 fw-bolder text-center brown">10 Rounds</h2>
-        <h2 class="fs-1 text-center  list-group reading">spelregels:</h2>
-            <ul class="reading list-unstyled">
-                <li class="fw-bold fs-5   text-center p-2">Speel 10 rondes </li>
-                <br>
-                <br>
-                
-                
-            </ul>
-            <h2 class="fs-1 text-center  list-group reading">Score:</h2>
-            <ul class="reading list-unstyled">
+            <ul class="col-6 reading list-unstyled">
                 <li class="fw-bold fs-5   text-center p-2">2/2: +1p</li>
                 <li class="fw-bold fs-5   text-center p-2">1/2: + 0.5p</li>
                 <li class="fw-bold fs-5   text-center p-2">0/2: + 0p</li>
-
             </ul>
-            <!-- Invoer nieuwe button (Toon)-->
-            <div class="btn-quizPage">
-                <a href="/tenRounds" class="text-reset text-decoration-none">
-
-                    <img src="./../assets/images/Button-img-10R.jpg" alt="original_image">
-                    <div class="overlay">Battle!</div>
-                </a>
-            </div>
-           
-            <!-- Invoer einde (Toon)-->
     </section>
-  
+    <section class="row ">
+        <div class="col-6 btn-quizPage mx-auto">
+        
+            <a href="/suddenDeath" class="text-reset text-decoration-none">
+
+                <img src="./../assets/images/Button-img-SuddenDeath.jpg" alt="original_image">
+                <div class="overlay">Battle! Sudden Death</div>
+            </a>
+        </div>
+        <div class="col-6 btn-quizPage mx-auto">
+            <a href="/tenRounds" class="text-reset text-decoration-none">
+                <img src="./../assets/images/Button-img-10R.jpg" alt="original_image">
+                <div class="overlay">Battle! 10 Rounds</div>
+            </a>
+        </div>
+       
+
+    </section>
+
  
 </main>
