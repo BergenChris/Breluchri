@@ -25,7 +25,7 @@ export interface Quote
  export interface Movie
  {
    name:string,
-   _id:string
+   _id:ObjectId
    
  }
 
@@ -33,7 +33,7 @@ export interface Quote
  {
    
    name:string,
-   _id:string,
+   _id:ObjectId,
    wikiUrl:string
 
    
