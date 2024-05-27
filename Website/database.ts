@@ -85,10 +85,11 @@ async function updateMovies()
     {
         //hier filteren we enkel de films eruit
         const moviesFiltered:Movie[]|null = await collectionMovies.find<Movie>
-        ({$nor:
+        ({$or:
             [    
-                {name : "The Lord of the Rings Series"},
-                {name : "The Hobbit Series"},
+                {name : "The Two Towers"},
+                {name : "The Fellowship of the Ring"},
+                {name : "The Return of the King"},
             ]}).toArray();
         await collectionMovies.deleteMany()
         await collectionMovies.insertMany(moviesFiltered);
@@ -260,8 +261,8 @@ export async function LoadUser(user:string){
             let correctQuote: Quote = quoteList[(Math.floor(Math.random() * quoteList.length))] ;
             let charactersAll: Character[] = await collectionCharacters.find().toArray();
             let moviesAll: Movie[] = await collectionMovies.find().toArray();
-            // Array's initialiseren voor de namen van films en karakters
-            let movieList: string[] = [correctQuote.movie, "", ""];
+            // Array's initialiseren voor de karakters
+         
             let characterList: string[] = [correctQuote.character, "", ""];
 
             // Lus om karakters te vullen
@@ -276,24 +277,13 @@ export async function LoadUser(user:string){
                 }
             }
 
-            // Lus om films te vullen
-            for (let i = 0; i < 2; i++) {
-                let same: boolean = true;
-                while (same) {
-                    let index: number = Math.ceil(Math.random() * moviesAll.length) - 1;
-                    if (moviesAll[index].name != correctQuote.movie && moviesAll[index].name != movieList[i]) {
-                        same = false;
-                        movieList[i + 1] = moviesAll[index].name; //+1 omdat 1ste
-                    }
-                }
+            // Lijst van films (slechts 3 films)
+            let movieList:string[]=[];
+            for (let i = 0; i < 3; i++) {
+                movieList[i]=moviesAll[i].name;
             }
 
-            // Aanmaak van 2 nieuwe array's waar de volgorde random is
-            let movieListMixed: string[] = ["", "", ""];
-            let indexMovie: number = Math.ceil(Math.random() * 3) - 1;
-            for (let j = 0; j < 3; j++) {
-                movieListMixed[j] = movieList[(j + indexMovie) % 3];
-            }
+            // Aanmaak van nieuwe array character waar de volgorde random is
 
             let characterListMixed: string[] = ["", "", ""];
             let indexchar: number = Math.ceil(Math.random() * 3) - 1;
@@ -305,7 +295,7 @@ export async function LoadUser(user:string){
             console.log("quote: " + correctQuote.dialog, "\njuiste film: " + correctQuote.movie, "\njuist karakter: " + correctQuote.character);
             
             // Return van alle relevante gegevens voor de quizronde
-            return [correctQuote, movieListMixed, characterListMixed];
+            return [correctQuote, movieList, characterListMixed];
         } else {
             console.log("Fout bij vinden karakter/film");
         }

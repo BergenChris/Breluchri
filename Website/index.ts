@@ -136,6 +136,7 @@ app.get("/suddenDeath",async (req,res)=>
         // [correctQuote, movieListMixed, characterListMixed];
 
             roundSD++;
+            console.log(roundSD);
             res.render("suddenDeath",
             {
                 score:scoreSD,
