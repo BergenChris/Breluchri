@@ -24,13 +24,19 @@ async function createInitialUser() {
     let email : string | undefined = process.env.ADMIN_EMAIL;
     let password : string | undefined = process.env.ADMIN_PASSWORD;
     let name : string | undefined = process.env.ADMIN_NAME;
+    let allQuotes : Quote[] = await collectionQuotes.find().toArray();
     if (email === undefined || password === undefined ||name === undefined) {
         throw new Error("Gegevens niet volledig");
     }
     await collectionUsers.insertOne({
         name: name,
         email: email,
-        password: await bcrypt.hash(password, saltRounds)
+        password: await bcrypt.hash(password, saltRounds),
+        score10Rounds:[],
+        scoreSD:[],
+        favourite:[],
+        blacklist:[],
+        quotesPerUser:allQuotes
     });
 }
 
@@ -38,10 +44,16 @@ export async function createUser(email: string, password: string, name: string){
     if (email === undefined || password === undefined || name === undefined) {
         throw new Error("Gegevens niet volledig");
     }
+    let allQuotes : Quote[] = await collectionQuotes.find().toArray();
     await collectionUsers.insertOne({
         name: name,
         email: email,
-        password: await bcrypt.hash(password, saltRounds)
+        password: await bcrypt.hash(password, saltRounds),
+        score10Rounds:[],
+        scoreSD:[],
+        favourite:[],
+        blacklist:[],
+        quotesPerUser:allQuotes
     });
 }
 

@@ -27,19 +27,19 @@ app.get("/",(req,res)=>
 
 app.get("/login",async(req,res)=>
 {
-    await CreateDummieUser();
+    //await CreateDummieUser();
     res.render("login",
     {
         titlePage:"Login"
     });
-    await LoadUser("dummie");
+    //await LoadUser("dummie");
 
 })
 
 
 app.post("/login",async (req,res)=>
 {
-    await CreateDummieUser();
+    //await CreateDummieUser();
     // checken of je ingelogd bent
     res.redirect("quizPage");
 })
@@ -86,7 +86,7 @@ app.post("/register", async(req, res) => {
 
 });
 
-app.get("/introPage",(req,res)=>
+app.get("/introPage", secureMiddleware,(req,res)=>
 {
     res.render("introPage",
     {
