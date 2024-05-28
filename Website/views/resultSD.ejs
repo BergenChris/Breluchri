@@ -1,2 +1,19 @@
-Score :  <%=score%>
-<a href="/suddenDeath">Speel opnieuw</a>
+<%- include("partials/header")%>
+
+<main class="col-12 col-lg-9 mx-auto bg-opacity-25  bg-transparent row">
+    <section class="row text-center">
+        <h1>Resultaten</h1>
+        <h2>Je score: <%= score %></h2>
+    </section>
+    <section class="row text-center">
+        <a href="/resetSuddenDeath" class="">
+
+            <button class="btn2">speel opnieuw</button>
+        </a>
+        <a href="/quizPage" class="col-6 col-lg-4 mx-auto mt-5 btn resetfont">
+            <button class="btn2">Ga naar startpagina</button>
+        </a>
+    </section>
+</main>
+
+

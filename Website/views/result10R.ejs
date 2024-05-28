@@ -1,2 +1,19 @@
-Score :  <%=score%>
-<a href="/tenRounds">Speel opnieuw</a>
+<%- include("partials/header")%>
+
+<main class="col-12 col-lg-9 mx-auto bg-opacity-25  bg-transparent row">
+    <section class="row text-center">
+        <h1>Resultaten</h1>
+        <h2>Je score: <%= score %></h2>
+    </section>
+    <section class="row text-center">
+        <a href="/resetTenRounds" class="col-6 col-lg-4 mx-auto mt-5 btn resetfont">
+
+            <button class="btn1 col-10 mx-auto btn justify-content-around">speel opnieuw</button>
+        </a>
+        <a href="/quizPage" class="col-6 col-lg-4 mx-auto mt-5 btn resetfont">
+            <button class="btn1 col-10 mx-auto btn justify-content-around">Ga terug naar startpagina</button>
+        </a>
+    </section>
+</main>
+
+

@@ -1,45 +1,49 @@
-<%- include("partials/headerIntro")%>
+<%- include("partials/headerIntro") %>
 
-<main class="col-12 col-lg-9 mx-auto bg-opacity-25  bg-transparent row">
-    <section class=" row text-center">
+<main class="col-12 col-lg-9 mx-auto bg-opacity-25 bg-transparent row">
+    <section class="row text-center">
         <section class="row">
-            <h1>Ronde <%=round%></h1>
+            <h1>Ronde <%= round %></h1>
+            <h2>Score: <%= score %></h2>
         </section>
     </section>
-    <section >
+    <section>
         <section class="row p-5 align-items-center">
             <section class="col-9 text-center p-3">
                 <p class="resetfont fs-3 col-10 mx-auto text-center p-3 bg-transparent h5 h4-sm h3-md h2-lg h1-xl ">"<%=quote.dialog%>"</p>
             </section>
             <section class="col-3 text-center row justify-content-around">
-                <button class="col-10 mx-auto btn background mb-3 resetfont" id="favorietBtn">
-                    <img src="./../assets/images/fire-icon.png" alt="Favoriet" class="button-image">
-                    <span class="button-text">Favoriet</span>
-                </button>
-                <button class="col-10 mx-auto btn background mb-3 resetfont" id="favorietBtn">
-                    <img src="./../assets/images/skull-icon.png" alt="Favoriet" class="button-image">
+                <form action="/favoriteReason" method="GET" id="favoriteForm">
+                    <input type="hidden" name="quote" value="<%= quote.dialog %>">
+                    <input type="hidden" name="round" value="<%= round %>">
+                    <input type="hidden" name="score" value="<%= score %>">
+                    <button type="submit" class="col-10 mx-auto btn background mb-3 resetfont" id="favorietBtn">
+                        <img src="./../assets/images/fire-icon.png" alt="Favoriet" class="button-image">
+                        <span class="button-text">Favoriet</span>
+                    </button>
+                </form>
+                <button class="col-10 mx-auto btn background mb-3 resetfont" id="blacklistBtn">
+                    <img src="./../assets/images/skull-icon.png" alt="Blacklist" class="button-image">
                     <span class="button-text">Blacklist</span>
                 </button>
-            </section>    
+            </section>
         </section>
-        <section class="row gy-5 row">  
+        <section class="row gy-5">
             <section class="col-5 mx-auto">
                 <h2 class="lotrfont">PERSONAGE</h2>
                 <% for(let i=0; i<3; i++) { %>
                     <button class="col-10 mx-auto btn justify-content-around selected-char <% if(characterListMixed[i]==quote.character) { %>correctCharacter<% } %> col-12">
                         <img src="./../assets/images/logoring.png" alt="Selected-char" class="selected-icon-char">
-                        <%=characterListMixed[i]%>
-                        <img src="./../assets/images/logoring.png" alt="Selected-char" class="selected-icon-char">
+                        <%= characterListMixed[i] %>
                     </button>
                 <% } %>
-            </section>  
+            </section>
             <section class="col-5 mx-auto">
                 <h2 class="lotrfont">FILM</h2>
                 <% for(let i=0; i<3; i++) { %>
                     <button class="col-10 mx-auto btn movie  selected-mov <% if(movieListMixed[i]==quote.movie) { %>correctMovie<% } %> col-12">
                         <img src="./../assets/images/logoring.png" alt="Selected-mov" class="selected-icon-mov">
-                        <%=movieListMixed[i]%>
-                        <img src="./../assets/images/logoring.png" alt="Selected-mov" class="selected-icon-mov">
+                        <%= movieListMixed[i] %>
                     </button>
                 <% } %>
             </section>
@@ -61,14 +65,33 @@
             <section class="col-3 row p-5 mx-auto" >
                 <input type="submit" value="-->" >
             </section>
-                
-            </form>
-            <a href="/quizPage"><button type="button">STOP</button></a>
-            
-            
-         
-            
+        </form>
+        <a href="/quizPage"><button type="button">STOP</button></a>
     </section>
-</section>
-
 </main>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const blacklistBtn = document.getElementById('blacklistBtn');
+        const quizForm = document.getElementById('quizForm');
+
+        blacklistBtn.addEventListener('click', function(event) {
+            event.preventDefault();
+            document.getElementById('blacklistField').value = "true";
+            const reason = prompt("Please provide a reason for blacklisting:");
+            document.querySelector('input[name="blacklistReason"]').value = reason;
+        });
+
+        document.querySelectorAll('.selected-char').forEach(button => {
+            button.addEventListener('click', function() {
+                document.getElementById('chosenCharacterField').value = (this.dataset.character === '<%= character.name %>').toString();
+            });
+        });
+
+        document.querySelectorAll('.selected-mov').forEach(button => {
+            button.addEventListener('click', function() {
+                document.getElementById('chosenMovieField').value = (this.dataset.movie === '<%= movie.name %>').toString();
+            });
+        });
+    });
+</script>
