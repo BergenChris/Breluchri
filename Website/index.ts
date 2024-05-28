@@ -196,16 +196,22 @@ app.get("/suddenDeath", async (req, res) => {
     if (roundSD === 0) {
         scoreSD = 0; 
     }
-    let data: any = await dataForQuizQuestion();
-    roundSD++;
-    res.render("suddenDeath", {
-        titlePage: "Sudden Death",
-        round: roundSD,
-        score: scoreSD,
-        quote: data[0],
-        movie: data[1],
-        characterListMixed: data[2]
-    });
+    let data:any = await dataForQuizQuestion();
+            // [correctQuote, movieListMixed, characterListMixed]
+            roundSD++;
+            console.log("Round:", roundSD);
+            console.log("Score:", scoreSD);
+    
+ 
+                res.render("tenRounds", {
+                    score: score10R,
+                    titlePage: "10 Rondes",
+                    round: round10R,
+                    quote: data[0],
+                    movieListMixed: data[1],
+                    characterListMixed: data[2]
+                });
+   
 });
     
 app.post("/suddenDeath", (req, res) => {
@@ -248,14 +254,6 @@ app.get("/accountPage",async (req,res)=>
 
 
 
-
-app.get("/quizSuddenDeath",(req,res)=>
-{
-    res.render("quizSuddenDeath",
-    {
-        titlePage:"Sudden Death"
-    })
-})
 
 app.get("/blacklist",(req,res)=>
 {
