@@ -43,7 +43,7 @@ export interface Quote
  {
    
    name:string,
-   password:string,
+   password?:string,
    email:string,
    score10Rounds:number[],
    scoreSD:number[],

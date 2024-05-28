@@ -37,12 +37,18 @@ app.get("/login",async(req,res)=>
 })
 
 
-app.post("/login",async (req,res)=>
-{
-    //await CreateDummieUser();
-    // checken of je ingelogd bent
-    res.redirect("quizPage");
-})
+app.post("/login", async(req, res) => {
+    const email : string = req.body.email;
+    const password : string = req.body.password;
+    try {
+        let user : User = await login(email, password);
+        delete user.password; 
+        req.session.user = user;
+        res.redirect("/introPage")
+    } catch (e : any) {
+        res.redirect("/login");
+    }
+});
 
 
 app.get("/recover", (req, res) => {
