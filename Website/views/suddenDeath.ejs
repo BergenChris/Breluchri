@@ -70,28 +70,3 @@
     </section>
 </main>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const blacklistBtn = document.getElementById('blacklistBtn');
-        const quizForm = document.getElementById('quizForm');
-
-        blacklistBtn.addEventListener('click', function(event) {
-            event.preventDefault();
-            document.getElementById('blacklistField').value = "true";
-            const reason = prompt("Please provide a reason for blacklisting:");
-            document.querySelector('input[name="blacklistReason"]').value = reason;
-        });
-
-        document.querySelectorAll('.selected-char').forEach(button => {
-            button.addEventListener('click', function() {
-                document.getElementById('chosenCharacterField').value = (this.dataset.character === '<%= character.name %>').toString();
-            });
-        });
-
-        document.querySelectorAll('.selected-mov').forEach(button => {
-            button.addEventListener('click', function() {
-                document.getElementById('chosenMovieField').value = (this.dataset.movie === '<%= movie.name %>').toString();
-            });
-        });
-    });
-</script>

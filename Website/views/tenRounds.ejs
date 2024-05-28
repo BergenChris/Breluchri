@@ -70,38 +70,4 @@
     </section>
 </main>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const favouriteBtn = document.getElementById('favouriteBtn');
-        const blacklistBtn = document.getElementById('blacklistBtn');
-
-        favouriteBtn.addEventListener('click', function(event) {
-            event.preventDefault();
-            document.getElementById('favouriteField').value = "true";
-        });
-
-        blacklistBtn.addEventListener('click', function(event) {
-            event.preventDefault();
-            document.getElementById('blacklistField').value = "true";
-            const reason = prompt("Geef een reden waarom je deze quote wilt blacklisten:");
-            document.querySelector('input[name="blacklistReason"]').value = reason;
-        });
-
-        document.querySelectorAll('.selected-char').forEach(button => {
-            button.addEventListener('click', function() {
-                document.querySelectorAll('.selected-char').forEach(btn => btn.classList.remove('selected'));
-                this.classList.add('selected');
-                document.getElementById('chosenCharacterField').value = (this.dataset.character === '<%= character.name %>').toString();
-            });
-        });
-
-        document.querySelectorAll('.selected-mov').forEach(button => {
-            button.addEventListener('click', function() {
-                document.querySelectorAll('.selected-mov').forEach(btn => btn.classList.remove('selected'));
-                this.classList.add('selected');
-                document.getElementById('chosenMovieField').value = (this.dataset.movie === '<%= movie.name %>').toString();
-            });
-        });
-    });
-</script>
 

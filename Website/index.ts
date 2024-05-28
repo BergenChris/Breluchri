@@ -204,9 +204,7 @@ app.get("/suddenDeath", async (req, res) => {
         score: scoreSD,
         quote: data[0],
         movie: data[1],
-        character: data[2],
-        movieListMixed: data[3],
-        characterListMixed: data[4]
+        characterListMixed: data[2]
     });
 });
     
