@@ -8,27 +8,23 @@
            
         </section>
     </section>
-    <section >
-        <section class="row p-5 align-items-center">
-            <section class="col-9 text-center p-3">
-                <p class="resetfont fs-3 col-10 mx-auto text-center p-3 bg-transparent  ">"<%=quote.dialog%>"</p>
-            </section>
-            <section class="col-3 text-center row justify-content-around">
-                <button class="col-10 mx-auto btn background mb-3 resetfont" id="favorietBtn">
-                    <img src="./../assets/images/fire-icon.png" alt="Favoriet" class="button-image">
-                    <span class="button-text">Favoriet</span>
-                </button>
-                <button class="col-10 mx-auto btn background mb-3 resetfont" id="favorietBtn">
-                    <img src="./../assets/images/skull-icon.png" alt="Favoriet" class="button-image">
-                    <span class="button-text">Blacklist</span>
-                </button>
-            </section>    
-        </section>
+    <section class="row text-center">
+       <p class="col-10 mx-auto  fs-4 fs-md-5 fs-lg-6">"<%=quote.dialog%>"</p>
+        <section class="col-7 mx-auto text-center row justify-content-around">
+            <button class="col-5 mx-auto btn background mb-3 resetfont" id="favorietBtn">
+                <img src="./../assets/images/fire-icon.png" alt="Favoriet" class="button-image">
+                <span class="button-text">Favoriet</span>
+            </button>
+            <button class="col-5 mx-auto btn background mb-3 resetfont" id="favorietBtn">
+                <img src="./../assets/images/skull-icon.png" alt="Favoriet" class="button-image">
+                <span class="button-text">Blacklist</span>
+            </button>
+        </section>    
         <section class="row gy-5 row">  
             <section class="col-5 mx-auto">
                 <h2 class="lotrfont">PERSONAGE</h2>
                 <% for(let i=0; i<3; i++) { %>
-                    <button class="col-10 mx-auto btn justify-content-around selected-char <% if(characterListMixed[i]==character.name) { %>correctCharacter<% } %> col-12">
+                    <button class="col-10 mx-auto btn justify-content-around selected-char <% if(characterListMixed[i]==quote.character) { %>correctCharacter<% } %> col-12">
                         <img src="./../assets/images/logoring.png" alt="Selected-char" class="selected-icon-char">
                         <%=characterListMixed[i]%>
                         <img src="./../assets/images/logoring.png" alt="Selected-char" class="selected-icon-char">
@@ -38,7 +34,7 @@
             <section class="col-5 mx-auto">
                 <h2 class="lotrfont">FILM</h2>
                 <% for(let i=0; i<3; i++) { %>
-                    <button class="col-10 mx-auto btn movie  selected-mov <% if(movieListMixed[i]==movie.name) { %>correctMovie<% } %> col-12">
+                    <button class="col-10 mx-auto btn movie  selected-mov <% if(movieListMixed[i]==quote.movie) { %>correctMovie<% } %> col-12">
                         <img src="./../assets/images/logoring.png" alt="Selected-mov" class="selected-icon-mov">
                         <%=movieListMixed[i]%>
                         <img src="./../assets/images/logoring.png" alt="Selected-mov" class="selected-icon-mov">
@@ -64,7 +60,7 @@
                 <input type="text" name="chosenMovie" value="true">
                 //pijl ip tekst bij volgende
             </section>
-            <section class="col-3 row p-5 mx-auto" >
+            <section class="col-5 row p-5 mx-auto" >
                 <input type="submit" value="-->" class="volgende">
             </section>
                 

@@ -77,6 +77,7 @@ app.get("/tenRounds", async (req, res) => {
     
    
             let data:any = await dataForQuizQuestion();
+            // [correctQuote, movieListMixed, characterListMixed]
             round10R++;
             console.log("Round:", round10R);
             console.log("Score:", score10R);
@@ -87,10 +88,8 @@ app.get("/tenRounds", async (req, res) => {
                     titlePage: "10 Rondes",
                     round: round10R,
                     quote: data[0],
-                    movie: data[1],
-                    character: data[2],
-                    movieListMixed: data[3],
-                    characterListMixed: data[4]
+                    movieListMixed: data[1],
+                    characterListMixed: data[2]
                 });
    
             
@@ -134,22 +133,18 @@ app.get("/suddenDeath",async (req,res)=>
         
         
         let data:any = await dataForQuizQuestion();
-        //[0] correctQuote
-        //[1] correctMovie
-        //[2] correctCharacter
-        //[3] movieListMixed
-        //[4] characterListMixed]
+        // [correctQuote, movieListMixed, characterListMixed];
 
             roundSD++;
+            console.log(roundSD);
             res.render("suddenDeath",
             {
+                score:scoreSD,
                 titlePage:"Sudden Death",
                 round:roundSD,
                 quote:data[0],
-                movie:data[1],
-                character:data[2],
-                movieListMixed:data[3],
-                characterListMixed:data[4]
+                movieListMixed:data[1],
+                characterListMixed:data[2]
             })               
         })
 
@@ -159,7 +154,6 @@ app.get("/suddenDeath",async (req,res)=>
 app.post("/suddenDeath",(req,res)=>
 {
     let data = req.body;
-    console.clear();
     console.log(data);
     if (data.favorite)
         {
@@ -171,7 +165,7 @@ app.post("/suddenDeath",(req,res)=>
         }
     console.log(scoreSD);
     scoreSD = scoreSD + (data.chosenCharacter === "true" && data.chosenMovie === "true"? 1 : 0);
-    console.log(scoreSD);
+    console.log(scoreSD ===roundSD);
     if(roundSD === scoreSD)
         {
             res.redirect("suddenDeath");
