@@ -1,6 +1,6 @@
 import express  from "express";
 import ejs from "ejs";
-import {CreateDummieUser, Input10RScore, InputBlacklist, InputFavouriteQuote, InputSDScore, LoadUser, collectionUsers, connect,dataForQuizQuestion} from "./database";
+import {CreateDummieUser, Input10RScore, InputBlacklist, InputFavouriteQuote, InputSDScore, LoadUser, collectionUsers, connect,dataForQuizQuestion,createUser} from "./database";
 import { User } from "./interfaces/types";
 
 
