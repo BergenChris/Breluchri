@@ -1,11 +1,13 @@
 <%- include("partials/headerLogin")%>
-    <div>
-        <h2>wachtwoord vergeten</h2>
+<main class=" col-12  col-lg-6  align-items-center mx-auto">
+    <div class="backgroundbrown rounded g-4">
+        <h2 class="fw-bolder brown mt-3">wachtwoord vergeten</h2>
         <form id="forgot-password-form" action="/recover" method="POST">
             <div>
-                <label for="email">E-mail</label>
-                <input type="email" id="email" name="email" required>
+                <label class="form-label" for="email">E-mail</label>
+                <input class="form-control mb-3" type="email" id="email" name="email" required>
             </div>
-            <button type="submit">verzenden</button>
+            <button class="mx-auto btn background brown mb-3 resetfont" type="submit">verzenden</button>
         </form>
     </div>
+</main>

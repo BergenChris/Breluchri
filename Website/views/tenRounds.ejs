@@ -26,6 +26,7 @@
                     <button class="col-10 mx-auto btn justify-content-around selected-char <% if(characterListMixed[i]==quote.character) { %>correctCharacter<% } %> col-12">
                         <img src="./../assets/images/logoring.png" alt="Selected-char" class="selected-icon-char">
                         <%=characterListMixed[i]%>
+                        <img src="./../assets/images/logoring.png" alt="Selected-char" class="selected-icon-char">
                     </button>
                 <% } %>
             </section>  
@@ -35,6 +36,7 @@
                     <button class="col-10 mx-auto btn movie selected-mov <% if(movieListMixed[i]==quote.movie) { %>correctMovie<% } %> col-12">
                         <img src="./../assets/images/logoring.png" alt="Selected-mov" class="selected-icon-mov">
                         <%=movieListMixed[i]%>
+                        <img src="./../assets/images/logoring.png" alt="Selected-mov" class="selected-icon-mov">
                     </button>
                 <% } %>
             </section>
@@ -76,6 +78,6 @@
     document.getElementById('blacklistBtn').addEventListener('click', () => {
         document.getElementById('blacklist').value = 'true';
         let reason = prompt('Geef een reden voor de blacklist:');
-        document.getElementById('blacklistReason').value = reason || '';
+        document.getElementById('blacklistReason').value = reason ;
     });
 </script>

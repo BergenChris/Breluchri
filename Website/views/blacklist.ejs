@@ -1,85 +1,53 @@
-<%- include("partials/header")%>
+<%- include("partials/header") %>
 
+<main class="col-12 col-md-9 mx-auto">
+    <h1 class="text-center resetfont mx-auto brown bg-opacity-75">Blacklist</h1>
+    <table class="table mx-auto bg-transparent">
+        <thead>
+            <tr class="bg-transparent">
+                <th class="bg-transparent" scope="col">Karakter</th>
+                <th class="bg-transparent" scope="col">Quote</th>
+                <th class="bg-transparent" scope="col">Reden</th>
+                <th class="bg-transparent" scope="col">Verwijderen</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% 
+                // Create an object to count quotes per character
+                const quoteCount = {};
+                for (let item of blacklist) {
+                    const character = item.quote.character;
+                    if (quoteCount[character]) {
+                        quoteCount[character]++;
+                    } else {
+                        quoteCount[character] = 1;
+                    }
+                }
 
-<main class="col-12 col-md-9 bg-opacity-25 mx-2">
-    <h1 class="text-center resetfont">Blacklist</h1>
-      <table class="table table-warning">
-          <thead>
+                for (let item of blacklist) { 
+            %>
             <tr>
-              <th scope="col">#</th>
-              <th scope="col">Karakter</th>
-              <th scope="col">Quote</th>
-              <th scope="col">Film</th>
-              <th scope="col">Reden</th>
-              <th scope="col">Verwijderen</th>
+                <td class="bg-transparent">
+                    <a href="?character=<%= item.quote.character %>" target="_blank">
+                        <%= item.quote.character %> (<%= quoteCount[item.quote.character] %>)
+                    </a>
+                </td>
+                <td class="bg-transparent"><%= item.quote.dialog %></td>
+                <td class="bg-transparent">
+                    <form action="/blacklist/update" method="post" style="display:inline;">
+                        <input type="hidden" name="quote" value="<%= item.quote.dialog %>">
+                        <input type="text" name="reason" value="<%= item.reason %>" class="form-control d-inline-block w-75">
+                        <button type="submit" class="btn btn-success btn-sm">Bijwerken</button>
+                    </form>
+                </td>
+                <td class="bg-transparent">
+                    <form action="/blacklist/remove" method="post" style="display:inline;">
+                        <input type="hidden" name="quote" value="<%= item.quote.dialog %>">
+                        <button type="submit" class="btn btn-danger btn-sm">X</button>
+                    </form>
+                </td>
             </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td><a href="https://lotr.fandom.com/wiki/Gandalf" target="_blank">Gandalf</a></td>
-              <td>"You shall not pass"</td>
-              <td>The fellowship of the ring</td>
-              <td>Geen leuk karakter</td>
-              <td><img src="public/assets/images/skull-icon.png" alt="Skull" class="skull-image"></td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td><a href="https://lotr.fandom.com/wiki/Gandalf" target="_blank">Gandalf</a></td>
-              <td>"You shall not pass"</td>
-              <td>The fellowship of the ring</td>
-              <td>Geen leuk karakter</td>
-              <td><img src="public/assets/images/skull-icon.png" alt="Skull" class="skull-image"></td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td><a href="https://lotr.fandom.com/wiki/Gandalf" target="_blank">Gandalf</a></td>
-              <td>"You shall not pass"</td>
-              <td>The fellowship of the ring</td>
-              <td>Geen leuk karakter</td>
-              <td><img src="public/assets/images/skull-icon.png" alt="Skull" class="skull-image"></td>
-            </tr>
-            <tr>
-              <th scope="row">4</th>
-              <td><a href="https://lotr.fandom.com/wiki/Gandalf" target="_blank">Gandalf</a></td>
-              <td>"You shall not pass"</td>
-              <td>The fellowship of the ring</td>
-              <td>Geen leuk karakter</td>
-              <td><img src="public/assets/images/skull-icon.png" alt="Skull" class="skull-image"></td>
-            </tr>
-            <tr>
-              <th scope="row">5</th>
-              <td><a href="https://lotr.fandom.com/wiki/Gandalf" target="_blank">Gandalf</a></td>
-              <td>"You shall not pass"</td>
-              <td>The fellowship of the ring</td>
-              <td>Geen leuk karakter</td>
-              <td><img src="public/assets/images/skull-icon.png" alt="Skull" class="skull-image"></td>
-            </tr>
-            <tr>
-              <th scope="row">6</th>
-              <td><a href="https://lotr.fandom.com/wiki/Gandalf" target="_blank">Gandalf</a></td>
-              <td>"You shall not pass"</td>
-              <td>The fellowship of the ring</td>
-              <td>Geen leuk karakter</td>
-              <td><img src="public/assets/images/skull-icon.png" alt="Skull" class="skull-image"></td>
-            </tr>
-            <tr>
-              <th scope="row">7</th>
-              <td><a href="https://lotr.fandom.com/wiki/Gandalf" target="_blank">Gandalf</a></td>
-              <td>"You shall not pass"</td>
-              <td>The fellowship of the ring</td>
-              <td>Geen leuk karakter</td>
-              <td><img src="public/assets/images/skull-icon.png" alt="Skull" class="skull-image"></td>
-            </tr>
-            <tr>
-              <th scope="row">8</th>
-              <td><a href="https://lotr.fandom.com/wiki/Gandalf" target="_blank">Gandalf</a></td>
-              <td>"You shall not pass"</td>
-              <td>The fellowship of the ring</td>
-              <td>Geen leuk karakter</td>
-              <td><img src="public/assets/images/skull-icon.png" alt="Skull" class="skull-image"></td>
-            </tr>
-          </tbody>
-        </table>
-  </main>
-
+            <% } %>
+        </tbody>
+    </table>
+</main>

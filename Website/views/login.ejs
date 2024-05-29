@@ -1,6 +1,11 @@
+
 <%- include("partials/headerLogin")%>
 
 <main class=" col-12  col-lg-6  align-items-center mx-auto" >
+    <% if (message) { %>
+        <p class="<%= message.type %>"><%= message.message %></p>
+    <% } %>
+    <h2 class="fw-bolder brown mt-3">Login</h2>
     <form class=" backgroundbrown rounded g-4" action="/login" method="POST"  >
     <div>
         <label class="form-label" for="email">E-mail</label>
@@ -11,13 +16,13 @@
         <input class="form-control mb-3" type="password" placeholder="Wachtwoord" name="password" required>
     </div>
     <div>
-        <button class="btn btn-warning mb-3 resetfont" type="submit">Login</button>
+        <button class="mx-auto btn background brown mb-3 resetfont" type="submit">login</button>
     </div>
     <div>
-        <a href="/register"><button class="btn btn-warning mb-3 resetfont" type="button" href="/register">account aanmaken</button></a>
+        <a class="text-dark" href="/register"><button class="mx-auto btn background mb-3 brown resetfont" type="button" href="/register">account aanmaken</button></a>
     </div>
     <div>
-        <a href="/recover"><button class="btn btn-warning mb-3 resetfont" type="button" href="/recover">wachtwoord vergeten?</button></a>
+        <a class="text-dark" href="/recover"><button class="mx-auto btn background brown mb-3 resetfont" type="button" href="/recover">wachtwoord vergeten?</button></a>
     </div>
     </form>
 </main>

@@ -1,22 +1,13 @@
 <%- include("partials/headerLogin")%>
-
-<div>
-    <h2>Create an Account</h2>
-    <form id="register-form" action="/register" method="POST">
-        <div>
-            <label for="email">e-mail</label>
-            <input type="email" id="email" name="email" required>
-        </div>
-        <div>
-            <label for="name">naam</label>
-            <input type="name" id="name" name="name" required>
-        </div>
-        <div>
-            <label for="password">wachtwoord</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-        <div>
-        <button type="submit">account aanmaken</button>
-        </div>
-    </form>
-</div>
+<main class=" col-12  col-lg-6  align-items-center mx-auto">
+    <div class="backgroundbrown rounded g-4">
+        <h2 class="fw-bolder brown mt-3">wachtwoord vergeten</h2>
+        <form id="forgot-password-form" action="/recover" method="POST">
+            <div>
+                <label class="form-label" for="email">E-mail</label>
+                <input class="form-control mb-3" type="email" id="email" name="email" required>
+            </div>
+            <button class="mx-auto btn background brown mb-3 resetfont" type="submit">verzenden</button>
+        </form>
+    </div>
+</main>

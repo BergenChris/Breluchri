@@ -18,6 +18,11 @@ export const MONGO_URI = process.env.MONGO_URI ?? "mongodb://localhost:27017";
 
 const saltRounds : number = 10;
 
+
+export function getTopScores(scores: number[]) {
+    return scores.sort((a, b) => b - a).slice(0, 3);
+}
+
 async function createInitialUser() {
     if (await collectionUsers.countDocuments() > 0) {
         return;
@@ -26,6 +31,21 @@ async function createInitialUser() {
     let password : string | undefined = process.env.ADMIN_PASSWORD;
     let name : string | undefined = process.env.ADMIN_NAME;
     let allQuotes : Quote[] = await collectionQuotes.find().toArray();
+    let blackQuotes:BlacklistQuote[]=[];
+    blackQuotes=[
+    {
+        quote:allQuotes[4],
+        reason:"domme qoute"
+    },
+    {
+        quote:allQuotes[5],
+        reason:"daarom"
+    },
+    {
+        quote:allQuotes[6],
+        reason:"geen idee"
+    },
+    ]
     if (email === undefined || password === undefined ||name === undefined) {
         throw new Error("Gegevens niet volledig");
     }
@@ -33,10 +53,10 @@ async function createInitialUser() {
         name: name,
         email: email,
         password: await bcrypt.hash(password, saltRounds),
-        score10Rounds:[],
-        scoreSD:[],
-        favourite:[],
-        blacklist:[],
+        score10Rounds:[0,0,0],
+        scoreSD:[0,0,0],
+        favourite:[allQuotes[0],allQuotes[2],allQuotes[3]],
+        blacklist: blackQuotes,
         quotesPerUser:allQuotes
     });
 }
@@ -46,16 +66,33 @@ export async function createUser(email: string, password: string, name: string){
         throw new Error("Gegevens niet volledig");
     }
     let allQuotes : Quote[] = await collectionQuotes.find().toArray();
+    if (allQuotes.length >0){
+    let blackQuotes:BlacklistQuote[]=[];
+    blackQuotes=[
+    {
+        quote:allQuotes[4],
+        reason:"domme qoute"
+    },
+    {
+        quote:allQuotes[5],
+        reason:"daarom"
+    },
+    {
+        quote:allQuotes[6],
+        reason:"geen idee"
+    },
+    ]
     await collectionUsers.insertOne({
         name: name,
         email: email,
         password: await bcrypt.hash(password, saltRounds),
-        score10Rounds:[],
-        scoreSD:[],
-        favourite:[],
-        blacklist:[],
+        score10Rounds:[0,0,0],
+        scoreSD:[0,0,0],
+        favourite:[allQuotes[0],allQuotes[2],allQuotes[3]],
+        blacklist: blackQuotes,
         quotesPerUser:allQuotes
     });
+}
 }
 
 export async function login(email: string, password: string) {
@@ -392,13 +429,22 @@ export async function CreateDummieUser()
 
 }
 
+export async function removeFavourite(quote: Quote, user: User){
+    let favourite = user.favourite;
+    let index = favourite.indexOf(quote);
+    favourite = favourite.splice(index, 1);
+    await collectionUsers.updateOne({ name: user.name }, { $set: { favourite: favourite } });
+    let quotesUser = user.quotesPerUser;
+    quotesUser.push(quote);
+    await collectionUsers.updateOne({ name: user.name }, { $set: { quotesPerUser: quotesUser } });
+}
 
-export async function InputFavouriteQuote(quote: Quote, user: string)
+export async function InputFavouriteQuote(quote: string, user: string)
 {
     
-    let quoteResponce:Quote|null= await collectionQuotes.findOne(quote);
+    let quoteResponce:Quote|null= await collectionQuotes.findOne({dialog:quote});
     if (quoteResponce){
-        let double:User|null = await collectionUsers.findOne(quoteResponce);
+        let double:User|null = await collectionUsers.findOne({name:user});
         if (double)
             {
                 console.log("quote reeds als favoriet opgeslagen")
