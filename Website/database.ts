@@ -53,8 +53,8 @@ async function createInitialUser() {
         name: name,
         email: email,
         password: await bcrypt.hash(password, saltRounds),
-        score10Rounds:[0,0,0],
-        scoreSD:[0,0,0],
+        score10Rounds:[4,6,9],
+        scoreSD:[15,4,9],
         favourite:[allQuotes[0],allQuotes[2],allQuotes[3]],
         blacklist: blackQuotes,
         quotesPerUser:allQuotes
@@ -86,8 +86,8 @@ export async function createUser(email: string, password: string, name: string){
         name: name,
         email: email,
         password: await bcrypt.hash(password, saltRounds),
-        score10Rounds:[0,0,0],
-        scoreSD:[0,0,0],
+        score10Rounds:[4,6,9],
+        scoreSD:[15,4,9],
         favourite:[allQuotes[0],allQuotes[2],allQuotes[3]],
         blacklist: blackQuotes,
         quotesPerUser:allQuotes
