@@ -8,60 +8,74 @@
         </section>
     </section>
     <section class="row text-center">
-       <p class="col-10 mx-auto  fs-4 fs-md-5 fs-lg-6">"<%=quote.dialog%>"</p>
+       <p class="col-10 mx-auto fs-4 fs-md-5 fs-lg-6">"<%=quote.dialog%>"</p>
         <section class="col-7 mx-auto text-center row justify-content-around">
-            <button class="col-5 mx-auto btn background mb-3 resetfont" id="favorietBtn">
+            <button class="col-5 mx-auto btn background mb-3 resetfont" id="favouriteBtn">
                 <img src="./../assets/images/fire-icon.png" alt="Favoriet" class="button-image">
                 <span class="button-text">Favoriet</span>
             </button>
-            <button class="col-5 mx-auto btn background mb-3 resetfont" id="favorietBtn">
-                <img src="./../assets/images/skull-icon.png" alt="Favoriet" class="button-image">
+            <button class="col-5 mx-auto btn background mb-3 resetfont" id="blacklistBtn">
+                <img src="./../assets/images/skull-icon.png" alt="Blacklist" class="button-image">
                 <span class="button-text">Blacklist</span>
             </button>
         </section>    
-        <form action="/tenRounds" method="POST">
-            <section class="row gy-5">
-              <section class="col-5 mx-auto">
+        <section class="row gy-5 row">  
+            <section class="col-5 mx-auto">
                 <h2 class="lotrfont">PERSONAGE</h2>
-                <% for(let i = 0; i < 3; i++) { %>
-                  <input type="radio" id="character<%= i+1 %>" name="selectedCharacter" value="<%= characterListMixed[i] %>" class="visually-hidden">
-                  <label for="character<%= i+1 %>" class="button col-10 mx-auto btn justify-content-around selected-char <%= (characterListMixed[i] === quote.character) ? 'correctCharacter' : '' %> col-12">
-                    <img src="./../assets/images/logoring.png" alt="Selected-char" class="selected-icon-char">
-                    <%= characterListMixed[i] %>
-                    <img src="./../assets/images/logoring.png" alt="Selected-char" class="selected-icon-char">
-                  </label>
+                <% for(let i=0; i<3; i++) { %>
+                    <button class="col-10 mx-auto btn justify-content-around selected-char <% if(characterListMixed[i]==quote.character) { %>correctCharacter<% } %> col-12">
+                        <img src="./../assets/images/logoring.png" alt="Selected-char" class="selected-icon-char">
+                        <%=characterListMixed[i]%>
+                    </button>
                 <% } %>
-              </section>  
-              
-              <section class="col-5 mx-auto">
+            </section>  
+            <section class="col-5 mx-auto">
                 <h2 class="lotrfont">FILM</h2>
-                <% for(let i = 0; i < 3; i++) { %>
-                  <input type="radio" id="movie<%= i+1 %>" name="selectedMovie" value="<%= movieListMixed[i] %>" class="visually-hidden">
-                  <label for="movie<%= i+1 %>" class="button col-10 mx-auto btn movie selected-mov <%= (movieListMixed[i] === quote.movie) ? 'correctMovie' : '' %> col-12">
-                    <img src="./../assets/images/logoring.png" alt="Selected-mov" class="selected-icon-mov">
-                    <%= movieListMixed[i] %>
-                    <img src="./../assets/images/logoring.png" alt="Selected-char" class="selected-icon-char">
-                  </label>
+                <% for(let i=0; i<3; i++) { %>
+                    <button class="col-10 mx-auto btn movie selected-mov <% if(movieListMixed[i]==quote.movie) { %>correctMovie<% } %> col-12">
+                        <img src="./../assets/images/logoring.png" alt="Selected-mov" class="selected-icon-mov">
+                        <%=movieListMixed[i]%>
+                    </button>
                 <% } %>
-              </section>
             </section>
-            <section  style="display:none">
-                <input type="text" name="quoteDialog" value="<%=quote.dialog%>" >
-                <input type="text" name="quoteMovie" value="<%=quote.movie%>" >
-                <input type="text" name="quoteCharacter" value="<%=quote.character%>" >
-
-            </section>
-        <input type="submit" value="-->">
-        </form>
-    </section>
-    <section class=" row p-3">
-      
+        </section>
         
-        <a href="/quizPage" class="col-4 mx-auto"><button type="button">STOP</button></a>
-            
-         
-            
+        <form action="/tenRounds" method="POST">
+            <input type="hidden" name="quote" value="<%=quote.dialog%>">
+            <input type="hidden" name="blacklist" id="blacklist" value="false">
+            <input type="hidden" name="favourite" id="favourite" value="false">
+            <input type="hidden" name="blacklistReason" id="blacklistReason" value="">
+            <input type="hidden" name="chosenCharacter" id="chosenCharacter" value="">
+            <input type="hidden" name="chosenMovie" id="chosenMovie" value="">
+            <section class="col-5 row p-5 mx-auto">
+                <input type="submit" value="-->" class="volgende">
+            </section>
+        </form>
+        <a href="/quizPage"><button type="button">STOP</button></a>
     </section>
+
 </main>
 
+<script>
+    document.querySelectorAll('.selected-char').forEach(button => {
+        button.addEventListener('click', () => {
+            document.getElementById('chosenCharacter').value = button.classList.contains('correctCharacter') ? 'true' : 'false';
+        });
+    });
 
+    document.querySelectorAll('.selected-mov').forEach(button => {
+        button.addEventListener('click', () => {
+            document.getElementById('chosenMovie').value = button.classList.contains('correctMovie') ? 'true' : 'false';
+        });
+    });
+
+    document.getElementById('favouriteBtn').addEventListener('click', () => {
+        let quote = getElementById()
+    });
+
+    document.getElementById('blacklistBtn').addEventListener('click', () => {
+        document.getElementById('blacklist').value = 'true';
+        let reason = prompt('Geef een reden voor de blacklist:');
+        document.getElementById('blacklistReason').value = reason || '';
+    });
+</script>

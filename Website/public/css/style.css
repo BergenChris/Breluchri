@@ -12,15 +12,8 @@
     src: url(./../assets/fonts/PlayfairDisplayMedium-9YKZK.ttf);
 }
 
-html {
-    background-image: url(./../assets/images/background.webp);
-    background-size: 100vw 100vh;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: 100% 100%;
-    margin-top: 10px;
-    height: 100vh;
-}
+
+
 #main-SD {
     background-image: url(./../assets/images/Button-img-SuddenDeath.jpg);
     background-repeat: no-repeat;
@@ -110,9 +103,26 @@ body {
 }
 main , nav
 {
-    background-image: url(./../assets/images/lotrbackground.webp); 
+    background-image: url(./../assets/images/background.webp);
+    background-size: 100vw 100vh;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% 100%;
+    margin-top: 10px;
+    height: 100vh;
     
 }
+
+.bg404{
+    background-image: url(./../assets/images/background404.jpg);
+    background-size: 100vw 100vh;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% 100%;
+    margin-top: 10px;
+    height: 100vh;
+}
+
 
 .quizspace
 {

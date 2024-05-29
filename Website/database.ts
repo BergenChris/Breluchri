@@ -1,3 +1,4 @@
+
 import {Collection, MongoClient,ObjectId} from "mongodb";
 import {Quote,Movie,Character,RootObjectQuote,RootObjectCharacter,RootObjectMovie,User, BlacklistQuote} from "./interfaces/types";
 import dotenv from "dotenv";
@@ -16,8 +17,6 @@ export const collectionUsers:Collection<User> = client.db("LOTR").collection("us
 export const MONGO_URI = process.env.MONGO_URI ?? "mongodb://localhost:27017";
 
 const saltRounds : number = 10;
-
-let user:User|null;
 
 async function createInitialUser() {
     if (await collectionUsers.countDocuments() > 0) {
@@ -63,7 +62,7 @@ export async function login(email: string, password: string) {
     if (email === "" || password === "") {
         throw new Error("E-mail en password verplicht");
     }
-    user = await collectionUsers.findOne<User>({email: email});
+    let user : User | null = await collectionUsers.findOne<User>({email: email});
     if (user) {
         if (await bcrypt.compare(password, user.password!)) {
             return user;
@@ -71,7 +70,6 @@ export async function login(email: string, password: string) {
             throw new Error("Wachtwoord niet correct");
         }
     } else {
-        user = await collectionUsers.findOne({email:"chris@ap.be"});
         throw new Error("Gebruiker niet gevonden");
     }
 }
@@ -287,9 +285,16 @@ async function loadToDB()
 
 
 
+let currentUser:User|null;
 
-
-
+export async function LoadUser(user:string){
+    if (!user){
+        currentUser= await collectionUsers.findOne({name:"dummie"})
+    }
+    else{
+        currentUser=await collectionUsers.findOne({name:user})
+    }
+}
 
 
 
@@ -301,15 +306,17 @@ async function loadToDB()
     export async function dataForQuizQuestion() {
 
         // de quotes laden per user (blacklist eruit)
-        let currentData:User|null=await collectionUsers.findOne(user!);
         let quoteList:Quote[]=[];
-        if(currentData){
-           
-            for(let quote of currentData.quotesPerUser)
-                {
-                    quoteList.push(quote);
-                }
+        if (currentUser){
+            console.log("userQuotes");
+            currentUser.quotesPerUser.forEach(e=>quoteList.push(e));
         }
+        else
+        {
+           console.log("allQuotes");
+            quoteList = await collectionQuotes.find().toArray();
+        }
+    
         // Controleer of de quoteList niet leeg is
         if (quoteList.length > 0) {
             let correctQuote: Quote = quoteList[(Math.floor(Math.random() * quoteList.length))] ;
@@ -388,6 +395,7 @@ export async function CreateDummieUser()
 
 export async function InputFavouriteQuote(quote: Quote, user: string)
 {
+    
     let quoteResponce:Quote|null= await collectionQuotes.findOne(quote);
     if (quoteResponce){
         let double:User|null = await collectionUsers.findOne(quoteResponce);

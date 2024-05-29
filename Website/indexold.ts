@@ -11,24 +11,24 @@
             <figcaption class="text-end text-warning">&copy; AI Bing</figcaption>
         </figure>
         <figure class="col-6 col-sm-4"  >
-            <a href="/404"><img src="./../assets/images/fifa.png" alt="" href="" class="img-fluid img-thumbnail rounded bg-danger"></a>
+            <img src="./../assets/images/fifa.png" alt="" href="" class="img-fluid img-thumbnail rounded bg-danger">
             <figcaption class="text-end text-warning">&copy; AI Bing</figcaption>
         </figure>
         <figure class="col-6 col-sm-4"  >
-            <a href="/404"><img src="./../assets/images/fortnite.png" alt="" href="" class="img-fluid img-thumbnail rounded bg-danger"></a>
+            <img src="./../assets/images/fortnite.png" alt="" href="" class="img-fluid img-thumbnail rounded bg-danger">
             <figcaption class="text-end text-warning">&copy; AI Bing</figcaption>
         </figure>
 
         <figure class="col-6 col-sm-4"  >
-            <a href="/404"><img src="./../assets/images/lego.png" alt="" href="" class="img-fluid img-thumbnail rounded bg-danger"></a>
+            <img src="./../assets/images/lego.png" alt="" href="" class="img-fluid img-thumbnail rounded bg-danger">
             <figcaption class="text-end text-warning">&copy; AI Bing</figcaption>
         </figure>
         <figure class="col-6 col-sm-4"  >
-            <a href="/404"><img src="./../assets/images/mtg.png" alt="" href="" class="img-fluid img-thumbnail rounded bg-danger"></a>
+            <img src="./../assets/images/mtg.png" alt="" href="" class="img-fluid img-thumbnail rounded bg-danger">
             <figcaption class="text-end text-warning">&copy; AI Bing</figcaption>
         </figure>
         <figure class="col-6 col-sm-4"  >
-            <a href="/404"><img src="./../assets/images/pokemon.png" alt="" href="" class="img-fluid img-thumbnail rounded bg-danger"></a>
+            <img src="./../assets/images/pokemon.png" alt="" href="" class="img-fluid img-thumbnail rounded bg-danger">
             <figcaption class="text-end text-warning">&copy; AI Bing</figcaption>
         </figure>
     </section>

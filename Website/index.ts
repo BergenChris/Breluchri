@@ -1,6 +1,6 @@
 import express  from "express";
 import ejs from "ejs";
-import {createUser, login,CreateDummieUser, Input10RScore, InputBlacklist, InputFavouriteQuote, InputSDScore,  connect,dataForQuizQuestion} from "./database";
+import {createUser, login,CreateDummieUser, Input10RScore, InputBlacklist, InputFavouriteQuote, InputSDScore, LoadUser, collectionUsers, connect,dataForQuizQuestion} from "./database";
 import { User } from "./interfaces/types";
 import { secureMiddleware } from "./middleware/secureMiddleware";
 import session from "./session";
@@ -16,6 +16,12 @@ app.use(session);
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
+
+app.get("/404",(req,res)=>{
+    res.render("404");
+})
+
 
 app.get("/",(req,res)=>
 {
@@ -61,9 +67,10 @@ app.get("/recover", (req, res) => {
 
 app.post('/recover', (req, res) => {
     const { email } = req.body;
-    console.log(`Mail verzonden naar ${email}`);
 
-    res.redirect("/login");
+    
+    console.log(`Mail verzonden naar ${email}`);
+    res.status(200).send("Gelukt");
 });
 
 app.get("/logout", async(req, res) => {
@@ -123,21 +130,22 @@ app.get("/quizPage",(req,res)=>{
 
 app.get("/resetTenRounds", (req, res) => {
     score10R = 0;
-    round10R = 0;
+    round10R = 1;
     res.redirect("/tenRounds");
 });
 
 
 
 app.get("/tenRounds", async (req, res) => {
-    if (round10R === 0) {
+    if (round10R === 1) {
         score10R = 0; // Reset the score when the round counter is zero
     }
    
             let data:any = await dataForQuizQuestion();
             // [correctQuote, movieListMixed, characterListMixed]
             round10R++;
-
+            console.log("Round:", round10R);
+            console.log("Score:", score10R);
     
  
                 res.render("tenRounds", {
@@ -152,30 +160,51 @@ app.get("/tenRounds", async (req, res) => {
             
 });
 
-app.post("/tenRounds", (req, res) => {
-    
+app.post("/tenRounds", async (req, res) => {
+    let dataP = req.body;
     console.log("na post");
-    console.log(req.body.quoteMovie);
-    console.log(req.body.quoteCharacter);
-    console.log(req.body.selectedMovie);
-    console.log(req.body.selectedCharacter);
+    console.log(dataP);
 
-    
+    // Controleer de gekozen antwoorden
+    let characterCorrect = dataP.chosenCharacter === "true";
+    let movieCorrect = dataP.chosenMovie === "true";
 
+    // Update de score op basis van de gekozen antwoorden
+    score10R += (characterCorrect ? 0.5 : 0) + (movieCorrect ? 0.5 : 0);
+
+    if (dataP.favourite === "true") {
+        await InputFavouriteQuote(dataP.quote, req.session.user!.name);
+    }
+    if (dataP.blacklist === "true") {
+        await InputBlacklist(dataP.quote, dataP.blacklistReason, req.session.user!.name);
+    }
+
+    if (round10R < 10) {
+        res.redirect("tenRounds");
+    } else {
+        await Input10RScore(score10R, req.session.user!.name);  // Sla de score op in de database
+        res.render("result10R", {
+            score: score10R,
+            titlePage:"Score 10 Rounds"
+        });
+        // Reset score en ronde voor een nieuw spel
+        score10R = 0;
+        round10R = 1;
+    }
 });
 
 
 
 app.get("/resetSuddenDeath", (req, res) => {
     scoreSD = 0;
-    roundSD = 0;
+    roundSD = 1;
     res.redirect("/suddenDeath");
 });
 
 
 
 app.get("/suddenDeath", async (req, res) => {
-    if (roundSD === 0) {
+    if (roundSD === 1) {
         scoreSD = 0; 
     }
     let data:any = await dataForQuizQuestion();
@@ -185,10 +214,10 @@ app.get("/suddenDeath", async (req, res) => {
             console.log("Score:", scoreSD);
     
  
-                res.render("tenRounds", {
-                    score: score10R,
-                    titlePage: "10 Rondes",
-                    round: round10R,
+                res.render("suddenDeath", {
+                    score: scoreSD,
+                    titlePage: "Sudden Death",
+                    round: scoreSD,
                     quote: data[0],
                     movieListMixed: data[1],
                     characterListMixed: data[2]
@@ -196,30 +225,38 @@ app.get("/suddenDeath", async (req, res) => {
    
 });
     
-app.post("/suddenDeath", (req, res) => {
+app.post("/suddenDeath", async (req, res) => {
     let data = req.body;
     console.log(data);
 
+    let characterCorrect = data.chosenCharacter === "true";
+    let movieCorrect = data.chosenMovie === "true";
+
     if (data.favourite === "true") {
-        InputFavouriteQuote(data.quote, "dummie");
+        await InputFavouriteQuote(data.quote, req.session.user!.name);
     }
     if (data.blacklist === "true") {
-        InputBlacklist(data.quote, data.blacklistReason, "dummie");
+        await InputBlacklist(data.quote, data.blacklistReason, req.session.user!.name);
     }
 
-    let correctCharacter = data.chosenCharacter === "true";
-    let correctMovie = data.chosenMovie === "true";
+    
 
-    if (correctCharacter && correctMovie) {
+    if (characterCorrect && movieCorrect) {
         scoreSD++;
         res.redirect("/suddenDeath");
     } else {
-        InputSDScore(scoreSD, "dummie");
+        await InputSDScore(scoreSD, req.session.user!.name);
         res.render("resultSD", {
-            score: scoreSD
+            score: scoreSD,
+            titlePage: "Score Sudden Death"
         });
+        // Reset score en ronde voor een nieuw spel
+        scoreSD = 0;
+        roundSD = 0;
     }
 });
+
+
 
 
 app.get("/accountPage",async (req,res)=>
