@@ -131,6 +131,7 @@ app.get("/resetTenRounds", (req, res) => {
 
 
 app.get("/tenRounds", async (req, res) => {
+    let user = req.session.user!;
     if (round10R === 0) {
         score10R = 0; // Reset the score when the round counter is zero
     }
@@ -148,41 +149,41 @@ app.get("/tenRounds", async (req, res) => {
                     round: round10R,
                     quote: data[0],
                     movieListMixed: data[1],
-                    characterListMixed: data[2]
+                    characterListMixed: data[2],
+                    user: user,
+                    functionFav: InputFavouriteQuote(user,data[0])
                 });
    
             
 });
 
-app.post("/tenRounds", (req, res) => {
+app.post("/tenRounds", async (req, res) => {
     let dataP = req.body;
     console.log("na post");
     console.log(dataP);
 
-    
+    // Controleer de gekozen antwoorden
     let characterCorrect = dataP.chosenCharacter === "true";
     let movieCorrect = dataP.chosenMovie === "true";
 
-    // Update de score
+    // Update de score op basis van de gekozen antwoorden
     score10R += (characterCorrect ? 0.5 : 0) + (movieCorrect ? 0.5 : 0);
 
-
-    if (dataP.favourite === "true") {
-        InputFavouriteQuote(dataP.quote, "dummie");
-    }
-    if (dataP.blacklist === "true") {
-        InputBlacklist(dataP.quote, dataP.blacklistReason, "dummie");
-    }
 
     if (round10R < 10) {
         res.redirect("tenRounds");
     } else {
-        Input10RScore(score10R, "dummie");
+        await Input10RScore(score10R, req.session.user!.name);  // Sla de score op in de database
         res.render("result10R", {
             score: score10R
         });
+        // Reset score en ronde voor een nieuw spel
+        score10R = 0;
+        round10R = 0;
     }
 });
+
+
 
 app.get("/resetSuddenDeath", (req, res) => {
     scoreSD = 0;
@@ -203,10 +204,10 @@ app.get("/suddenDeath", async (req, res) => {
             console.log("Score:", scoreSD);
     
  
-                res.render("tenRounds", {
-                    score: score10R,
-                    titlePage: "10 Rondes",
-                    round: round10R,
+                res.render("suddenDeath", {
+                    score: scoreSD,
+                    titlePage: "Sudden Death",
+                    round: scoreSD,
                     quote: data[0],
                     movieListMixed: data[1],
                     characterListMixed: data[2]
@@ -214,30 +215,31 @@ app.get("/suddenDeath", async (req, res) => {
    
 });
     
-app.post("/suddenDeath", (req, res) => {
+app.post("/suddenDeath", async (req, res) => {
     let data = req.body;
     console.log(data);
 
-    if (data.favourite === "true") {
-        InputFavouriteQuote(data.quote, "dummie");
-    }
-    if (data.blacklist === "true") {
-        InputBlacklist(data.quote, data.blacklistReason, "dummie");
-    }
+    let characterCorrect = data.chosenCharacter === "true";
+    let movieCorrect = data.chosenMovie === "true";
 
-    let correctCharacter = data.chosenCharacter === "true";
-    let correctMovie = data.chosenMovie === "true";
 
-    if (correctCharacter && correctMovie) {
+    
+
+    if (characterCorrect && movieCorrect) {
         scoreSD++;
         res.redirect("/suddenDeath");
     } else {
-        InputSDScore(scoreSD, "dummie");
+        await InputSDScore(scoreSD, req.session.user!.name);
         res.render("resultSD", {
             score: scoreSD
         });
+        // Reset score en ronde voor een nieuw spel
+        scoreSD = 0;
+        roundSD = 0;
     }
 });
+
+
 
 
 app.get("/accountPage",async (req,res)=>
