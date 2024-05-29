@@ -19,51 +19,45 @@
                 <span class="button-text">Blacklist</span>
             </button>
         </section>    
-        <section class="row gy-5 row">  
-            <section class="col-5 mx-auto">
+        <form action="/tenRounds" method="POST">
+            <section class="row gy-5">
+              <section class="col-5 mx-auto">
                 <h2 class="lotrfont">PERSONAGE</h2>
-                <% for(let i=0; i<3; i++) { %>
-                    <button class="col-10 mx-auto btn justify-content-around selected-char <% if(characterListMixed[i]==quote.character) { %>correctCharacter<% } %> col-12">
-                        <img src="./../assets/images/logoring.png" alt="Selected-char" class="selected-icon-char">
-                        <%=characterListMixed[i]%>
-                        
-                    </button>
+                <% for(let i = 0; i < 3; i++) { %>
+                  <input type="radio" id="character<%= i+1 %>" name="selectedCharacter" value="<%= characterListMixed[i] %>" class="visually-hidden">
+                  <label for="character<%= i+1 %>" class="button col-10 mx-auto btn justify-content-around selected-char <%= (characterListMixed[i] === quote.character) ? 'correctCharacter' : '' %> col-12">
+                    <img src="./../assets/images/logoring.png" alt="Selected-char" class="selected-icon-char">
+                    <%= characterListMixed[i] %>
+                    <img src="./../assets/images/logoring.png" alt="Selected-char" class="selected-icon-char">
+                  </label>
                 <% } %>
-            </section>  
-            <section class="col-5 mx-auto">
+              </section>  
+              
+              <section class="col-5 mx-auto">
                 <h2 class="lotrfont">FILM</h2>
-                <% for(let i=0; i<3; i++) { %>
-                    <button class="col-10 mx-auto btn movie  selected-mov <% if(movieListMixed[i]==quote.movie) { %>correctMovie<% } %> col-12">
-                        <img src="./../assets/images/logoring.png" alt="Selected-mov" class="selected-icon-mov">
-                        <%=movieListMixed[i]%>
-                    </button>
+                <% for(let i = 0; i < 3; i++) { %>
+                  <input type="radio" id="movie<%= i+1 %>" name="selectedMovie" value="<%= movieListMixed[i] %>" class="visually-hidden">
+                  <label for="movie<%= i+1 %>" class="button col-10 mx-auto btn movie selected-mov <%= (movieListMixed[i] === quote.movie) ? 'correctMovie' : '' %> col-12">
+                    <img src="./../assets/images/logoring.png" alt="Selected-mov" class="selected-icon-mov">
+                    <%= movieListMixed[i] %>
+                    <img src="./../assets/images/logoring.png" alt="Selected-char" class="selected-icon-char">
+                  </label>
                 <% } %>
+              </section>
             </section>
-        </section >
-        
-
-            <form  action="/tenRounds" method="POST">
-                
             <section  style="display:none">
-                // hier moeten alle value ingeladen worden
+                <input type="text" name="quoteDialog" value="<%=quote.dialog%>" >
+                <input type="text" name="quoteMovie" value="<%=quote.movie%>" >
+                <input type="text" name="quoteCharacter" value="<%=quote.character%>" >
 
-                quote = quote.dialog 
-                quoteBL/quoteF = true of false wanneer je knopt BL of fav duwt
-                dan komt er een textarea voor reden = reasonBL (hidden zolang niet nogid is)
-                <input type="text" name="quote" value="<%=quote.dialog%>">
-                <input type="text" name="blacklist" value="false">
-                <input type="text" name="favourite" value="false">
-                <input type="text" name="blacklistReason" value="daarom">
-                <input type="text" name="chosenCharacter" value="true">
-                <input type="text" name="chosenMovie" value="true">
-                //pijl ip tekst bij volgende
             </section>
-            <section class="col-5 row p-5 mx-auto" >
-                <input type="submit" value="-->" class="volgende">
-            </section>
-                
-            </form>
-            <a href="/quizPage"><button type="button">STOP</button></a>
+        <input type="submit" value="-->">
+        </form>
+    </section>
+    <section class=" row p-3">
+      
+        
+        <a href="/quizPage" class="col-4 mx-auto"><button type="button">STOP</button></a>
             
          
             

@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-
+/*
     // Event listener voor knoppen met de klasse 'correctCharacter'
     const correctCharButtons = document.querySelectorAll('.correctCharacter');
     correctCharButtons.forEach(function(button) {
@@ -72,6 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
 
     // Event listener voor knoppen met de klasse 'volgende'
    // Event listener voor knoppen met de klasse 'volgende'
@@ -109,6 +110,6 @@ nextButtons.forEach(function(button) {
         }, 2000); // Vertraging van 5000 milliseconden (5 seconden)
     });
 });
-
+*/
    
 });

@@ -1,6 +1,6 @@
 import express  from "express";
 import ejs from "ejs";
-import {createUser, login,CreateDummieUser, Input10RScore, InputBlacklist, InputFavouriteQuote, InputSDScore, LoadUser, collectionUsers, connect,dataForQuizQuestion} from "./database";
+import {createUser, login,CreateDummieUser, Input10RScore, InputBlacklist, InputFavouriteQuote, InputSDScore,  connect,dataForQuizQuestion} from "./database";
 import { User } from "./interfaces/types";
 import { secureMiddleware } from "./middleware/secureMiddleware";
 import session from "./session";
@@ -61,10 +61,9 @@ app.get("/recover", (req, res) => {
 
 app.post('/recover', (req, res) => {
     const { email } = req.body;
-
-    
     console.log(`Mail verzonden naar ${email}`);
-    res.status(200).send("Gelukt");
+
+    res.redirect("/login");
 });
 
 app.get("/logout", async(req, res) => {
@@ -138,8 +137,7 @@ app.get("/tenRounds", async (req, res) => {
             let data:any = await dataForQuizQuestion();
             // [correctQuote, movieListMixed, characterListMixed]
             round10R++;
-            console.log("Round:", round10R);
-            console.log("Score:", score10R);
+
     
  
                 res.render("tenRounds", {
@@ -155,34 +153,19 @@ app.get("/tenRounds", async (req, res) => {
 });
 
 app.post("/tenRounds", (req, res) => {
-    let dataP = req.body;
+    
     console.log("na post");
-    console.log(dataP);
+    console.log(req.body.quoteDialog);
+    console.log(req.body.quoteMovie);
+    console.log(req.body.quoteCharacter);
+    console.log(req.body.selectedMovie);
+    console.log(req.body.selectedCharacter);
 
     
-    let characterCorrect = dataP.chosenCharacter === "true";
-    let movieCorrect = dataP.chosenMovie === "true";
 
-    // Update de score
-    score10R += (characterCorrect ? 0.5 : 0) + (movieCorrect ? 0.5 : 0);
-
-
-    if (dataP.favourite === "true") {
-        InputFavouriteQuote(dataP.quote, "dummie");
-    }
-    if (dataP.blacklist === "true") {
-        InputBlacklist(dataP.quote, dataP.blacklistReason, "dummie");
-    }
-
-    if (round10R < 10) {
-        res.redirect("tenRounds");
-    } else {
-        Input10RScore(score10R, "dummie");
-        res.render("result10R", {
-            score: score10R
-        });
-    }
 });
+
+
 
 app.get("/resetSuddenDeath", (req, res) => {
     scoreSD = 0;
