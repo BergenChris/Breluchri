@@ -155,7 +155,6 @@ app.get("/tenRounds", async (req, res) => {
 app.post("/tenRounds", (req, res) => {
     
     console.log("na post");
-    console.log(req.body.quoteDialog);
     console.log(req.body.quoteMovie);
     console.log(req.body.quoteCharacter);
     console.log(req.body.selectedMovie);
