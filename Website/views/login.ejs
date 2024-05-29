@@ -1,10 +1,9 @@
 <%- include("partials/headerLogin")%>
 
-<% if (message) { %>
-    <p class="<%= message.type %>"><%= message.message %></p>
-<% } %>
-
 <main class=" col-12  col-lg-6  align-items-center mx-auto" >
+    <% if (message) { %>
+        <p class="<%= message.type %>"><%= message.message %></p>
+    <% } %>
     <h2 class="fw-bolder brown mt-3">Login</h2>
     <form class=" backgroundbrown rounded g-4" action="/login" method="POST"  >
     <div>

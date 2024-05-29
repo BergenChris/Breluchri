@@ -460,7 +460,7 @@ export async function dummyFavourites() {
 
         let quote:Quote[] = await collectionQuotes.find().limit(3).toArray();
         if(quote){
-            await collectionUsers.findOneAndUpdate({name: "Lucas"},{
+            await collectionUsers.findOneAndUpdate({name: "Admin"},{
             $set:{favourite:quote}
         });
         }

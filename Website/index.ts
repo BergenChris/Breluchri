@@ -50,6 +50,7 @@ app.post("/login", async(req, res) => {
         req.session.user = user;
         res.redirect("/introPage")
     } catch (e : any) {
+        req.session.message = {type: "error", message: e.message};
         res.redirect("/login");
     }
 });
@@ -71,7 +72,7 @@ app.post('/recover', (req, res) => {
     res.redirect("/login");
 });
 
-app.post("/logout", async(req, res) => {
+app.post("/logout", secureMiddleware, async(req, res) => {
     req.session.destroy(() => {
         res.redirect("/login");
     });
@@ -295,7 +296,6 @@ app.get("/favourites", secureMiddleware,async (req,res)=>
         
         let favourites = user?.favourite;
     
-        console.log(favourites);
         res.render("favourites",
         {
             titlePage:"Favoriete Quotes",
