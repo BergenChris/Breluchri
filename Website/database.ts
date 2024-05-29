@@ -32,8 +32,8 @@ async function createInitialUser() {
         name: name,
         email: email,
         password: await bcrypt.hash(password, saltRounds),
-        score10Rounds:[],
-        scoreSD:[],
+        score10Rounds:[0,0,0],
+        scoreSD:[0,0,0],
         favourite:[],
         blacklist:[],
         quotesPerUser:allQuotes
@@ -49,8 +49,8 @@ export async function createUser(email: string, password: string, name: string){
         name: name,
         email: email,
         password: await bcrypt.hash(password, saltRounds),
-        score10Rounds:[],
-        scoreSD:[],
+        score10Rounds:[0,0,0],
+        scoreSD:[0,0,0],
         favourite:[],
         blacklist:[],
         quotesPerUser:allQuotes
@@ -498,6 +498,16 @@ export async function removeFavourite(quote: Quote, user: User){
     await collectionUsers.updateOne({ name: user.name }, { $set: { favourite: favourite } });
     let quotesUser = user.quotesPerUser;
     quotesUser.push(quote);
+    await collectionUsers.updateOne({ name: user.name }, { $set: { quotesPerUser: quotesUser } });
+}
+
+export async function removeBlacklist(quote: BlacklistQuote, user: User){
+    let blacklist = user.blacklist;
+    let index = blacklist.indexOf(quote);
+    blacklist = blacklist.splice(index, 1);
+    await collectionUsers.updateOne({ name: user.name }, { $set: { blacklist: blacklist } });
+    let quotesUser = user.quotesPerUser;
+    quotesUser.push(quote.quote);
     await collectionUsers.updateOne({ name: user.name }, { $set: { quotesPerUser: quotesUser } });
 }
 

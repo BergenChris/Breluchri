@@ -1,6 +1,6 @@
 import express  from "express";
 import ejs from "ejs";
-import {createUser,removeFavourite, login,getTopScores, Input10RScore, InputBlacklist, InputFavouriteQuote, InputSDScore, LoadUser, collectionUsers, connect,dataForQuizQuestion} from "./database";
+import {createUser,removeFavourite, removeBlacklist, login,getTopScores, Input10RScore, InputBlacklist, InputFavouriteQuote, InputSDScore, LoadUser, collectionUsers, connect,dataForQuizQuestion} from "./database";
 import { User } from "./interfaces/types";
 import { secureMiddleware } from "./middleware/secureMiddleware";
 import { loginMiddleware } from "./middleware/loginMiddleware";
@@ -253,7 +253,7 @@ app.get("/accountPage", secureMiddleware, async (req,res)=>
         {
             titlePage:"Account",
             sdScores: scoreSD,
-            r10scores: score10R
+            r10Scores: score10R
         })
 
     })
@@ -284,8 +284,10 @@ app.post('/blacklist/update', (req, res) => {
 
 app.post('/blacklist/remove', (req, res) => {
     let blacklist = req.session.user!.blacklist;
-    const quoteToRemove = req.body.quote;
-    blacklist = blacklist.filter(item => item.quote.dialog !== quoteToRemove);
+    let user = req.session.user;
+    const quoteToRemove = blacklist.indexOf(req.body.quote);
+    let blacklistRemove = blacklist[quoteToRemove];
+    removeBlacklist(blacklistRemove,req.session.user!);
     res.redirect('/blacklist');
 });
 
