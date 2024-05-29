@@ -52,8 +52,14 @@ export interface Quote
    quotesPerUser:Quote[]
     
  }
+ 
  export interface BlacklistQuote
  {
    quote:Quote,
    reason:string
  }
+
+ export interface FlashMessage {
+  type: "error" | "success"
+  message: string;
+  }

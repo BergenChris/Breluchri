@@ -1,95 +1,50 @@
-<%- include("partials/header")%>
+<%- include("partials/header") %>
 
+<main class="col-12 col-md-9 mx-auto">
 
-<main class="col-12 col-md-9 bg-opacity-25 mx-2">
-    <img class="col-8 justify-self-center" src="public/assets/images/precious.png" alt="precies_img" width="100px">
-      <section class="row justify-content-around">
-        <h1 class="text-center resetfont col-10 col-sm-4">Favorieten</h1>
-        <form class="col-12 col-sm-6 mt-1 mb-3 justify-content-center row " action="#">
-          
-          <button class="col-8 col-sm-3 btn background mb-3 resetfont" id="favorietBtn">
-            <img src="public/assets/images/opslagen-icon.png" alt="Favoriet" class="button-image-download">
-            <span class="button-text">Download</span>
-        </button>
-        </form>
-      </section>
-      <table class="table table-warning resetfont ">
+    <h1 class="col-5 text-center resetfont mx-auto brown bg-opacity-75">Favorieten</h1>
+    <form action="/favourites/print" method="post">
+        <button type="submit" class=" col-3 mx-auto btn background mb-3 resetfont"><img src="./../assets/images/downloads.png" alt="Favoriet" class="button-image">
+            <span class="button-text ">download</span></button>
+    </form>
+
+    <table class="table mx-auto bg-transparent reading">
         <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Karakter</th>
-            <th scope="col">Quote</th>
-            <th scope="col">Film</th>
-            <th scope="col"># quotes karakter</th>
-            <th scope="col">Verwijderen</th>
-          </tr>
+            <tr class="bg-transparent">
+                <th class="bg-transparent" scope="col">quote</th>
+                <th class="bg-transparent" scope="col">karakter</th>
+                <th class="bg-transparent" scope="col">verwijderen</th>
+            </tr>
         </thead>
         <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td><a href="https://lotr.fandom.com/wiki/Gandalf" target="_blank">Gandalf</a></td>
-            <td>"You shall not pass"</td>
-            <td>The fellowship of the ring</td>
-            <td>8</td>
-            <td><img src="public/assets/images/skull-icon.png" alt="Skull" class="skull-image"></td>
-          </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td><a href="https://lotr.fandom.com/wiki/Gandalf" target="_blank">Gandalf</a></td>
-            <td>"You shall not pass"</td>
-            <td>The fellowship of the ring</td>
-            <td>8</td>
-            <td><img src="public/assets/images/skull-icon.png" alt="Skull" class="skull-image"></td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td><a href="https://lotr.fandom.com/wiki/Gandalf" target="_blank">Gandalf</a></td>
-            <td>"You shall not pass"</td>
-            <td>The fellowship of the ring</td>
-            <td>8</td>
-            <td><img src="public/assets/images/skull-icon.png" alt="Skull" class="skull-image"></td>
-          </tr>
-          <tr>
-            <th scope="row">4</th>
-            <td><a href="https://lotr.fandom.com/wiki/Gandalf" target="_blank">Gandalf</a></td>
-            <td>"You shall not pass"</td>
-            <td>The fellowship of the ring</td>
-            <td>8</td>
-            <td><img src="public/assets/images/skull-icon.png" alt="Skull" class="skull-image"></td>
-          </tr>
-          <tr>
-            <th scope="row">5</th>
-            <td><a href="https://lotr.fandom.com/wiki/Gandalf" target="_blank">Gandalf</a></td>
-            <td>"You shall not pass"</td>
-            <td>The fellowship of the ring</td>
-            <td>8</td>
-            <td><img src="public/assets/images/skull-icon.png" alt="Skull" class="skull-image"></td>
-          </tr>
-          <tr>
-            <th scope="row">6</th>
-            <td><a href="https://lotr.fandom.com/wiki/Gandalf" target="_blank">Gandalf</a></td>
-            <td>"You shall not pass"</td>
-            <td>The fellowship of the ring</td>
-            <td>8</td>
-            <td><img src="public/assets/images/skull-icon.png" alt="Skull" class="skull-image"></td>
-          </tr>
-          <tr>
-            <th scope="row">7</th>
-            <td><a href="https://lotr.fandom.com/wiki/Gandalf" target="_blank">Gandalf</a></td>
-            <td>"You shall not pass"</td>
-            <td>The fellowship of the ring</td>
-            <td>8</td>
-            <td><img src="public/assets/images/skull-icon.png" alt="Skull" class="skull-image"></td>
-          </tr>
-          <tr>
-            <th scope="row">8</th>
-            <td><a href="https://lotr.fandom.com/wiki/Gandalf" target="_blank">Gandalf</a></td>
-            <td>"You shall not pass"</td>
-            <td>The fellowship of the ring</td>
-            <td>8</td>
-            <td><img src="public/assets/images/skull-icon.png" alt="Skull" class="skull-image"></td>
-          </tr>
-        </tbody>
-      </table>
-      </main>
+            <% 
+                const quoteCount = {};
+                for (let item of favourites) {
+                    const character = item.character;
+                    if (quoteCount[character]) {
+                        quoteCount[character]++;
+                    } else {
+                        quoteCount[character] = 1;
+                    }
+                }
 
+                for (let item of favourites) { 
+            %>
+            <tr>
+                <td class="bg-transparent text-start"><%= item.dialog %></td>
+                <td class="bg-transparent text-start">
+                    <a class="text-start" href="https://lotr.fandom.com/wiki/<%= item.character %>" target="_blank">
+                        <%= item.character %> (<%= quoteCount[item.character] %>)
+                    </a>
+                </td>
+                <td class="bg-transparent">
+                    <form action="/favourites/remove" method="post" style="display:inline;">
+                        <input type="hidden" name="quote" value="<%= item %>">
+                        <button type="submit" class="btn btn-danger btn-sm">X</button>
+                    </form>
+                </td>
+            </tr>
+            <% } %>
+        </tbody>
+    </table>
+</main>

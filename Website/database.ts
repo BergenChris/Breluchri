@@ -59,7 +59,7 @@ export async function createUser(email: string, password: string, name: string){
 
 export async function login(email: string, password: string) {
     if (email === "" || password === "") {
-        throw new Error("E-mail en password verplicht");
+        throw new Error("E-mail en wachtwoord verplicht");
     }
     let user : User | null = await collectionUsers.findOne<User>({email: email});
     if (user) {
@@ -71,6 +71,10 @@ export async function login(email: string, password: string) {
     } else {
         throw new Error("Gebruiker niet gevonden");
     }
+}
+
+export function getTopScores(scores: number[]) {
+    return scores.sort((a, b) => b - a).slice(0, 3);
 }
 
 //de key om de api op te roepen
@@ -452,6 +456,17 @@ export async function InputBlacklist(quote:Quote, reasonBL:string, user: string)
     }
 }
 
+export async function dummyFavourites() {
+
+        let quote:Quote[] = await collectionQuotes.find().limit(3).toArray();
+        if(quote){
+            await collectionUsers.findOneAndUpdate({name: "Lucas"},{
+            $set:{favourite:quote}
+        });
+        }
+}
+
+
 export async function Input10RScore(score: number, user: string){
     let userInput:User|null = await collectionUsers.findOne({name:user});
     if (userInput){
@@ -476,8 +491,15 @@ export async function InputSDScore(score: number, user: string){
     }
 }
 
-
-
+export async function removeFavourite(quote: Quote, user: User){
+    let favourite = user.favourite;
+    let index = favourite.indexOf(quote);
+    favourite = favourite.splice(index, 1);
+    await collectionUsers.updateOne({ name: user.name }, { $set: { favourite: favourite } });
+    let quotesUser = user.quotesPerUser;
+    quotesUser.push(quote);
+    await collectionUsers.updateOne({ name: user.name }, { $set: { quotesPerUser: quotesUser } });
+}
 
 
 
@@ -498,6 +520,7 @@ export async function connect()
         await client.connect();
         console.log("Verbonden met DB");
         await createInitialUser();
+        await dummyFavourites();
         // await deleteDBCollections();  // kan later weggelaten worden
     
         

@@ -1,21 +1,25 @@
 import express  from "express";
 import ejs from "ejs";
-import {createUser, login,CreateDummieUser, Input10RScore, InputBlacklist, InputFavouriteQuote, InputSDScore, LoadUser, collectionUsers, connect,dataForQuizQuestion} from "./database";
+import {createUser,removeFavourite, login,getTopScores, Input10RScore, InputBlacklist, InputFavouriteQuote, InputSDScore, LoadUser, collectionUsers, connect,dataForQuizQuestion} from "./database";
 import { User } from "./interfaces/types";
 import { secureMiddleware } from "./middleware/secureMiddleware";
+import { loginMiddleware } from "./middleware/loginMiddleware";
+import { flashMiddleware } from "./middleware/flashMiddleware";
 import session from "./session";
+import * as fs from 'fs';
 
 
 
 const app = express();
 
 app.set("view engine", "ejs");
-app.set("port", 3000);
+app.set("port", 3001);
 app.use(session);
 
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(flashMiddleware);
 
 app.get("/",(req,res)=>
 {
@@ -25,7 +29,7 @@ app.get("/",(req,res)=>
 
 
 
-app.get("/login",async(req,res)=>
+app.get("/login",loginMiddleware, async(req,res)=>
 {
     //await CreateDummieUser();
     res.render("login",
@@ -64,10 +68,10 @@ app.post('/recover', (req, res) => {
 
     
     console.log(`Mail verzonden naar ${email}`);
-    res.status(200).send("Gelukt");
+    res.redirect("/login");
 });
 
-app.get("/logout", async(req, res) => {
+app.post("/logout", async(req, res) => {
     req.session.destroy(() => {
         res.redirect("/login");
     });
@@ -108,7 +112,7 @@ export let round10R:number=0;
 export let roundSD:number=0;
 
 
-app.get("/quizPage",(req,res)=>{
+app.get("/quizPage", secureMiddleware,(req,res)=>{
         
                 scoreSD=0;
                 roundSD=0;
@@ -122,7 +126,7 @@ app.get("/quizPage",(req,res)=>{
 });
 
 
-app.get("/resetTenRounds", (req, res) => {
+app.get("/resetTenRounds", secureMiddleware, (req, res) => {
     score10R = 0;
     round10R = 0;
     res.redirect("/tenRounds");
@@ -130,7 +134,7 @@ app.get("/resetTenRounds", (req, res) => {
 
 
 
-app.get("/tenRounds", async (req, res) => {
+app.get("/tenRounds", secureMiddleware, async (req, res) => {
     if (round10R === 0) {
         score10R = 0; // Reset the score when the round counter is zero
     }
@@ -154,7 +158,7 @@ app.get("/tenRounds", async (req, res) => {
             
 });
 
-app.post("/tenRounds", (req, res) => {
+app.post("/tenRounds", secureMiddleware, (req, res) => {
     let dataP = req.body;
     console.log("na post");
     console.log(dataP);
@@ -184,7 +188,7 @@ app.post("/tenRounds", (req, res) => {
     }
 });
 
-app.get("/resetSuddenDeath", (req, res) => {
+app.get("/resetSuddenDeath", secureMiddleware, (req, res) => {
     scoreSD = 0;
     roundSD = 0;
     res.redirect("/suddenDeath");
@@ -192,7 +196,7 @@ app.get("/resetSuddenDeath", (req, res) => {
 
 
 
-app.get("/suddenDeath", async (req, res) => {
+app.get("/suddenDeath", secureMiddleware, async (req, res) => {
     if (roundSD === 0) {
         scoreSD = 0; 
     }
@@ -214,7 +218,7 @@ app.get("/suddenDeath", async (req, res) => {
    
 });
     
-app.post("/suddenDeath", (req, res) => {
+app.post("/suddenDeath", secureMiddleware, (req, res) => {
     let data = req.body;
     console.log(data);
 
@@ -240,40 +244,80 @@ app.post("/suddenDeath", (req, res) => {
 });
 
 
-app.get("/accountPage",async (req,res)=>
+app.get("/accountPage", secureMiddleware, async (req,res)=>
     {
-        // let user:User=await getSourceMapRange();
-
+        let score10R = getTopScores(req.session.user!.score10Rounds);
+        let scoreSD = getTopScores(req.session.user!.scoreSD);
         res.render("accountPage",
         {
-            titlePage:"Account"
+            titlePage:"Account",
+            sdScores: scoreSD,
+            r10scores: score10R
         })
 
     })
 
 
-
-
-
-app.get("/blacklist",(req,res)=>
+app.get("/blacklist", secureMiddleware,(req,res)=>
 {
+    let blacklist = req.session.user?.blacklist;
     res.render("blacklist",
     {
-        titlePage:"Blacklist"
-    })
-    
+        titlePage:"Blacklist",
+        blacklist: blacklist
+    })   
 })
 
-app.get("/favourites",(req,res)=>
+app.post('/blacklist/update', (req, res) => {
+    let blacklist = req.session.user!.blacklist;
+    const quoteToUpdate = req.body.quote;
+    const newReason = req.body.reason;
+    blacklist = blacklist.map(item => {
+        if (item.quote.dialog === quoteToUpdate) {
+            item.reason = newReason;
+        }
+        return item;
+    });
+    res.redirect('/blacklist');
+});
+
+app.post('/blacklist/remove', (req, res) => {
+    let blacklist = req.session.user!.blacklist;
+    const quoteToRemove = req.body.quote;
+    blacklist = blacklist.filter(item => item.quote.dialog !== quoteToRemove);
+    res.redirect('/blacklist');
+});
+
+app.get("/favourites", secureMiddleware,async (req,res)=>
     {
+        let user = req.session.user;
+        await collectionUsers.find({user : user});
+        
+        let favourites = user?.favourite;
+    
+        console.log(favourites);
         res.render("favourites",
         {
-            titlePage:"Favoriete Quotes"
+            titlePage:"Favoriete Quotes",
+            favourites: favourites
         })
         
 })
 
+app.post('/favourites/remove', async (req, res) => {
+    let user = req.session.user;
+    const quoteToRemove = req.body.quote;
+    await removeFavourite(quoteToRemove, user!);
+    res.redirect('/favourites');
+});
 
+app.post('/favourites/print', (req, res) => {
+    let favourites = req.session.user!.favourite;
+    const content = favourites.map(item => `${item.dialog} - ${item.character}`).join('\n');
+    res.setHeader('Content-Disposition', 'attachment; filename=favorieten.txt');
+    res.setHeader('Content-Type', 'text/plain');
+    res.send(content);
+});
 
 
 
