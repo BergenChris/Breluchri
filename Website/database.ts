@@ -394,6 +394,7 @@ export async function CreateDummieUser()
 
 export async function InputFavouriteQuote(quote: Quote, user: string)
 {
+    
     let quoteResponce:Quote|null= await collectionQuotes.findOne(quote);
     if (quoteResponce){
         let double:User|null = await collectionUsers.findOne(quoteResponce);

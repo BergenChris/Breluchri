@@ -78,27 +78,6 @@
         document.getElementById('blacklistReason').value = reason || '';
     });
 
-    document.getElementById('favouriteBtn').addEventListener('click', async () => {
-    const quote = {
-        dialog: "<%=quote.dialog%>",
-        character: "<%=quote.character%>",
-        movie: "<%=quote.movie%>"
-    };
-    const user = "<%= user %>";
+    
 
-    try {
-        const response = await fetch('/addFavouriteQuote', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ quote, user })
-        });
-        const data = await response.json();
-        alert(data.success ? 'Quote added to favorites successfully!' : 'Failed to add quote to favorites: ' + data.message);
-    } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while adding the quote to favorites.');
-    }
-});
 </script>

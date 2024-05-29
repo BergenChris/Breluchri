@@ -41,18 +41,19 @@
         </section>
         
         <form action="/tenRounds" method="POST">
-            <input type="hidden" id="dialog"name="quote" value="<%=quote.dialog%>">
-            <input type="hidden" id="movie" name="quote" value="<%=quote.movie%>">
-            <input type="hidden" id="character" name="quote" value="<%=quote.character%>">
+            <input type="hidden" name="quote" value="<%=quote.dialog%>">
+            <input type="hidden" name="blacklist" id="blacklist" value="false">
+            <input type="hidden" name="favourite" id="favourite" value="false">
+            <input type="hidden" name="blacklistReason" id="blacklistReason" value="">
             <input type="hidden" name="chosenCharacter" id="chosenCharacter" value="">
             <input type="hidden" name="chosenMovie" id="chosenMovie" value="">
-            <input type="hidden" name="user" id="user" value="<%=user%>">
             <section class="col-5 row p-5 mx-auto">
                 <input type="submit" value="-->" class="volgende">
             </section>
         </form>
         <a href="/quizPage"><button type="button">STOP</button></a>
     </section>
+
 </main>
 
 <script>
@@ -69,10 +70,8 @@
     });
 
     document.getElementById('favouriteBtn').addEventListener('click', () => {
-        functionFav(user,quote);
-        });
-
-
+        let quote = getElementById()
+    });
 
     document.getElementById('blacklistBtn').addEventListener('click', () => {
         document.getElementById('blacklist').value = 'true';

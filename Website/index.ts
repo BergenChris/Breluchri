@@ -131,7 +131,6 @@ app.get("/resetTenRounds", (req, res) => {
 
 
 app.get("/tenRounds", async (req, res) => {
-    let user = req.session.user!;
     if (round10R === 0) {
         score10R = 0; // Reset the score when the round counter is zero
     }
@@ -149,9 +148,7 @@ app.get("/tenRounds", async (req, res) => {
                     round: round10R,
                     quote: data[0],
                     movieListMixed: data[1],
-                    characterListMixed: data[2],
-                    user: user,
-                    functionFav: InputFavouriteQuote(user,data[0])
+                    characterListMixed: data[2]
                 });
    
             
@@ -169,6 +166,12 @@ app.post("/tenRounds", async (req, res) => {
     // Update de score op basis van de gekozen antwoorden
     score10R += (characterCorrect ? 0.5 : 0) + (movieCorrect ? 0.5 : 0);
 
+    if (dataP.favourite === "true") {
+        await InputFavouriteQuote(dataP.quote, req.session.user!.name);
+    }
+    if (dataP.blacklist === "true") {
+        await InputBlacklist(dataP.quote, dataP.blacklistReason, req.session.user!.name);
+    }
 
     if (round10R < 10) {
         res.redirect("tenRounds");
@@ -222,6 +225,12 @@ app.post("/suddenDeath", async (req, res) => {
     let characterCorrect = data.chosenCharacter === "true";
     let movieCorrect = data.chosenMovie === "true";
 
+    if (data.favourite === "true") {
+        await InputFavouriteQuote(data.quote, req.session.user!.name);
+    }
+    if (data.blacklist === "true") {
+        await InputBlacklist(data.quote, data.blacklistReason, req.session.user!.name);
+    }
 
     
 
