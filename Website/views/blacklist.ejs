@@ -16,7 +16,7 @@
                 // Create an object to count quotes per character
                 const quoteCount = {};
                 for (let item of blacklist) {
-                    const character = item.quote.character;
+                    const character = item.character;
                     if (quoteCount[character]) {
                         quoteCount[character]++;
                     } else {
@@ -28,21 +28,21 @@
             %>
             <tr>
                 <td class="bg-transparent">
-                    <a href="?character=<%= item.quote.character %>" target="_blank">
-                        <%= item.quote.character %> (<%= quoteCount[item.quote.character] %>)
+                    <a href="?character=<%= item.character %>" target="_blank">
+                        <%= item.character %> (<%= quoteCount[item.character] %>)
                     </a>
                 </td>
-                <td class="bg-transparent"><%= item.quote.dialog %></td>
+                <td class="bg-transparent"><%= item.quote %></td>
                 <td class="bg-transparent">
                     <form action="/blacklist/update" method="post" style="display:inline;">
-                        <input type="hidden" name="quote" value="<%= item.quote.dialog %>">
+                        <input type="hidden" name="quote" value="<%= item.dialog %>">
                         <input type="text" name="reason" value="<%= item.reason %>" class="form-control d-inline-block w-75">
                         <button type="submit" class="btn btn-success btn-sm">Bijwerken</button>
                     </form>
                 </td>
                 <td class="bg-transparent">
                     <form action="/blacklist/remove" method="post" style="display:inline;">
-                        <input type="hidden" name="quote" value="<%= item.quote.dialog %>">
+                        <input type="hidden" name="quote" value="<%= item.dialog %>">
                         <button type="submit" class="btn btn-danger btn-sm">X</button>
                     </form>
                 </td>

@@ -44,7 +44,7 @@
         </section>
 
         <form action="/suddenDeath" method="POST">
-            <input type="hidden" name="quote" value="<%=quote.dialog%>">
+            <input type="hidden" name="quoteI" id="quoteI" value="<%=quote.dialog%>">
             <input type="hidden" name="blacklist" id="blacklist" value="false">
             <input type="hidden" name="favourite" id="favourite" value="false">
             <input type="hidden" name="blacklistReason" id="blacklistReason" value="">
@@ -72,15 +72,15 @@
     });
 
     document.getElementById('favouriteBtn').addEventListener('click', () => {
-        document.getElementById('favourite').value = 'true';
+        document.getElementById('favourite').value="true";
     });
 
     document.getElementById('blacklistBtn').addEventListener('click', () => {
         document.getElementById('blacklist').value = 'true';
         let reason = prompt('Geef een reden voor de blacklist:');
         document.getElementById('blacklistReason').value = reason ;
-    });
 
+    });
     
 
 </script>

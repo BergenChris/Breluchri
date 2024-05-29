@@ -55,7 +55,8 @@ export interface Quote
  
  export interface BlacklistQuote
  {
-   quote:Quote,
+   quote:string,
+   character:string,
    reason:string
  }
 

@@ -1,7 +1,7 @@
 import express  from "express";
 import ejs from "ejs";
 import {createUser, login,CreateDummieUser, Input10RScore, InputBlacklist, InputFavouriteQuote, InputSDScore, LoadUser, collectionUsers, connect,dataForQuizQuestion, removeFavourite,getTopScores} from "./database";
-import { User } from "./interfaces/types";
+import { BlacklistQuote, User } from "./interfaces/types";
 import session from "./session";
 import { secureMiddleware } from "./middleware/secureMiddleware";
 import { loginMiddleware } from "./middleware/loginMiddleware";
@@ -166,10 +166,9 @@ app.get("/tenRounds",secureMiddleware, async (req, res) => {
 });
 
 app.post("/tenRounds", async (req, res) => {
-    let dataP = req.body;
-    console.log("na post");
-    console.log(dataP);
-
+    let dataP = await req.body;
+    
+ 
     // Controleer de gekozen antwoorden
     let characterCorrect = dataP.chosenCharacter === "true";
     let movieCorrect = dataP.chosenMovie === "true";
@@ -178,10 +177,11 @@ app.post("/tenRounds", async (req, res) => {
     score10R += (characterCorrect ? 0.5 : 0) + (movieCorrect ? 0.5 : 0);
 
     if (dataP.favourite === "true") {
-        await InputFavouriteQuote(dataP.quote, req.session.user!.name);
+        await InputFavouriteQuote(dataP.quoteI, req.session.user!.name);
     }
     if (dataP.blacklist === "true") {
-        await InputBlacklist(dataP.quote, dataP.blacklistReason, req.session.user!.name);
+    
+        await InputBlacklist(dataP.qouteI,dataP.characterI,dataP.blacklistReason, req.session.user!.name);
     }
 
     if (round10R < 10) {
@@ -202,14 +202,14 @@ app.post("/tenRounds", async (req, res) => {
 
 app.get("/resetSuddenDeath",secureMiddleware, (req, res) => {
     scoreSD = 0;
-    roundSD = 0;
+    roundSD = 1;
     res.redirect("/suddenDeath");
 });
 
 
 
 app.get("/suddenDeath",secureMiddleware, async (req, res) => {
-    if (roundSD === 0) {
+    if (roundSD === 1) {
         scoreSD = 0; 
     }
     let data:any = await dataForQuizQuestion();
@@ -231,18 +231,24 @@ app.get("/suddenDeath",secureMiddleware, async (req, res) => {
 });
     
 app.post("/suddenDeath", async (req, res) => {
-    let data = req.body;
-    console.log(data);
+    let dataP = req.body;
+    console.log(req.body.reason);
 
-    let characterCorrect = data.chosenCharacter === "true";
-    let movieCorrect = data.chosenMovie === "true";
 
-    if (data.favourite === "true") {
-        await InputFavouriteQuote(data.quote, req.session.user!.name);
+    let characterCorrect = dataP.chosenCharacter === "true";
+    let movieCorrect = dataP.chosenMovie === "true";
+
+    score10R += (characterCorrect ? 0.5 : 0) + (movieCorrect ? 0.5 : 0);
+
+    if (dataP.favourite === "true") {
+        await InputFavouriteQuote(dataP.quote, req.session.user!.name);
     }
-    if (data.blacklist === "true") {
-        await InputBlacklist(data.quote, data.blacklistReason, req.session.user!.name);
+    if (dataP.blacklist === "true") {
+    
+        await InputBlacklist(dataP.qouteI,dataP.characterI,dataP.blacklistReason, req.session.user!.name);
     }
+
+
 
     
 
@@ -291,7 +297,7 @@ app.post('/blacklist/update', (req, res) => {
     const quoteToUpdate = req.body.quote;
     const newReason = req.body.reason;
     blacklist = blacklist.map(item => {
-        if (item.quote.dialog === quoteToUpdate) {
+        if (item.quote === quoteToUpdate) {
             item.reason = newReason;
         }
         return item;
@@ -302,16 +308,13 @@ app.post('/blacklist/update', (req, res) => {
 app.post('/blacklist/remove', (req, res) => {
     let blacklist = req.session.user!.blacklist;
     const quoteToRemove = req.body.quote;
-    blacklist = blacklist.filter(item => item.quote.dialog !== quoteToRemove);
+    blacklist = blacklist.filter(item => item.quote !== quoteToRemove);
     res.redirect('/blacklist');
 });
 
 app.get("/favourites", secureMiddleware,async (req,res)=>
     {
-        let user = req.session.user;
-        await collectionUsers.find({user : user});
-        
-        let favourites = user?.favourite;
+        let favourites = req.session.user?.favourite;
     
         res.render("favourites",
         {

@@ -34,15 +34,18 @@ async function createInitialUser() {
     let blackQuotes:BlacklistQuote[]=[];
     blackQuotes=[
     {
-        quote:allQuotes[4],
+        quote:allQuotes[4].dialog,
+        character:allQuotes[4].character,
         reason:"domme qoute"
     },
     {
-        quote:allQuotes[5],
+        quote:allQuotes[5].dialog,
+        character:allQuotes[5].character,
         reason:"daarom"
     },
     {
-        quote:allQuotes[6],
+        quote:allQuotes[6].dialog,
+        character:allQuotes[6].character,
         reason:"geen idee"
     },
     ]
@@ -69,19 +72,22 @@ export async function createUser(email: string, password: string, name: string){
     if (allQuotes.length >0){
     let blackQuotes:BlacklistQuote[]=[];
     blackQuotes=[
-    {
-        quote:allQuotes[4],
-        reason:"domme qoute"
-    },
-    {
-        quote:allQuotes[5],
-        reason:"daarom"
-    },
-    {
-        quote:allQuotes[6],
-        reason:"geen idee"
-    },
-    ]
+        {
+            quote:allQuotes[4].dialog,
+            character:allQuotes[4].character,
+            reason:"domme qoute"
+        },
+        {
+            quote:allQuotes[5].dialog,
+            character:allQuotes[5].character,
+            reason:"daarom"
+        },
+        {
+            quote:allQuotes[6].dialog,
+            character:allQuotes[6].character,
+            reason:"geen idee"
+        },
+        ]
     await collectionUsers.insertOne({
         name: name,
         email: email,
@@ -443,62 +449,48 @@ export async function InputFavouriteQuote(quote: string, user: string)
 {
     
     let quoteResponce:Quote|null= await collectionQuotes.findOne({dialog:quote});
+
     if (quoteResponce){
-        let double:User|null = await collectionUsers.findOne({name:user});
-        if (double)
-            {
-                console.log("quote reeds als favoriet opgeslagen")
-            }
-        else
-        {
             await collectionUsers.findOneAndUpdate({
                 name:user
             },
             {
                 $push:{favourite:quoteResponce}
             })
-        }
-        return true;
-    }
-    else {
-        return false;
+        
+
     }
 }
 
 
-export async function InputBlacklist(quote:Quote, reasonBL:string, user: string)
+export async function InputBlacklist(quoteI:string,characterI:string,reason:string, user: string)
 {
-    let quoteResponce:Quote|null= await collectionQuotes.findOne(quote);
     
-    if (quoteResponce){
-        let blacklistQuote:BlacklistQuote={
-            quote:quoteResponce,
-            reason:reasonBL
-        }
-        let double:User|null = await collectionUsers.findOne({name:user,blacklist:blacklistQuote});
-        if (double)
-            {
-                console.log("fout in de code/logica/mocht niet getoond worden");
+ 
+
+            let blQuote:BlacklistQuote={
+                quote:quoteI,
+                character:characterI,
+                reason:reason
             }
-        else
-        {
             await collectionUsers.findOneAndUpdate({
                 name:user
             },
             {
-                $push:{blacklist:blacklistQuote}
+                $push:{blacklist:blQuote}
             })
-            await collectionUsers.deleteOne({
+            await collectionUsers.findOneAndUpdate({
                 name:user,
-                quotesPerUser:quoteResponce
-            })
-        }
-        return true;
+        
+            },
+            {
+                 $pull: { quotesPerUser: { dialog:quoteI } } 
+            })  
     }
-    else {
-        return false;
-    }
-}
+
+
+
+
 
 export async function Input10RScore(score: number, user: string){
     let userInput:User|null = await collectionUsers.findOne({name:user});

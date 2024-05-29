@@ -11,26 +11,33 @@
     <table class="table mx-auto bg-transparent reading">
         <thead>
             <tr class="bg-transparent">
-                <th class="bg-transparent" scope="col">quote</th>
-                <th class="bg-transparent" scope="col">karakter</th>
-                <th class="bg-transparent" scope="col">verwijderen</th>
+                <th class="bg-transparent" scope="col">Karakter</th>
+                <th class="bg-transparent" scope="col">Quote</th>
+                <th class="bg-transparent" scope="col">Verwijderen</th>
             </tr>
         </thead>
         <tbody>
             <% 
-                const quoteCount = {};
-                for (let item of favourites) {
-                    const character = item.character;
-                    if (quoteCount[character]) {
-                        quoteCount[character]++;
-                    } else {
-                        quoteCount[character] = 1;
-                    }
+            // Create an object to count quotes per character
+            const quoteCount = {};
+            for (let item of favourites) {
+                const character = item.character;
+                if (quoteCount[character]) {
+                    quoteCount[character]++;
+                } else {
+                    quoteCount[character] = 1;
                 }
+            }
 
-                for (let item of favourites) { 
-            %>
+            for (let item of favourites) { 
+        %>
+            
             <tr>
+                <td class="bg-transparent">
+                    <a href="?character=<%= item.character %>" target="_blank">
+                        <%= item.character %> (<%= quoteCount[item.character] %>)
+                    </a>
+                </td>
                 <td class="bg-transparent text-start"><%= item.dialog %></td>
                 <td class="bg-transparent text-start">
                     <a class="text-start" href="https://lotr.fandom.com/wiki/<%= item.character %>" target="_blank">
